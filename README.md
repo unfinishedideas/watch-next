@@ -1,50 +1,24 @@
-# React + TypeScript + Vite
+# Watch Next!
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+-- This is currently under construction! --
 
-Currently, two official plugins are available:
+## Concept
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Watch Next! is a collaborative Watch List application where users can sign up, share and manage lists of TV Shows and Movies they want to watch.
 
-## Expanding the ESLint configuration
+They can leave reviews, comments and share lists publicly or privately.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## To Run
 
-- Configure the top-level `parserOptions` property like this:
+- clone the repo: `git clone git@github.com:unfinishedideas/watch-next.git`
+- navigate to the directory with a shell and run `npm i` to install packages
+- run with `npm run dev`
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Technology
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+- React + Vite
+- Typescript + SWC
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Created by Peter Wells
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+[Contact me](petewellspdx@gmail.com)

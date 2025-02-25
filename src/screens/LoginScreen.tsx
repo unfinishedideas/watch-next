@@ -5,6 +5,7 @@ function LoginScreen()
     return(
         <div>
             <h2>Login</h2>
+                <br/>
             <LoginForm/>
         </div>
     )
