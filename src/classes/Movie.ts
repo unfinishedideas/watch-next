@@ -1,9 +1,9 @@
-export default class MovieClass
+export default class Movie
 {
-    title: string,
-    year: number,
-    director: string,
-    rating: number,
+    title: string;
+    year: number;
+    director: string;
+    rating: number;
 
     constructor(title = "", year = 0, director = "", rating = 0.0)
     {
