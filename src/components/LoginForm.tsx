@@ -1,8 +1,20 @@
-function LoginForm()
+interface LoginFormProps {
+    setIsLoggedIn: () => void;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : LoginFormProps) =>
 {
+    function AttemptLogin(event)
+    {
+        console.log(event)
+
+        // TODO: Actual user login, for now, just setting to logged in
+        setIsLoggedIn(true);
+    }
+
     return(
         <div>
-            <form>
+            <form action={AttemptLogin}>
                 <label>
                     Username: <input name="usernameInput"/>
                 </label>
@@ -18,3 +30,4 @@ function LoginForm()
 }
 
 export default LoginForm;
+

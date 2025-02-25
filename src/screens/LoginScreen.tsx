@@ -1,14 +1,19 @@
 import LoginForm from '../components/LoginForm.tsx'
 
-function LoginScreen()
+interface LoginScreenProps {
+    setIsLoggedIn: () => void;
+}
+
+const LoginScreen: React.FC<LoginScreenProps> = ({setIsLoggedIn} : LoginScreenProps) =>
 {
     return(
         <div>
             <h2>Login</h2>
                 <br/>
-            <LoginForm/>
+            <LoginForm setIsLoggedIn={setIsLoggedIn}/>
         </div>
     )
 }
 
 export default LoginScreen;
+
