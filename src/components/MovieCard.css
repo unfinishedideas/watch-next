@@ -1,0 +1,6 @@
+.movie-card-container {
+    #background-color: red;
+    padding: 1rem;
+    width: 320px;
+    border: 2px solid red;
+}
