@@ -1,6 +1,6 @@
 import './ListCard.css'
-import Movie from '../classes/MovieClass.ts'
 import MovieCard from './MovieCard.tsx'
+import Movie from '../classes/MovieClass.ts'
 
 interface ListCardProps {
     listName: string;
@@ -11,9 +11,9 @@ const ListCard : React.FC<ListCardProps> = ({listName, movies} : ListCardProps) 
 {
     return(
         <div className="list-card-container">
-            <h1>{listName}</h1> 
+            <h2>{listName}</h2> 
             { movies.map((movie, index) => (
-                <MovieCard data={movie} index={index}/> 
+                <MovieCard data={movie} index={index} key={index}/> 
             ))}
         </div>
     )

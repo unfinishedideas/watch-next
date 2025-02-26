@@ -1,3 +1,5 @@
+import './App.css'
+
 import Header from './components/Header.tsx'
 import LoginScreen from './screens/LoginScreen.tsx'
 import FeedScreen from './screens/FeedScreen.tsx'
@@ -9,10 +11,10 @@ function App()
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     
     return(
-        <div>
+        <div className="app-container">
             <Header/>
             {isLoggedIn ? 
-            <div/> : <LoginScreen setIsLoggedIn={setIsLoggedIn}/>
+                <div/> : <LoginScreen setIsLoggedIn={setIsLoggedIn}/>
             }
             <FeedScreen/>
         </div>

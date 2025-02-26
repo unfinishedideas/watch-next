@@ -1,3 +1,5 @@
+import './LoginForm.css'
+
 interface LoginFormProps {
     setIsLoggedIn: () => void;
 }
