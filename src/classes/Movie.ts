@@ -5,7 +5,7 @@ export default class Movie
     director: string;
     rating: number;
 
-    constructor(title = "", year = 0, director = "", rating = 0.0)
+    constructor(title:string = "", year:number = 0, director:string = "", rating:number = 0.0)
     {
         this.title = title;
         this.year = year;

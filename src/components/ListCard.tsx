@@ -1,19 +1,26 @@
 import './ListCard.css'
 import MovieCard from './MovieCard.tsx'
-import Movie from '../classes/MovieClass.ts'
+import List from '../classes/List.ts'
 
 interface ListCardProps {
-    listName: string;
-    movies: Movie[];    
+   listData: List, 
 }
 
-const ListCard : React.FC<ListCardProps> = ({listName, movies} : ListCardProps) =>
+const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
 {
+    function GetUsernames()
+    {
+        let result:string = "";
+        listData.createdBy.forEach((currentUser:User) => result = result.concat(currentUser.username, ", "));
+        return result.substring(0, result.length - 2);
+    }
+
     return(
         <div className="list-card-container">
-            <h2>{listName}</h2> 
+            <h2>{listData.title}</h2> 
+            <h3>By: {GetUsernames()}</h3>
             <div className="movies-container">
-            { movies.map((movie, index) => (
+            { listData.movies.map((movie, index) => (
                 <MovieCard data={movie} index={index} key={index}/> 
             ))}
             </div>

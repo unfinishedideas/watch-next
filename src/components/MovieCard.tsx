@@ -2,7 +2,7 @@ import './MovieCard.css'
 import Movie from '../classes/Movie.ts'
 
 interface MovieCardProps {
-    data: movie;
+    data: Movie;
     index: number;
 }
 
