@@ -1,6 +1,8 @@
 import './ListCard.css'
 import MovieCard from './MovieCard.tsx'
 import List from '../classes/List.ts'
+import User from '../classes/User.ts'
+
 
 interface ListCardProps {
    listData: List, 
@@ -8,9 +10,11 @@ interface ListCardProps {
 
 const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
 {
+    // TODO: When user page is made, have this generate links to their pages instead
     function GetUsernames()
     {
         let result:string = "";
+        // FIXME: eslint hates this and thinks it's an "error" type, not sure why
         listData.createdBy.forEach((currentUser:User) => result = result.concat(currentUser.username, ", "));
         return result.substring(0, result.length - 2);
     }
