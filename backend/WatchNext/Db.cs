@@ -24,7 +24,7 @@ public record MovieList
     required public User[] CreatedBy {get; set;}
 }
 
-// Temporary DB and test data to use to test connection to frontend app
+// Temporary in memory DB and test data to use to test connection to frontend app
 public class WatchNextDB
 {
 
@@ -85,5 +85,77 @@ public class WatchNextDB
     }
 
     // Movies ------------------------------------------------------------------
+    public static List<Movie> GetMovies()
+    {
+        return _movies;
+    }
+
+    public static Movie ? GetMovie(int id)
+    {
+        return _movies.SingleOrDefault(movie => movie.MovieId == id.ToString());
+    }
+
+    public static Movie ? CreateMovie(Movie movie)
+    {
+        _movies.Add(movie);
+        return movie;
+    }
+
+    public static Movie UpdateMovie(Movie update)
+    {
+        _movies = _movies.Select(movie =>
+        {
+            if (movie.MovieId == update.MovieId)
+            {
+               movie.Title = update.Title;
+               movie.Year = update.Year;
+               movie.Director = update.Director;
+               movie.Rating = update.Rating;
+            }
+            return movie;
+        }).ToList();
+        return update;
+    }
+
+    public static void RemoveMovie(int id)
+    {
+        _movies = _movies.FindAll(movie => movie.MovieId != id.ToString()).ToList();
+    }
+
     // Lists -------------------------------------------------------------------
+    public static List<MovieList> GetLists()
+    {
+        return _movieLists;
+    }
+
+    public static MovieList ? GetMovieList(int id)
+    {
+        return _movieLists.SingleOrDefault(list => list.ListId == id.ToString());
+    }
+
+    public static MovieList ? CreateMovieList(MovieList list)
+    {
+        _movieLists.Add(list);
+        return list;
+    }
+
+    public static MovieList UpdateMovieList(MovieList update)
+    {
+        _movieLists = _movieLists.Select(list =>
+        {
+            if (list.ListId == update.ListId)
+            {
+                list.Title = update.Title;
+                list.Movies = update.Movies;
+                list.CreatedBy = update.CreatedBy;
+            }
+            return list;
+        }).ToList();
+        return update;
+    }
+
+    public static void RemoveMovieList(int id)
+    {
+        _movieLists = _movieLists.FindAll(list => list.ListId != id.ToString()).ToList();
+    }
 }
