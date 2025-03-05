@@ -79,7 +79,7 @@ public class WatchNextDB
         return update;
     }
 
-    public static void RemoveUser(int id)
+    public static void DeleteUser(int id)
     {
         _users = _users.FindAll(user => user.UserId != id.ToString()).ToList();
     }
@@ -117,13 +117,13 @@ public class WatchNextDB
         return update;
     }
 
-    public static void RemoveMovie(int id)
+    public static void DeleteMovie(int id)
     {
         _movies = _movies.FindAll(movie => movie.MovieId != id.ToString()).ToList();
     }
 
     // Lists -------------------------------------------------------------------
-    public static List<MovieList> GetLists()
+    public static List<MovieList> GetMovieLists()
     {
         return _movieLists;
     }
@@ -154,7 +154,7 @@ public class WatchNextDB
         return update;
     }
 
-    public static void RemoveMovieList(int id)
+    public static void DeleteMovieList(int id)
     {
         _movieLists = _movieLists.FindAll(list => list.ListId != id.ToString()).ToList();
     }

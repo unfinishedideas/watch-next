@@ -1,3 +1,5 @@
+using WatchNext.DB;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
@@ -6,29 +8,29 @@ var app = builder.Build();
 
 // For now, just leaving these here in one big file until it gets complicated enough to move :)
 // GET
-app.MapGet("/users", () => "Users: Not setup yet :)");
-app.MapGet("/users/{id}", (int id) => $"Users: Not setup yet, but you passed id: {id}");
+app.MapGet("/users", () => WatchNextDB.GetUsers());
+app.MapGet("/users/{id}", (int id) => WatchNextDB.GetUser(id));
 
-app.MapGet("/lists", () => "Lists: Not setup yet :)");
-app.MapGet("/lists/{id}", (int id) => $"Lists: Not setup yet, but you passed id: {id}");
+app.MapGet("/lists", () => WatchNextDB.GetMovieLists());
+app.MapGet("/lists/{id}", (int id) => WatchNextDB.GetMovieList(id));
 
-app.MapGet("/movies", () => "Movies: Not setup yet :)");
-app.MapGet("/movies/{id}", (int id) => $"Movies: Not setup yet, but you passed id: {id}");
+app.MapGet("/movies", () => WatchNextDB.GetMovies());
+app.MapGet("/movies/{id}", (int id) => WatchNextDB.GetMovie(id));
 
 // POST
-//app.MapPost("/users", ); 
-//app.MapPost("/lists", ); 
-//app.MapPost("/movies", ); 
+app.MapPost("/users", (User user) => WatchNextDB.CreateUser(user)); 
+app.MapPost("/lists", (MovieList list) => WatchNextDB.CreateMovieList(list)); 
+app.MapPost("/movies", (Movie movie) => WatchNextDB.CreateMovie(movie)); 
 
 // UPDATE
-//app.MapPut("/users", ); 
-//app.MapPut("/lists", ); 
-//app.MapPut("/movies", ); 
+app.MapPut("/users", (User update) => WatchNextDB.UpdateUser(update)); 
+app.MapPut("/lists", (MovieList update) => WatchNextDB.UpdateMovieList(update)); 
+app.MapPut("/movies",(Movie update) => WatchNextDB.UpdateMovie(update)); 
 
 // DELETE
-//app.MapDelete("/users/{id}",  (int id) => ); 
-//app.MapDelete("/lists/{id}",  (int id) => ); 
-//app.MapDelete("/movies/{id}", (int id) => ); 
+app.MapDelete("/users/{id}",  (int id) => WatchNextDB.DeleteUser(id)); 
+app.MapDelete("/lists/{id}",  (int id) => WatchNextDB.DeleteMovieList(id)); 
+app.MapDelete("/movies/{id}", (int id) => WatchNextDB.DeleteMovie(id)); 
 
 
 if (app.Environment.IsDevelopment())
