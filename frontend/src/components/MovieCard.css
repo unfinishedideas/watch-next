@@ -1,6 +1,19 @@
 .movie-card-container {
     #background-color: red;
+    --movieCardWidth: 320px;
     padding: 1rem;
-    width: 320px;
+    width: var(--movieCardWidth);
     border: 2px solid red;
+}
+
+.movie-title-text {
+    margin-top: 0;
+}
+
+.movie-poster-preview {
+    max-width: var(--movieCardWidth);
+}
+
+.info-small {
+    margin:0;
 }

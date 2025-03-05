@@ -21,8 +21,8 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
 
     return(
         <div className="list-card-container">
-            <h2>{listData.title}</h2> 
-            <h3>By: {GetUsernames()}</h3>
+            <h2 className="list-card-title">{listData.title}</h2> 
+            <h3 className="list-card-users">By: {GetUsernames()}</h3>
             <div className="movies-container">
             { listData.movies.map((movie, index) => (
                 <MovieCard data={movie} index={index} key={index}/> 
