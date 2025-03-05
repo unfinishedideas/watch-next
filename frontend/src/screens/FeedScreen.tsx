@@ -1,12 +1,31 @@
-import './FeedScreen.css'
-import List from '../classes/List.ts'
-import ListCard from '../components/ListCard.tsx'
-import Movie from '../classes/Movie.ts'
-import User from '../classes/User.ts'
+import './FeedScreen.css';
+
+import { useState, useEffect } from 'react';
+
+import List from '../classes/List.ts';
+import ListCard from '../components/ListCard.tsx';
+import Movie from '../classes/Movie.ts';
+import User from '../classes/User.ts';
+
 
 const FeedScreen: React.FC = () =>
 {
-    // test objects, these are temporary :)
+    const [movies, setMovies] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [lists, setLists] = useState([]);
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetch("http://localhost:5025/movies")
+            .then(response => response.json())
+            .then(data => {console.log(data)});
+        }
+        fetchData()
+        .catch(console.error);
+
+    },[]);
+
+    // test objects 
     const testMovies :Movie[] = [
             new Movie("Test Movie 1", 2002, "Jim DirectorMan", 3.5),
             new Movie("Test Movie 2 - The Revenge", 2003, "Jim DirectorMan's Son", 1.5),

@@ -4,6 +4,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
+if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+{
+    builder.Services.AddCors(options =>
+            {
+            options.AddDefaultPolicy(
+                    policy =>
+                    {
+                    policy.WithOrigins("*");
+                    });
+            });
+}
+
 var app = builder.Build();
 
 // For now, just leaving these here in one big file until it gets complicated enough to move :)
@@ -32,10 +44,10 @@ app.MapDelete("/users/{id}",  (int id) => WatchNextDB.DeleteUser(id));
 app.MapDelete("/lists/{id}",  (int id) => WatchNextDB.DeleteMovieList(id)); 
 app.MapDelete("/movies/{id}", (int id) => WatchNextDB.DeleteMovie(id)); 
 
-
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseCors();
 }
 
 app.Run();
