@@ -9,6 +9,11 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({data, index} : MovieCardProps) =>
 {
+    function DeleteMovie()
+    {
+        console.log("DELETE DAT MOVIE");
+    }
+
     return(
         <div className="movie-card-container">
             <h3 className="movie-title-text">{index+1}: {data.title}</h3>
@@ -16,6 +21,7 @@ const MovieCard: React.FC<MovieCardProps> = ({data, index} : MovieCardProps) =>
             <p className="info-small">Director: {data.director}</p>
             <p className="info-small">Year: {data.year}</p>
             <p className="info-small">Rating: {data.rating}</p>
+            <button type="button" onClick={DeleteMovie}>Delete Movie</button>
         </div>
     )
 }

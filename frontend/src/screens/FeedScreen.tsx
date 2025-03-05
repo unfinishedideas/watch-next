@@ -7,6 +7,8 @@ import ListCard from '../components/ListCard.tsx';
 import Movie from '../classes/Movie.ts';
 import User from '../classes/User.ts';
 
+import API from '../classes/Api.ts';
+
 
 const FeedScreen: React.FC = () =>
 {
@@ -15,6 +17,13 @@ const FeedScreen: React.FC = () =>
     const [lists, setLists] = useState([]);
     
     useEffect(() => {
+        const fetchData = async() => {
+            await API.GetMovies()
+        }
+        fetchData();
+        .catch(console.error);
+        
+        /*
         const fetchData = async () => {
             await fetch("http://localhost:5025/movies")
             .then(response => response.json())
@@ -22,7 +31,7 @@ const FeedScreen: React.FC = () =>
         }
         fetchData()
         .catch(console.error);
-
+        */
     },[]);
 
     // test objects 
