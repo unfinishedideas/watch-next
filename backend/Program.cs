@@ -21,13 +21,13 @@ var app = builder.Build();
 // For now, just leaving these here in one big file until it gets complicated enough to move :)
 // GET
 app.MapGet("/users", () => WatchNextDB.GetUsers());
-app.MapGet("/users/{id}", (int id) => WatchNextDB.GetUser(id));
+app.MapGet("/users/{id}", (string id) => WatchNextDB.GetUser(id));
 
 app.MapGet("/lists", () => WatchNextDB.GetMovieLists());
-app.MapGet("/lists/{id}", (int id) => WatchNextDB.GetMovieList(id));
+app.MapGet("/lists/{id}", (string id) => WatchNextDB.GetMovieList(id));
 
 app.MapGet("/movies", () => WatchNextDB.GetMovies());
-app.MapGet("/movies/{id}", (int id) => WatchNextDB.GetMovie(id));
+app.MapGet("/movies/{id}", (string id) => WatchNextDB.GetMovie(id));
 
 // POST
 app.MapPost("/users", (User user) => WatchNextDB.CreateUser(user)); 

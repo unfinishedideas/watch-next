@@ -18,10 +18,9 @@ const FeedScreen: React.FC = () =>
     const [lists, setLists] = useState([]);
     
     useEffect(() => {
-        LoadMovies();
-        LoadUsers();
+        //LoadMovies();
+        //LoadUsers();
         LoadLists();
-        
     },[]);
 
     function LoadMovies()

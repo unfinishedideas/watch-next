@@ -4,10 +4,10 @@ import Movie from './Movie.ts'
 export default class List
 {
     title: NonNullable<string>;
-    createdBy: NonNullable<User>;
-    movies: Movie[];
+    userIds: string[];
+    movieIds: string[];
 
-    constructor(title :string = "", createdBy :User[] = [], movies :Movie[] = [])
+    constructor(title :string = "", userIds :string[] = [], movieIds :string[] = [])
     {
         this.title = title;
         this.createdBy = createdBy;

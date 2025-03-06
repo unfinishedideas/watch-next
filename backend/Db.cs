@@ -20,8 +20,8 @@ public record MovieList
 {
     required public string ListId {get; set;}
     required public string Title {get; set;}
-    required public Movie[] Movies {get; set;}
-    required public User[] CreatedBy {get; set;}
+    required public string[] MovieIds {get; set;}
+    required public string[] UserIds {get; set;}
 }
 
 // Temporary in memory DB and test data to use to test connection to frontend app
@@ -44,8 +44,8 @@ public class WatchNextDB
     };
     private static List<MovieList> _movieLists = new List<MovieList>()
     {
-        new MovieList{ ListId="00001", Title="Super Movie List", Movies=[_movies[0],_movies[1]], CreatedBy=[_users[0]] },
-            new MovieList{ ListId="00002", Title="Lame Movie List", Movies=[_movies[2],_movies[3],_movies[4]], CreatedBy=[_users[1],_users[2]] },
+        new MovieList{ ListId="00001", Title="Super Movie List", MovieIds=[_movies[0].MovieId,_movies[1].MovieId], UserIds=[_users[0].UserId] },
+            new MovieList{ ListId="00002", Title="Lame Movie List", MovieIds=[_movies[2].MovieId,_movies[3].MovieId,_movies[4].MovieId], UserIds=[_users[1].UserId,_users[2].UserId] },
     };
 
     // Users -------------------------------------------------------------------
@@ -54,9 +54,9 @@ public class WatchNextDB
         return _users;
     }
 
-    public static User ? GetUser(int id)
+    public static User ? GetUser(string id)
     {
-        return _users.SingleOrDefault(user => user.UserId == id.ToString());
+        return _users.SingleOrDefault(user => user.UserId == id);
     }
 
     public static User ? CreateUser(User user)
@@ -90,9 +90,9 @@ public class WatchNextDB
         return _movies;
     }
 
-    public static Movie ? GetMovie(int id)
+    public static Movie ? GetMovie(string id)
     {
-        return _movies.SingleOrDefault(movie => movie.MovieId == id.ToString());
+        return _movies.SingleOrDefault(movie => movie.MovieId == id);
     }
 
     public static Movie ? CreateMovie(Movie movie)
@@ -128,9 +128,9 @@ public class WatchNextDB
         return _movieLists;
     }
 
-    public static MovieList ? GetMovieList(int id)
+    public static MovieList ? GetMovieList(string id)
     {
-        return _movieLists.SingleOrDefault(list => list.ListId == id.ToString());
+        return _movieLists.SingleOrDefault(list => list.ListId == id);
     }
 
     public static MovieList ? CreateMovieList(MovieList list)
@@ -146,8 +146,8 @@ public class WatchNextDB
             if (list.ListId == update.ListId)
             {
                 list.Title = update.Title;
-                list.Movies = update.Movies;
-                list.CreatedBy = update.CreatedBy;
+                list.MovieIds = update.MovieIds;
+                list.UserIds = update.UserIds;
             }
             return list;
         }).ToList();
