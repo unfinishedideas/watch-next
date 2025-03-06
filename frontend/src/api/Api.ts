@@ -1,58 +1,95 @@
-import Movie from './Movie.ts'
-import User from './User.ts'
-import List from './List.ts'
+import Movie from '../classes/Movie.ts'
+import User from '../classes/User.ts'
+import List from '../classes/List.ts'
 
 export default class API
 {
-    base_url = "http://localhost:5025/"
+    base_url = "http://localhost:5025"
 
     // movies
-    async function GetMovies() : Movie[]
+    async GetMovies(): Movie[]
     {
-        return await fetch(`${base_url}/movies`)
+        const res = await fetch(`${this.base_url}/movies`)
+        .then(data => data.json())
+
+        let result:Movie[] = [];
+        res.forEach((movie) => { 
+            result.push(new Movie(movie.title, movie.year, movie.director, movie.rating, movie.movieId));
+        });
+        return result;
     }
-    async function GetMovie(id:string)
+    async GetMovie(id:string)
     {
     }
-    async function CreateMovie(to_add:Movie)
+    async CreateMovie(to_add:Movie)
     {
     }
-    async function UpdateMovie(to_update:Movie)
+    async UpdateMovie(to_update:Movie)
     {
     }
-    async function DeleteMovie(id:string)
+    async DeleteMovie(id:string)
     {
     }
     // users
-    async function GetUsers() : User[]
+    async GetUsers() : User[]
+    {
+        const res = await fetch(`${this.base_url}/users`)
+        .then(data => data.json())
+
+        let result:User[] = [];
+        res.forEach((user) => { 
+            result.push(new User(user.username, user.userId, user.primaryEmail));
+        });
+        return result;
+    }
+    async GetUser(id:string)
     {
     }
-    async function GetUser(id:string)
+    async CreateUser(to_add:Movie)
     {
     }
-    async function CreateUser(to_add:Movie)
+    async UpdateUser(to_update:Movie)
     {
     }
-    async function UpdateUser(to_update:Movie)
-    {
-    }
-    async function DeleteUser(id:string)
+    async DeleteUser(id:string)
     {
     }
     // lists
-    async function GetLists() : List[]
+    async GetLists() : List[]
+    {
+        const res = await fetch(`${this.base_url}/lists`)
+        .then(data => data.json())
+
+        let result:List[] = [];
+        res.forEach((list) => { 
+            // populate the movies and users first
+            let listMovies:Movie[] = [];
+            list.movies.forEach((movie) =>
+            {
+                listMovies.push(new Movie(movie.title, movie.year, movie.director, movie.rating, movie.movieId));
+            });
+
+            let listUsers:User[] = [];
+            list.createdBy.forEach((user) =>
+            {
+                listUsers.push(new User(user.username, user.userId, user.primaryEmail));
+            });
+
+            result.push(new List(list.title, listUsers, listMovies));
+        });
+        console.log(result);
+        return result;
+    }
+    async GetList(id:string)
     {
     }
-    async function GetList(id:string)
+    async CreateList(to_add:Movie)
     {
     }
-    async function CreateList(to_add:Movie)
+    async UpdateList(to_update:Movie)
     {
     }
-    async function UpdateList(to_update:Movie)
-    {
-    }
-    async function DeleteList(id:string)
+    async DeleteList(id:string)
     {
     }
 }

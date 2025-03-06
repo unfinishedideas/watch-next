@@ -32,7 +32,7 @@ public class WatchNextDB
     {
         new User{ UserId="001", Username="SaraConnor01", PrimaryEmail="saraconnor@netscape.com" },
             new User{ UserId="002", Username="Paul42069", PrimaryEmail="bigsmoke@aol.com" },
-            new User{ UserId="003", Username="SaraConnor01", PrimaryEmail="laurenlikesmovies@gmail.com" },
+            new User{ UserId="003", Username="LaurenLikesMooovs", PrimaryEmail="laurenlikesmovies@gmail.com" },
     };
     private static List<Movie> _movies = new List<Movie>()
     {

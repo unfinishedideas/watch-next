@@ -9,9 +9,9 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({data, index} : MovieCardProps) =>
 {
-    function DeleteMovie()
+    function RemoveMovie()
     {
-        console.log("DELETE DAT MOVIE");
+        console.log("Remove DAT MOVIE");
     }
 
     return(
@@ -21,7 +21,7 @@ const MovieCard: React.FC<MovieCardProps> = ({data, index} : MovieCardProps) =>
             <p className="info-small">Director: {data.director}</p>
             <p className="info-small">Year: {data.year}</p>
             <p className="info-small">Rating: {data.rating}</p>
-            <button type="button" onClick={DeleteMovie}>Delete Movie</button>
+            <button type="button" onClick={RemoveMovie}>Remove Movie</button>
         </div>
     )
 }
