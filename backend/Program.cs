@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
+// Fix CORS for development builds on the same machine
 if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
 {
     builder.Services.AddCors(options =>
