@@ -22,7 +22,8 @@ public record MovieList
     required public string list_id {get; set;}
     required public string list_title {get; set;}
     required public string[] movie_ids {get; set;}
-    required public string[] user_ids {get; set;}
+    required public string[] owner_ids {get; set;}
+    required public string creator_id {get; set;}
 }
 
 // Temporary in memory DB and test data to use to test connection to frontend app
@@ -45,8 +46,8 @@ public class WatchNextDB
     };
     private static List<MovieList> _movieLists = new List<MovieList>()
     {
-        new MovieList{ list_id="00001", list_title="Super Movie List", movie_ids=[_movies[0].movie_id,_movies[1].movie_id], user_ids=[_users[0].user_id] },
-            new MovieList{ list_id="00002", list_title="Lame Movie List", movie_ids=[_movies[2].movie_id,_movies[3].movie_id,_movies[4].movie_id], user_ids=[_users[1].user_id,_users[2].user_id] },
+        new MovieList{ list_id="00001", list_title="Super Movie List", movie_ids=[_movies[0].movie_id,_movies[1].movie_id], owner_ids=[_users[0].user_id], creator_id=_users[0].user_id },
+            new MovieList{ list_id="00002", list_title="Lame Movie List", movie_ids=[_movies[2].movie_id,_movies[3].movie_id,_movies[4].movie_id], owner_ids=[_users[1].user_id,_users[2].user_id], creator_id=_users[1].user_id },
     };
 
     // Users -------------------------------------------------------------------
@@ -80,6 +81,7 @@ public class WatchNextDB
         return update;
     }
 
+    // TODO: Handle users being deleted in terms of what happens to their lists!
     public static void DeleteUser(int id)
     {
         _users = _users.FindAll(user => user.user_id != id.ToString()).ToList();
@@ -148,7 +150,8 @@ public class WatchNextDB
             {
                 list.list_title = update.list_title;
                 list.movie_ids = update.movie_ids;
-                list.user_ids = update.user_ids;
+                list.owner_ids = update.owner_ids;
+                list.creator_id = update.creator_id;
             }
             return list;
         }).ToList();

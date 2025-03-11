@@ -18,8 +18,8 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
     function GetUsernames()
     {
         let result:string = "";
-        listData.UserIds.forEach((userId) => result = result.concat(
-            API.GetUser(userId).username
+        listData.user_ids.forEach((user_id: string) => result = result.concat(
+            API.GetUser(user_id).username
         )); 
         return result.substring(0, result.length - 2);
     }
@@ -27,9 +27,9 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
     function GetMovies()
     {
         let movies = [];
-        listData.MovieIds.forEach((movieId) => {
-            const movie = API.GetMovie(movieId);
-            movies.push(new Movie(movie.Title, movie.year, movie.director, movie.rating, movie.movieId));
+        listData.movie_ids.forEach((movie_id: string) => {
+            const movie = API.GetMovie(movie_id);
+            movies.push(new Movie(movie.Title, movie.year, movie.director, movie.rating, movie.movie_id, movie.imdb_tag));
         });
         setMovies(movies);
     }
