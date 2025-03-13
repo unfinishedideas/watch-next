@@ -5,6 +5,7 @@ public record User
     required public Guid user_id {get; set;}
     required public string user_name {get; set;}
     required public string primary_email {get; set;}
+    required public bool deleted {get; set;}
 }
 
 public record Movie
@@ -29,12 +30,12 @@ public record MovieList
 // Temporary in memory DB and test data to use to test connection to frontend app
 public class WatchNextDB
 {
-
+    // Test data ---------------------------------------------------------------
     private static List<User> _users = new List<User>()
     {
-        new User{ user_id=Guid.NewGuid(), user_name="SaraConnor01", primary_email="saraconnor@netscape.com" },
-            new User{ user_id=Guid.NewGuid(), user_name="Paul42069", primary_email="bigsmoke@aol.com" },
-            new User{ user_id=Guid.NewGuid(), user_name="LaurenLikesMooovs", primary_email="laurenlikesmovies@gmail.com" },
+        new User{ user_id=Guid.NewGuid(), user_name="SaraConnor01", primary_email="saraconnor@netscape.com", deleted=false },
+            new User{ user_id=Guid.NewGuid(), user_name="Paul42069", primary_email="bigsmoke@aol.com", deleted=false },
+            new User{ user_id=Guid.NewGuid(), user_name="LaurenLikesMooovs", primary_email="laurenlikesmovies@gmail.com", deleted=false },
     };
     private static List<Movie> _movies = new List<Movie>()
     {
@@ -53,12 +54,12 @@ public class WatchNextDB
     // Users -------------------------------------------------------------------
     public static List<User> GetUsers()
     {
-        return _users;
+        return _users.FindAll(user => user.deleted == false);
     }
 
     public static User ? GetUser(Guid id)
     {
-        return _users.SingleOrDefault(user => user.user_id == id);
+        return _users.SingleOrDefault(user => user.user_id == id && user.deleted == false);
     }
 
     public static User ? CreateUser(User user)
@@ -67,24 +68,27 @@ public class WatchNextDB
         return user;
     }
 
-    public static User UpdateUser(User update)
+    public static User UpdateUser(User Rupdate)
     {
         _users = _users.Select(user =>
         {
-            if (user.user_id == update.user_id)
+            if (user.user_id == Rupdate.user_id)
             {
-                user.user_name = update.user_name;
-                user.primary_email = update.primary_email;
+                user = Rupdate with { }; // weird way I have to call the copy constructor ¯\_(ツ)_/¯
             }
             return user;
         }).ToList();
-        return update;
+        return Rupdate;
     }
 
-    // TODO: Handle users being deleted in terms of what happens to their lists!
     public static void DeleteUser(Guid id)
     {
-        _users = _users.FindAll(user => user.user_id != id).ToList();
+        User? toUpdate = _users.Find(user => user.user_id == id);
+        if (toUpdate != null)
+        {
+            toUpdate.deleted = true;
+            UpdateUser(toUpdate);
+        }
     }
 
     // Movies ------------------------------------------------------------------
@@ -110,10 +114,7 @@ public class WatchNextDB
         {
             if (movie.movie_id == update.movie_id)
             {
-               movie.movie_title = update.movie_title;
-               movie.year = update.year;
-               movie.director = update.director;
-               movie.rating = update.rating;
+                movie = update with { }; // weird way I have to call the copy constructor ¯\_(ツ)_/¯
             }
             return movie;
         }).ToList();
@@ -148,10 +149,7 @@ public class WatchNextDB
         {
             if (list.list_id == update.list_id)
             {
-                list.list_title = update.list_title;
-                list.movie_ids = update.movie_ids;
-                list.owner_ids = update.owner_ids;
-                list.creator_id = update.creator_id;
+                list = update with { }; // weird way I have to call the copy constructor ¯\_(ツ)_/¯
             }
             return list;
         }).ToList();
