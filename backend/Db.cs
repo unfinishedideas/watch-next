@@ -2,14 +2,14 @@ namespace WatchNext.DB;
 
 public record User
 {
-    required public string user_id {get; set;}
+    required public Guid user_id {get; set;}
     required public string user_name {get; set;}
     required public string primary_email {get; set;}
 }
 
 public record Movie
 {
-    required public string movie_id {get; set;}
+    required public Guid movie_id {get; set;}
     required public string movie_title {get; set;}
     required public string imdb_tag {get; set;}
     required public int year {get; set;}
@@ -19,11 +19,11 @@ public record Movie
 
 public record MovieList
 {
-    required public string list_id {get; set;}
+    required public Guid list_id {get; set;}
     required public string list_title {get; set;}
-    required public string[] movie_ids {get; set;}
-    required public string[] owner_ids {get; set;}
-    required public string creator_id {get; set;}
+    required public Guid[] movie_ids {get; set;}
+    required public Guid[] owner_ids {get; set;}
+    required public Guid creator_id {get; set;}
 }
 
 // Temporary in memory DB and test data to use to test connection to frontend app
@@ -32,22 +32,22 @@ public class WatchNextDB
 
     private static List<User> _users = new List<User>()
     {
-        new User{ user_id="001", user_name="SaraConnor01", primary_email="saraconnor@netscape.com" },
-            new User{ user_id="002", user_name="Paul42069", primary_email="bigsmoke@aol.com" },
-            new User{ user_id="003", user_name="LaurenLikesMooovs", primary_email="laurenlikesmovies@gmail.com" },
+        new User{ user_id=Guid.NewGuid(), user_name="SaraConnor01", primary_email="saraconnor@netscape.com" },
+            new User{ user_id=Guid.NewGuid(), user_name="Paul42069", primary_email="bigsmoke@aol.com" },
+            new User{ user_id=Guid.NewGuid(), user_name="LaurenLikesMooovs", primary_email="laurenlikesmovies@gmail.com" },
     };
     private static List<Movie> _movies = new List<Movie>()
     {
-        new Movie{ movie_id="0001", movie_title="Test Movie 1", year=2002, director="Jim directorMan", rating=3.5f, imdb_tag="aaaa"},
-            new Movie{ movie_id="0002", movie_title="Test Movie 2", year=2003, director="Jim directorMan's Son", rating=1.75f, imdb_tag="bbbb"},
-            new Movie{ movie_id="0003", movie_title="Lame Movie 1", year=1995, director="Penny Marshall", rating=1.5f, imdb_tag="cccc"},
-            new Movie{ movie_id="0004", movie_title="Lame Movie 2", year=2001, director="George Lucas", rating=0.25f, imdb_tag="dddd"},
-            new Movie{ movie_id="0005", movie_title="The Spiral Notebook", year=2015, director="David Lynch", rating=5.0f, imdb_tag="eeee"},
+        new Movie{ movie_id=Guid.NewGuid(), movie_title="Test Movie 1", year=2002, director="Jim directorMan", rating=3.5f, imdb_tag="aaaa"},
+            new Movie{ movie_id=Guid.NewGuid(), movie_title="Test Movie 2", year=2003, director="Jim directorMan's Son", rating=1.75f, imdb_tag="bbbb"},
+            new Movie{ movie_id=Guid.NewGuid(), movie_title="Lame Movie 1", year=1995, director="Penny Marshall", rating=1.5f, imdb_tag="cccc"},
+            new Movie{ movie_id=Guid.NewGuid(), movie_title="Lame Movie 2", year=2001, director="George Lucas", rating=0.25f, imdb_tag="dddd"},
+            new Movie{ movie_id=Guid.NewGuid(), movie_title="The Spiral Notebook", year=2015, director="David Lynch", rating=5.0f, imdb_tag="eeee"},
     };
     private static List<MovieList> _movieLists = new List<MovieList>()
     {
-        new MovieList{ list_id="00001", list_title="Super Movie List", movie_ids=[_movies[0].movie_id,_movies[1].movie_id], owner_ids=[_users[0].user_id], creator_id=_users[0].user_id },
-            new MovieList{ list_id="00002", list_title="Lame Movie List", movie_ids=[_movies[2].movie_id,_movies[3].movie_id,_movies[4].movie_id], owner_ids=[_users[1].user_id,_users[2].user_id], creator_id=_users[1].user_id },
+        new MovieList{ list_id=Guid.NewGuid(), list_title="Super Movie List", movie_ids=[_movies[0].movie_id,_movies[1].movie_id], owner_ids=[_users[0].user_id], creator_id=_users[0].user_id },
+            new MovieList{ list_id=Guid.NewGuid(), list_title="Lame Movie List", movie_ids=[_movies[2].movie_id,_movies[3].movie_id,_movies[4].movie_id], owner_ids=[_users[1].user_id,_users[2].user_id], creator_id=_users[1].user_id },
     };
 
     // Users -------------------------------------------------------------------
@@ -56,7 +56,7 @@ public class WatchNextDB
         return _users;
     }
 
-    public static User ? GetUser(string id)
+    public static User ? GetUser(Guid id)
     {
         return _users.SingleOrDefault(user => user.user_id == id);
     }
@@ -82,9 +82,9 @@ public class WatchNextDB
     }
 
     // TODO: Handle users being deleted in terms of what happens to their lists!
-    public static void DeleteUser(int id)
+    public static void DeleteUser(Guid id)
     {
-        _users = _users.FindAll(user => user.user_id != id.ToString()).ToList();
+        _users = _users.FindAll(user => user.user_id != id).ToList();
     }
 
     // Movies ------------------------------------------------------------------
@@ -93,7 +93,7 @@ public class WatchNextDB
         return _movies;
     }
 
-    public static Movie ? GetMovie(string id)
+    public static Movie ? GetMovie(Guid id)
     {
         return _movies.SingleOrDefault(movie => movie.movie_id == id);
     }
@@ -120,9 +120,9 @@ public class WatchNextDB
         return update;
     }
 
-    public static void DeleteMovie(int id)
+    public static void DeleteMovie(Guid id)
     {
-        _movies = _movies.FindAll(movie => movie.movie_id != id.ToString()).ToList();
+        _movies = _movies.FindAll(movie => movie.movie_id != id).ToList();
     }
 
     // Lists -------------------------------------------------------------------
@@ -131,7 +131,7 @@ public class WatchNextDB
         return _movieLists;
     }
 
-    public static MovieList ? GetMovieList(string id)
+    public static MovieList ? GetMovieList(Guid id)
     {
         return _movieLists.SingleOrDefault(list => list.list_id == id);
     }
@@ -158,8 +158,8 @@ public class WatchNextDB
         return update;
     }
 
-    public static void DeleteMovieList(int id)
+    public static void DeleteMovieList(Guid id)
     {
-        _movieLists = _movieLists.FindAll(list => list.list_id != id.ToString()).ToList();
+        _movieLists = _movieLists.FindAll(list => list.list_id != id).ToList();
     }
 }
