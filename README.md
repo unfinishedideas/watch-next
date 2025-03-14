@@ -8,16 +8,23 @@ Watch Next! is a collaborative Watch List application where users can sign up, s
 
 They can leave reviews, comments and share lists publicly or privately.
 
-## To Run
+## Setup and Running (FrontEnd)
 
-- clone the repo: `git clone git@github.com:unfinishedideas/watch-next.git`
-- navigate to the directory with a shell and run `npm i` to install packages
-- run with `npm run dev`
+- clone the repo if not already cloned: `git clone git@github.com:unfinishedideas/watch-next.git`
+- navigate to the frontend directory `./frontend` with a shell and run `npm i` to install packages
+- start with `npm run dev`
+
+## Setup and Running (Backend)
+
+- clone the repo if not already cloned: `git clone git@github.com:unfinishedideas/watch-next.git`
+- navigate to the backend directory `./backend` with a shell 
+- build and run the backend with `dotnet run`
 
 ## Technology
 
 - React + Vite
 - Typescript + SWC
+- ASP.NET Core / C# (for minimal api)
 
 ## Created by Peter Wells
 
