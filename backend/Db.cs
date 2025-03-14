@@ -68,17 +68,17 @@ public class WatchNextDB
         return user;
     }
 
-    public static User UpdateUser(User Rupdate)
+    public static User UpdateUser(User update)
     {
         _users = _users.Select(user =>
         {
-            if (user.user_id == Rupdate.user_id)
+            if (user.user_id == update.user_id)
             {
-                user = Rupdate with { }; // weird way I have to call the copy constructor ¯\_(ツ)_/¯
+                user = update with { }; // weird way I have to call the copy constructor ¯\_(ツ)_/¯
             }
             return user;
         }).ToList();
-        return Rupdate;
+        return update;
     }
 
     public static void DeleteUser(Guid id)

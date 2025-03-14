@@ -49,6 +49,7 @@ function App()
             console.error(err);
         }
     }
+
     async function get_user(formData: formData)
     {
         try {
@@ -125,14 +126,71 @@ function App()
         }
     }
     // DELETE ------------------------------------------------------------------
-    // CREATE ------------------------------------------------------------------
-/*
+    async function delete_user(formData: formData)
+    {
         try {
+            const query = formData.get("user_id");
+            await DeleteUser(query);
         }
         catch(err: Error) {
             console.error(err);
         }
-*/
+    }
+    async function delete_movie(formData: formData)
+    {
+        try {
+            const query = formData.get("movie_id");
+            await DeleteMovie(query);
+        }
+        catch(err: Error) {
+            console.error(err);
+        }
+    }
+    async function delete_list(formData: formData)
+    {
+        try {
+            const query = formData.get("list_id");
+            await DeleteList(query);
+        }
+        catch(err: Error) {
+            console.error(err);
+        }
+    }
+    // CREATE ------------------------------------------------------------------
+    async function create_user(formData: formData)
+    {
+        try {
+            const username = formData.get("username");
+            const newUser = new User("6969420420abcabc", username, "Cheap@Fuckit.com");
+            const data = await CreateUser(newUser);
+            console.log(data);
+        }
+        catch(err: Error) {
+            console.error(err);
+        }
+    }
+    async function update_movie(formData: formData)
+    {
+        try {
+            const query = formData.get("movie_id");
+            const data = await GetMovie(query);
+            console.log(data);
+        }
+        catch(err: Error) {
+            console.error(err);
+        }
+    }
+    async function update_list(formData: formData)
+    {
+        try {
+            const query = formData.get("list_id");
+            const data = await GetList(query);
+            console.log(data);
+        }
+        catch(err: Error) {
+            console.error(err);
+        }
+    }
     
     return(
         <div className="app-container">
@@ -143,6 +201,7 @@ function App()
             <button type="button" onClick={get_movies}>Get Movies</button>
             <button type="button" onClick={get_users}>Get Users</button>
             <button type="button" onClick={get_lists}>Get Lists</button>
+            <br/>
             <br/>
             <form action={get_user}>
                 <input name="user_id"/>
@@ -157,7 +216,7 @@ function App()
                 <button type="submit">GetList</button>
             </form>
 
-    
+            <br/>
             <form action={update_user}>
                 <input name="user_id"/>
                 <button type="submit">UpdateUser</button>
@@ -170,6 +229,24 @@ function App()
                 <input name="list_id"/>
                 <button type="submit">UpdateList</button>
             </form>
+
+            <br/>
+            <form action={delete_user}>
+                <input name="user_id"/>
+                <button type="submit">DeleteUser</button>
+            </form>
+            <form action={delete_movie}>
+                <input name="movie_id"/>
+                <button type="submit">DeleteMovie</button>
+            </form>
+            <form action={delete_list}>
+                <input name="list_id"/>
+                <button type="submit">DeleteList</button>
+            </form>
+
+
+            <br/>
+
         </div>
     )
 }
