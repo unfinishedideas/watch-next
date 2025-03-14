@@ -8,7 +8,7 @@ Watch Next! is a collaborative Watch List application where users can sign up, s
 
 They can leave reviews, comments and share lists publicly or privately.
 
-## Setup and Running (FrontEnd)
+## Setup and Running (Frontend)
 
 - clone the repo if not already cloned: `git clone git@github.com:unfinishedideas/watch-next.git`
 - navigate to the frontend directory `./frontend` with a shell and run `npm i` to install packages
