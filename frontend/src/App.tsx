@@ -169,23 +169,21 @@ function App()
             console.error(err);
         }
     }
-    async function update_movie(formData: formData)
+    function create_movie(formData: formData)
     {
         try {
-            const query = formData.get("movie_id");
-            const data = await GetMovie(query);
-            console.log(data);
+            const title = formData.get("movie_title");
+            //console.log(data);
         }
         catch(err: Error) {
             console.error(err);
         }
     }
-    async function update_list(formData: formData)
+    function create_list(formData: formData)
     {
         try {
-            const query = formData.get("list_id");
-            const data = await GetList(query);
-            console.log(data);
+            const title = formData.get("list_title");
+            //console.log(data);
         }
         catch(err: Error) {
             console.error(err);
@@ -198,54 +196,67 @@ function App()
             {isLoggedIn ? 
                 <div/> : <LoginScreen setIsLoggedIn={setIsLoggedIn}/>
             }
-            <button type="button" onClick={get_movies}>Get Movies</button>
+
+            <br/><br/>
             <button type="button" onClick={get_users}>Get Users</button>
+            <br/>
+            <button type="button" onClick={get_movies}>Get Movies</button>
+            <br/>
             <button type="button" onClick={get_lists}>Get Lists</button>
-            <br/>
-            <br/>
+            <br/><br/>
+
             <form action={get_user}>
                 <input name="user_id"/>
                 <button type="submit">GetUser</button>
             </form>
-            <form action={get_movie}>
-                <input name="movie_id"/>
-                <button type="submit">GetMovie</button>
-            </form>
-            <form action={get_list}>
-                <input name="list_id"/>
-                <button type="submit">GetList</button>
-            </form>
-
-            <br/>
             <form action={update_user}>
                 <input name="user_id"/>
                 <button type="submit">UpdateUser</button>
+            </form>
+            <form action={delete_user}>
+                <input name="user_id"/>
+                <button type="submit">DeleteUser</button>
+            </form>
+            <form action={create_user}>
+                <input name="username"/>
+                <button type="submit">CreateUser</button>
+            </form>
+            <br/>
+
+            <form action={get_movie}>
+                <input name="movie_id"/>
+                <button type="submit">GetMovie</button>
             </form>
             <form action={update_movie}>
                 <input name="movie_id"/>
                 <button type="submit">UpdateMovie</button>
             </form>
-            <form action={update_list}>
-                <input name="list_id"/>
-                <button type="submit">UpdateList</button>
-            </form>
-
-            <br/>
-            <form action={delete_user}>
-                <input name="user_id"/>
-                <button type="submit">DeleteUser</button>
-            </form>
             <form action={delete_movie}>
                 <input name="movie_id"/>
                 <button type="submit">DeleteMovie</button>
+            </form>
+            <form action={create_movie}>
+                <input name="movie_title"/>
+                <button type="submit">CreateMovie</button>
+            </form>
+            <br/>
+
+            <form action={get_list}>
+                <input name="list_id"/>
+                <button type="submit">GetList</button>
+            </form>
+            <form action={create_list}>
+                <input name="list_title"/>
+                <button type="submit">CreateList</button>
+            </form>
+            <form action={update_list}>
+                <input name="list_id"/>
+                <button type="submit">UpdateList</button>
             </form>
             <form action={delete_list}>
                 <input name="list_id"/>
                 <button type="submit">DeleteList</button>
             </form>
-
-
-            <br/>
 
         </div>
     )

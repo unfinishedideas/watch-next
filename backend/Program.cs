@@ -44,9 +44,6 @@ app.MapPost("/lists", (MovieList list) => WatchNextDB.CreateMovieList(list));
 app.MapPut("/lists", (MovieList update) => WatchNextDB.UpdateMovieList(update)); 
 app.MapDelete("/lists/{id}",  (Guid id) => WatchNextDB.DeleteMovieList(id)); 
 
-app.UseHttpsRedirection();
-
-
 if (app.Environment.IsDevelopment())
 {
     app.UseCors(DevCorsPolicy);
