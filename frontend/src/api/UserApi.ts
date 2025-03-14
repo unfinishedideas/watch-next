@@ -27,7 +27,7 @@ export async function GetUser<T>(id: string): Promise<T> {
 }
 
 export async function UpdateUser<T>(update: User): Promise<T> {
-    const res = await fetch(`${base_url}/users/${update.user_id}`, {
+    const res = await fetch(`${base_url}/users/`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(update),

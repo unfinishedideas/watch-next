@@ -23,12 +23,18 @@ if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors(DevCorsPolicy);
+    app.MapOpenApi();   // navigate to http://localhost:{port}/openapi/v1.json to see the docs
+}
+
 // USERS
 app.MapGet("/users", () => WatchNextDB.GetUsers());
 app.MapGet("/users/{id}", (Guid id) => WatchNextDB.GetUser(id));
 app.MapPost("/users", (User user) => WatchNextDB.CreateUser(user)); 
 app.MapPut("/users", (User update) => WatchNextDB.UpdateUser(update)); 
-app.MapDelete("/users/{id}",  (Guid id) => WatchNextDB.DeleteUser(id)); 
+app.MapDelete("/users/{id}", (Guid id) => WatchNextDB.DeleteUser(id)); 
 
 // MOVIES
 app.MapGet("/movies", () => WatchNextDB.GetMovies());
@@ -42,12 +48,6 @@ app.MapGet("/lists", () => WatchNextDB.GetMovieLists());
 app.MapGet("/lists/{id}", (Guid id) => WatchNextDB.GetMovieList(id));
 app.MapPost("/lists", (MovieList list) => WatchNextDB.CreateMovieList(list)); 
 app.MapPut("/lists", (MovieList update) => WatchNextDB.UpdateMovieList(update)); 
-app.MapDelete("/lists/{id}",  (Guid id) => WatchNextDB.DeleteMovieList(id)); 
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseCors(DevCorsPolicy);
-    app.MapOpenApi();
-}
+app.MapDelete("/lists/{id}", (Guid id) => WatchNextDB.DeleteMovieList(id)); 
 
 app.Run();

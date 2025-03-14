@@ -111,7 +111,17 @@ function App()
     {
         try {
             const query = formData.get("movie_id");
-            const data = await GetMovie(query);
+            let res  = await GetMovie(query);
+            res.movie_title = "DUMB STUPID MOVIE!";
+            const to_update: User = new Movie(
+                res.movie_id,
+                res.movie_title,
+                res.year,
+                res.director,
+                res.rating,
+                res.imdb_id,
+            );
+            await UpdateMovie(to_update);    
         }
         catch(err: Error) {
             console.error(err);
@@ -121,7 +131,17 @@ function App()
     {
         try {
             const query = formData.get("list_id");
-            const data = await GetList(query);
+            let res  = await GetList(query);
+            res.list_title = "ALL YOUR LIST BELONG TO US!";
+            const to_update: User = new List(
+                res.list_id,
+                res.list_title,
+                res.owner_ids,
+                res.movie_ids,
+                res.creator_id,
+            );
+
+            await UpdateList(to_update);    
         }
         catch(err: Error) {
             console.error(err);

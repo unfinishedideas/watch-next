@@ -27,7 +27,7 @@ export async function GetMovie<T>(id: string): Promise<T> {
 }
 
 export async function UpdateMovie<T>(update: Movie): Promise<T> {
-    const res = await fetch(`${base_url}/movies/${update.movie_id}`, {
+    const res = await fetch(`${base_url}/movies/`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(update),

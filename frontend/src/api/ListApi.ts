@@ -27,7 +27,7 @@ export async function GetList<T>(id: string): Promise<T> {
 }
 
 export async function UpdateList<T>(update: List): Promise<T> {
-    const res = await fetch(`${base_url}/lists/${update.list_id}`, {
+    const res = await fetch(`${base_url}/lists/`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(update),
