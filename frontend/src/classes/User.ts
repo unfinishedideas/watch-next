@@ -1,7 +1,7 @@
 export default class User
 {
-    user_name: string;
     user_id: string;
+    user_name: string;
     primary_email: string;
     deleted: bool;
 

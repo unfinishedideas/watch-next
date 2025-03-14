@@ -46,7 +46,7 @@ export async function DeleteMovie<T>(id: string): Promise<T> {
     if (!res.ok) {
         HandleError(res.statusText);
     }
-    return await res.json() as T;
+    return res as T;
 }
 
 export async function CreateMovie<T>(newMovie: Movie): Promise<T> {

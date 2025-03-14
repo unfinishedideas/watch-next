@@ -17,7 +17,6 @@ import List from './classes/List.ts'
 
 import { v4 as uuidv4 } from 'uuid';
 
-
 function App()
 {
     const [isLoggedIn, setIsLoggedIn] = useState(false);

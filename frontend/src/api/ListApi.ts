@@ -46,7 +46,7 @@ export async function DeleteList<T>(id: string): Promise<T> {
     if (!res.ok) {
         HandleError(res.statusText);
     }
-    return await res.json() as T;
+    return res as T;
 }
 
 export async function CreateList<T>(newList: List): Promise<T> {
