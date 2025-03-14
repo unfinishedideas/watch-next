@@ -1,16 +1,18 @@
-import User from './User.ts'
-import Movie from './Movie.ts'
-
 export default class List
 {
-    title: NonNullable<string>;
-    createdBy: NonNullable<User>;
-    movies: Movie[];
+    list_id: string;
+    list_title: NonNullable<string>;
+    owner_ids: string[];
+    movie_ids: string[];
+    creator_id: NonNullable<string>;
 
-    constructor(title :string = "", createdBy :User[] = [], movies :Movie[] = [])
+    constructor(list_id: string, list_title :string = "", owner_ids :string[] = [],
+                movie_ids :string[] = [], creator_id :string)
     {
-        this.title = title;
-        this.createdBy = createdBy;
-        this.movies = movies;
+        this.list_id = list_id;
+        this.list_title = list_title;
+        this.owner_ids = owner_ids;
+        this.movie_ids = movie_ids;
+        this.creator_id = creator_id;
     }
 }
