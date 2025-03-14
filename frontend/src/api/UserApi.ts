@@ -50,6 +50,9 @@ export async function DeleteUser<T>(id: string): Promise<T> {
 }
 
 export async function CreateUser<T>(newUser: User): Promise<T> {
+    console.log("COME ON NOWWW");
+    console.log(newUser);
+    console.log(JSON.stringify(newUser));
     const res = await fetch(`${base_url}/users/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

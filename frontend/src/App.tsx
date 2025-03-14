@@ -15,6 +15,9 @@ import User from './classes/User.ts'
 import Movie from './classes/Movie.ts'
 import List from './classes/List.ts'
 
+import { v4 as uuidv4 } from 'uuid';
+
+
 function App()
 {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -161,7 +164,9 @@ function App()
     {
         try {
             const username = formData.get("username");
-            const newUser = new User("6969420420abcabc", username, "Cheap@Fuckit.com");
+            const id = uuidv4();
+            console.log(id)
+            const newUser = new User(id, username, "Cheap@Fuckit.com");
             const data = await CreateUser(newUser);
             console.log(data);
         }
