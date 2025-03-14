@@ -1,13 +1,18 @@
 export default class List
 {
+    list_id: string;
     list_title: NonNullable<string>;
-    user_ids: string[];
+    owner_ids: string[];
     movie_ids: string[];
+    creator_id: NonNullable<string>;
 
-    constructor(list_title :string = "", user_ids :string[] = [], movie_ids :string[] = [])
+    constructor(list_id: string, list_title :string = "", owner_ids :string[] = [],
+                movie_ids :string[] = [], creator_id :string)
     {
+        this.list_id = list_id;
         this.list_title = list_title;
-        this.user_ids = user_ids;
+        this.owner_ids = owner_ids;
         this.movie_ids = movie_ids;
+        this.creator_id = creator_id;
     }
 }

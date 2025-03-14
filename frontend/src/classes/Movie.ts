@@ -2,12 +2,12 @@ export default class Movie
 {
     movie_id: string;
     movie_title: string;
+    imdb_id: string;
     year: number;
     director: string;
     rating: number;
-    imdb_id: string;
 
-    constructor(movie_title:string = "", year:number = 0, director:string = "", rating:number = 0.0, movie_id:string = "", imdb_id:string = "")
+    constructor(movie_id: string="", movie_title:string = "", year:number = 0, director:string = "", rating:number = 0.0, imdb_id:string = "")
     {
         this.movie_title = movie_title;
         this.year = year;

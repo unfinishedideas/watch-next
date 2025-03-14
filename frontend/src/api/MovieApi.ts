@@ -6,74 +6,58 @@ function HandleError(err: unknown)
     if (err instanceof Error) {
         console.log(`GetMovie: Error`, err.message);
     } else {
-        console.error(`An unknown error occurred`, error);
+        console.error(`An unknown error occurred`, err);
     }
 }
 
 export async function GetMovies<T>(): Promise<T> {
     const res = await fetch(`${base_url}/movies/`);
-    if (!res.ok)
-    {
+    if (!res.ok) {
         HandleError(res.statusText);
     }
     return await res.json() as T;
 }
 
-export const GetMovie = (id: string) => {
-    fetch(`${base_url}/movies/${id}`)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP Error! status:`, response.status);
-        } else {
-            return response.json();
-        }
-    })
-    .catch((err: unknown) => {HandleError(err)});
-
-};
-
-export const CreateMovie = (to_add: Movie) => {
-    fetch(`${base_url}/movies/${to_add.movie_id}`, {
-            method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(update)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP Error! status:`, response.status);
-        }
-        else {
-            return response.json();
-        }
-    })
-    .catch((err: unknown) => {HandleError(err)});
+export async function GetMovie<T>(id: string): Promise<T> {
+    const res = await fetch(`${base_url}/movies/${id}`);
+    if (!res.ok) {
+        HandleError(res.statusText);
+    }
+    return await res.json() as T;
 }
 
-export const UpdateMovie = (update: Movie) => {
-    fetch(`${base_url}/movies/${update.movie_id}`, {
-            method: "PUT", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(update)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP Error! status:`, response.status);
-        }
-        else {
-            return response.json();
-        }
-    })
-    .catch((err: unknown) => {HandleError(err)});
+export async function UpdateMovie<T>(update: Movie): Promise<T> {
+    const res = await fetch(`${base_url}/movies/${update.movie_id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(update),
+    });
+    if (!res.ok) {
+        HandleError(res.statusText);
+    }
+    return await res.json() as T;
 }
 
-export const DeleteMovie = (to_delete: Movie) => {
-
-    fetch(`${base_url}/movies/${to_delete.movie_id}`, {
-            method: "DElETE", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(update)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP Error! status:`, response.status);
-        }
-        else {
-            return response.json();
-        }
-    })
-    .catch((err: unknown) => {HandleError(err)});
+export async function DeleteMovie<T>(id: string): Promise<T> {
+    const res = await fetch(`${base_url}/movies/${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+    });
+    if (!res.ok) {
+        HandleError(res.statusText);
+    }
+    return await res.json() as T;
 }
+
+export async function CreateMovie<T>(newMovie: Movie): Promise<T> {
+    const res = await fetch(`${base_url}/movies/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMovie),
+    });
+    if (!res.ok) {
+        HandleError(res.statusText);
+    }
+    return await res.json() as T;
+}
+

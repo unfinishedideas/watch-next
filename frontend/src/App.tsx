@@ -21,7 +21,8 @@ import { v4 as uuidv4 } from 'uuid';
 function App()
 {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    
+   
+    // GET ---------------------------------------------------------------------
     async function get_movies()
     {
         try {
@@ -53,6 +54,7 @@ function App()
         }
     }
 
+    // GET {ID} ----------------------------------------------------------------
     async function get_user(formData: formData)
     {
         try {
@@ -98,9 +100,9 @@ function App()
                 res.user_id,
                 res.user_name,
                 res.primary_email, 
+                res.deleted,
             );
-            const data = await UpdateUser(to_update);    
-            console.log(data);
+            await UpdateUser(to_update);    
         }
         catch(err: Error) {
             console.error(err);
@@ -111,7 +113,6 @@ function App()
         try {
             const query = formData.get("movie_id");
             const data = await GetMovie(query);
-            console.log(data);
         }
         catch(err: Error) {
             console.error(err);
@@ -122,7 +123,6 @@ function App()
         try {
             const query = formData.get("list_id");
             const data = await GetList(query);
-            console.log(data);
         }
         catch(err: Error) {
             console.error(err);
@@ -165,30 +165,34 @@ function App()
         try {
             const username = formData.get("username");
             const id = uuidv4();
-            console.log(id)
             const newUser = new User(id, username, "Cheap@Fuckit.com");
             const data = await CreateUser(newUser);
-            console.log(data);
         }
         catch(err: Error) {
             console.error(err);
         }
     }
-    function create_movie(formData: formData)
+    async function create_movie(formData: formData)
     {
         try {
             const title = formData.get("movie_title");
-            //console.log(data);
+            const id = uuidv4();
+            const imdb_tag = uuidv4();
+            const newMovie = new Movie(id, title, 1979, "Just Some Gal", 4.0, imdb_tag);
+            const data = await CreateMovie(newMovie);
         }
         catch(err: Error) {
             console.error(err);
         }
     }
-    function create_list(formData: formData)
+    async function create_list(formData: formData)
     {
         try {
             const title = formData.get("list_title");
-            //console.log(data);
+            const id = uuidv4();
+            const creator_id = uuidv4();
+            const newList = new List(id, title, [uuidv4(), uuidv4(), uuidv4()], [uuidv4(), uuidv4(), uuidv4(), uuidv4()], uuidv4());
+            const data = await CreateList(newList);
         }
         catch(err: Error) {
             console.error(err);
@@ -250,10 +254,6 @@ function App()
                 <input name="list_id"/>
                 <button type="submit">GetList</button>
             </form>
-            <form action={create_list}>
-                <input name="list_title"/>
-                <button type="submit">CreateList</button>
-            </form>
             <form action={update_list}>
                 <input name="list_id"/>
                 <button type="submit">UpdateList</button>
@@ -261,6 +261,10 @@ function App()
             <form action={delete_list}>
                 <input name="list_id"/>
                 <button type="submit">DeleteList</button>
+            </form>
+            <form action={create_list}>
+                <input name="list_title"/>
+                <button type="submit">CreateList</button>
             </form>
 
         </div>

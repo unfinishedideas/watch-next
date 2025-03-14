@@ -12,7 +12,7 @@ public record Movie
 {
     required public Guid movie_id {get; set;}
     required public string movie_title {get; set;}
-    required public string imdb_tag {get; set;}
+    required public string imdb_id {get; set;}
     required public int year {get; set;}
     required public string director {get; set;}
     required public float rating {get; set;}
@@ -39,11 +39,11 @@ public class WatchNextDB
     };
     private static List<Movie> _movies = new List<Movie>()
     {
-        new Movie{ movie_id=Guid.NewGuid(), movie_title="Test Movie 1", year=2002, director="Jim directorMan", rating=3.5f, imdb_tag="aaaa"},
-            new Movie{ movie_id=Guid.NewGuid(), movie_title="Test Movie 2", year=2003, director="Jim directorMan's Son", rating=1.75f, imdb_tag="bbbb"},
-            new Movie{ movie_id=Guid.NewGuid(), movie_title="Lame Movie 1", year=1995, director="Penny Marshall", rating=1.5f, imdb_tag="cccc"},
-            new Movie{ movie_id=Guid.NewGuid(), movie_title="Lame Movie 2", year=2001, director="George Lucas", rating=0.25f, imdb_tag="dddd"},
-            new Movie{ movie_id=Guid.NewGuid(), movie_title="The Spiral Notebook", year=2015, director="David Lynch", rating=5.0f, imdb_tag="eeee"},
+        new Movie{ movie_id=Guid.NewGuid(), movie_title="Test Movie 1", year=2002, director="Jim directorMan", rating=3.5f, imdb_id="aaaa"},
+            new Movie{ movie_id=Guid.NewGuid(), movie_title="Test Movie 2", year=2003, director="Jim directorMan's Son", rating=1.75f, imdb_id="bbbb"},
+            new Movie{ movie_id=Guid.NewGuid(), movie_title="Lame Movie 1", year=1995, director="Penny Marshall", rating=1.5f, imdb_id="cccc"},
+            new Movie{ movie_id=Guid.NewGuid(), movie_title="Lame Movie 2", year=2001, director="George Lucas", rating=0.25f, imdb_id="dddd"},
+            new Movie{ movie_id=Guid.NewGuid(), movie_title="The Spiral Notebook", year=2015, director="David Lynch", rating=5.0f, imdb_id="eeee"},
     };
     private static List<MovieList> _movieLists = new List<MovieList>()
     {
