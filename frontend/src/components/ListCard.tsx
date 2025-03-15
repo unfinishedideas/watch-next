@@ -53,13 +53,13 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
 
     if (listMovies.isPending || listUserIds.isPending) return (
         <div>
-            <h2 className="list-card-title">{listData.title}</h2> 
+            <h2 className="list-card-title">{listData.list_title}</h2> 
             <h3>Loading List...</h3>
         </div>
     )
     if (listMovies.error || listMovies.error) return (
         <div>
-            <h2 className="list-card-title">{listData.title}</h2> 
+            <h2 className="list-card-title">{listData.list_title}</h2> 
             <h3> Failed to Load List!</h3>
         </div>
     )
@@ -70,7 +70,7 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
     {
         return(
             <div className="list-card-container">
-                <h2 className="list-card-title">{listData.title}</h2> 
+                <h2 className="list-card-title">{listData.list_title}</h2> 
                 <h3 className="list-card-users">By: {GetUsernames()}</h3>
                 <div className="movies-container">
                 { listMovies.data.map((movie, index) => (
