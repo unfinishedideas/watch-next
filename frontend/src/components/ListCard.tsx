@@ -2,9 +2,9 @@ import './ListCard.css'
 import MovieCard from './MovieCard.tsx'
 import List from '../classes/List.ts'
 import User from '../classes/User.ts'
-import API from '../api/Api.ts'
-import { useState } from 'react'
-
+import { GetMovie } from '../api/MovieApi.ts'
+import { GetUser } from '../api/UserApi.ts'
+import { useQueries } from '@tanstack/react-query'
 
 interface ListCardProps {
    listData: List, 
@@ -12,39 +12,69 @@ interface ListCardProps {
 
 const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
 {
-    const [movies, setMovies] = useState([]);
+    const listMovies = useQueries({
+        queries: listData.movie_ids.map((id: string) => ({
+            queryKey: ['listMovies', id],
+            queryFn: () => GetMovie(id),
+            staleTime: Infinity,
+        })),
+    })
+    const listUserIds = useQueries({
+        queries: listData.owner_ids.map((id: string) => ({
+            queryKey: ['listUser', id],
+            queryFn: () => GetUser(id), 
+            staleTime: Infinity,
+        })),
+        combine: (results) => {
+            return {
+                data: results.map((result) => result.data),
+                pending: results.some((result) => result.isPending),
+            }
+        }
+    })
 
-    // TODO: When user page is made, have this generate links to their pages instead
     function GetUsernames()
     {
-        let result:string = "";
-        listData.user_ids.forEach((user_id: string) => result = result.concat(
-            API.GetUser(user_id).username
-        )); 
-        return result.substring(0, result.length - 2);
+        if (!listUserIds.pending)
+        {
+            let names: string = "";
+            for (const user of listUserIds.data) {
+                names += user.user_name + ", ";
+            }
+            return names.substring(0, names.length - 2);
+        }
+        return "Loading usernames..."
     }
 
-    function GetMovies()
-    {
-        let movies = [];
-        listData.movie_ids.forEach((movie_id: string) => {
-            const movie = API.GetMovie(movie_id);
-            movies.push(new Movie(movie.Title, movie.year, movie.director, movie.rating, movie.movie_id, movie.imdb_tag));
-        });
-        setMovies(movies);
-    }
-
-    return(
-        <div className="list-card-container">
+    if (listMovies.isPending || listUserIds.isPending) return (
+        <div>
             <h2 className="list-card-title">{listData.title}</h2> 
-            <h3 className="list-card-users">By: {GetUsernames()}</h3>
-            <div className="movies-container">
-            { movies.map((id, index) => (
-                <MovieCard data={movie} index={index} key={index}/> 
-            ))}
-            </div>
+            <h3>Loading List...</h3>
         </div>
     )
+    if (listMovies.error || listMovies.error) return (
+        <div>
+            <h2 className="list-card-title">{listData.title}</h2> 
+            <h3> Failed to Load List!</h3>
+        </div>
+    )
+
+    const canLoad: boolean = !listMovies.isPending && !listUserIds.isPending && 
+                           !listMovies.error && !listMovies.error;
+    if (canLoad)
+    {
+        return(
+            <div className="list-card-container">
+                <h2 className="list-card-title">{listData.title}</h2> 
+                <h3 className="list-card-users">By: {GetUsernames()}</h3>
+                <div className="movies-container">
+                { listMovies.map((movie, index) => (
+                    <MovieCard data={movie} index={index} key={index}/> 
+                ))}
+                </div>
+            </div>
+        )
+    }
 }
 
 export default ListCard;

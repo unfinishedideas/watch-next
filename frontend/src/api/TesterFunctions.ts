@@ -213,7 +213,7 @@ async function create_list(formData: formData)
 }
 
 /*
-// Old JSX for testing these functions inside App.tsx
+// Old TSX for testing these functions inside App.tsx
 <br/><br/>
 <button type="button" onClick={get_users}>Get Users</button>
 <br/>
