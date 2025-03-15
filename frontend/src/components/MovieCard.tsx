@@ -16,7 +16,7 @@ const MovieCard: React.FC<MovieCardProps> = ({data, index} : MovieCardProps) =>
 
     return(
         <div className="movie-card-container">
-            <h3 className="movie-title-text">{index+1}: {data.title}</h3>
+            <h3 className="movie-title-text">{index+1}: {data.movie_title}</h3>
             <img src={Logo} className="movie-poster-preview"/>
             <p className="info-small">Director: {data.director}</p>
             <p className="info-small">Year: {data.year}</p>

@@ -1,7 +1,6 @@
 import './ListCard.css'
 import MovieCard from './MovieCard.tsx'
 import List from '../classes/List.ts'
-import User from '../classes/User.ts'
 import { GetMovie } from '../api/MovieApi.ts'
 import { GetUser } from '../api/UserApi.ts'
 import { useQueries } from '@tanstack/react-query'
@@ -18,6 +17,12 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
             queryFn: () => GetMovie(id),
             staleTime: Infinity,
         })),
+        combine: (results) => {
+            return {
+                data: results.map((result) => result.data),
+                pending: results.some((result) => result.isPending),
+            }
+        }
     })
     const listUserIds = useQueries({
         queries: listData.owner_ids.map((id: string) => ({
@@ -59,7 +64,7 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
         </div>
     )
 
-    const canLoad: boolean = !listMovies.isPending && !listUserIds.isPending && 
+    const canLoad: boolean = !listMovies.pending && !listUserIds.pending && 
                            !listMovies.error && !listMovies.error;
     if (canLoad)
     {
@@ -68,7 +73,7 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
                 <h2 className="list-card-title">{listData.title}</h2> 
                 <h3 className="list-card-users">By: {GetUsernames()}</h3>
                 <div className="movies-container">
-                { listMovies.map((movie, index) => (
+                { listMovies.data.map((movie, index) => (
                     <MovieCard data={movie} index={index} key={index}/> 
                 ))}
                 </div>
