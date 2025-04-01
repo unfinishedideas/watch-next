@@ -4,7 +4,7 @@ import List from '../classes/List.ts'
 function HandleError(err: unknown)
 {
     if (err instanceof Error) {
-        console.log(`GetList: Error`, err.message);
+        console.log(`ListAPI: Error`, err.message);
     } else {
         console.error(`An unknown error occurred`, err);
     }
@@ -61,3 +61,18 @@ export async function CreateList<T>(newList: List): Promise<T> {
     return await res.json() as T;
 }
 
+export async function RemoveMovieFromList<T>(query: object): Promise<T>{
+    try
+    {
+        const list: List = query.list;
+        const movie_id: string = query.id;
+        list.movie_ids = list.movie_ids.filter(id => id != movie_id);
+        return await UpdateList(list); 
+    }
+    catch(err: Error)
+    {
+        HandleError(err);
+    }
+}
+
+export type AsyncApiFunc = (id: string) => Promise;

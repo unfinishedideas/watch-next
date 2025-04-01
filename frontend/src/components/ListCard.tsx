@@ -3,10 +3,12 @@ import MovieCard from './MovieCard.tsx'
 import List from '../classes/List.ts'
 import { GetMovie } from '../api/MovieApi.ts'
 import { GetUser } from '../api/UserApi.ts'
-import { useQueries } from '@tanstack/react-query'
+import { RemoveMovieFromList, AsyncApiFunc } from '../api/ListApi.ts'
+import { useQueries, useMutation } from '@tanstack/react-query'
 
 interface ListCardProps {
-   listData: List, 
+    listData: List, 
+    handleRemoveMovie: AsyncApiFunc;
 }
 
 const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
@@ -38,7 +40,17 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
         }
     })
 
-    function GetUsernames()
+    const mutation = useMutation({
+        mutationFn: RemoveMovieFromList,
+        /*onSuccess: (data) => { },*/
+    })
+
+    const handleRemoveMovie: AsyncApiFunc = (id: string) =>
+    {
+        mutation.mutate({list: listData, id: id});
+    }
+
+    function getUsernames()
     {
         if (!listUserIds.pending)
         {
@@ -71,10 +83,10 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
         return(
             <div className="list-card-container">
                 <h2 className="list-card-title">{listData.list_title}</h2> 
-                <h3 className="list-card-users">By: {GetUsernames()}</h3>
+                <h3 className="list-card-users">By: {getUsernames()}</h3>
                 <div className="movies-container">
                 { listMovies.data.map((movie, index) => (
-                    <MovieCard data={movie} index={index} key={index}/> 
+                    <MovieCard data={movie} handleRemoveMovie={handleRemoveMovie} index={index} key={index}/> 
                 ))}
                 </div>
             </div>
