@@ -1,6 +1,5 @@
-import { base_url } from './Vars.ts'
-import User from '../classes/User.ts'
-
+import { base_url } from './Vars.ts';
+import User from '../classes/User.ts';
 
 
 function HandleError(err: unknown)
@@ -51,19 +50,6 @@ export async function DeleteUser<T>(id: string): Promise<T> {
 }
 
 export async function CreateUser<T>(newUser: User): Promise<T> {
-    let p_hash = "";
-    const bcrypt = require('bcrypt');
-    const saltRounds = 10;
-
-    bcrypt.genSalt(saltRounds, function(err, salt) {
-        bcrypt.hash(newUser.password, salt, function(err, hash)
-        {
-            p_hash = hash;
-        });
-    });
-    // TODO: Reject failed hashing
-    //     if (p_hash === "")
-    newUser.password = p_hash;
     const res = await fetch(`${base_url}/users/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

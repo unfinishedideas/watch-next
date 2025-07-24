@@ -1,6 +1,8 @@
 import './UserSignupForm.css'
 import { useState } from 'react'
 import { CreateUser } from '../api/UserApi.ts'
+import { v4 as uuidv4 } from 'uuid';
+import User from '../classes/User.ts'
 
 interface UserSignupFormProps {
     setIsLoggedIn: () => void;
@@ -21,22 +23,34 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
 
     const [formState, setFormState] = useState<FormStatus>(FormStatus.AwaitingInput);
 
-    async function AttemptUserRegistration(event)
+    async function AttemptUserRegistration(formData)
     {
         setFormState(FormStatus.AwaitingInput);
-        console.log(event)  // TODO: Remove this
         // Possible Errors - Bad Email
-        if (!CheckEmailValidity(event.emailInput))
+        const uEmail = formData.get("emailInput");
+        if (!CheckEmailValidity(uEmail))
         {
             setFormState(FormStatus.BadEmailInput);
             return;
         }
-        // Email Already Exists
-        // Bad Username Input
-        // Username already exists
-        // BadPasswordInput
+        // TODO: Email Already Exists
+        // TODO: Bad Username Input
+        // TODO: Username already exists
+        // TODO: BadPasswordInput
 
         // Attempt registration
+        const newId = uuidv4();
+        const uName = formData.get("usernameInput");
+        const uPass = formData.get("passwordInput");
+        const newUser :User = new User(newId, uName, uEmail, uPass);
+        try
+        {
+            CreateUser(newUser);
+        }
+        catch(err: Error)
+        {
+            console.error(err);
+        }
     }
 
     function CheckEmailValidity(email: string) : boolean
