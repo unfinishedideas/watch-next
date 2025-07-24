@@ -25,7 +25,7 @@ const LoginForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : LoginFormProps) =
                     Password: <input name="passwordInput"/>
                 </label>
                 <br/>
-                <button type="submit">Go</button>
+                <button type="submit">Login</button>
             </form>
         </div>
     )
