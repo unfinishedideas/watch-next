@@ -18,7 +18,7 @@ const LoginForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : LoginFormProps) =
         <div>
             <form action={AttemptLogin}>
                 <label>
-                    Username: <input name="usernameInput"/>
+                    Username or Email: <input name="usernameInput"/>
                 </label>
                 <br/>
                 <label>

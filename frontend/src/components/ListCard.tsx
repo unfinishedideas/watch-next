@@ -1,5 +1,6 @@
 import './ListCard.css'
 import MovieCard from './MovieCard.tsx'
+import Button from './Button.tsx'
 import List from '../classes/List.ts'
 import { GetMovie } from '../api/MovieApi.ts'
 import { GetUser } from '../api/UserApi.ts'
@@ -63,6 +64,11 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
         return "Loading usernames..."
     }
 
+    function loadListScreen()
+    {
+        console.log("LOAD LIST SCREEN");
+    }
+
     if (listMovies.isPending || listUserIds.isPending) return (
         <div>
             <h2 className="list-card-title">{listData.list_title}</h2> 
@@ -82,7 +88,7 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
     {
         return(
             <div className="list-card-container">
-                <h2 className="list-card-title">{listData.list_title}</h2> 
+                <Button btnText={listData.list_title} btnCallback={loadListScreen}/>
                 <h3 className="list-card-users">By: {getUsernames()}</h3>
                 <div className="movies-container">
                 { listMovies.data.map((movie, index) => (
