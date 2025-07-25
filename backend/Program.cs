@@ -1,5 +1,5 @@
-using WatchNext;
 using WatchNext.DB;
+using WatchNext.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +31,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();   // navigate to http://localhost:{port}/openapi/v1.json to see the docs
 }
 
-// TODO: Look into turning these into builder services instead of app.map
+// TODO: Look into turning these into builder services instead of app.map (see Users folder for start of that)
 // USERS
 app.MapGet("/users", () => WatchNextDB.GetUsers());
 app.MapGet("/users/{id}", (Guid id) => WatchNextDB.GetUser(id));

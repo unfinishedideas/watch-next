@@ -1,4 +1,4 @@
-﻿namespace WatchNext
+﻿namespace WatchNext.Users
 {
 	public interface IPasswordHasher
 	{
