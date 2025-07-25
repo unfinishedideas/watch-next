@@ -5,7 +5,7 @@ public record User
     required public Guid user_id {get; set;}
     required public string user_name {get; set;}
     required public string primary_email {get; set;}
-    required public string password {get; set;} // yes I know this is bad
+    required public string password_hash {get; set;} // yes I know this is bad
     required public bool deleted {get; set;}
 }
 
@@ -34,9 +34,9 @@ public class WatchNextDB
     // Test data ---------------------------------------------------------------
     private static List<User> _users = new List<User>()
     {
-        new User{ user_id=Guid.NewGuid(), user_name="SaraConnor01", primary_email="saraconnor@netscape.com", deleted=false, password="123" },
-            new User{ user_id=Guid.NewGuid(), user_name="Paul42069", primary_email="bigsmoke@aol.com", deleted=false, password="123" },
-            new User{ user_id=Guid.NewGuid(), user_name="LaurenLikesMooovs", primary_email="laurenlikesmovies@gmail.com", deleted=false, password="123" },
+        new User{ user_id=Guid.NewGuid(), user_name="SaraConnor01", primary_email="saraconnor@netscape.com", deleted=false, password_hash="123" },
+            new User{ user_id=Guid.NewGuid(), user_name="Paul42069", primary_email="bigsmoke@aol.com", deleted=false, password_hash="123" },
+            new User{ user_id=Guid.NewGuid(), user_name="LaurenLikesMooovs", primary_email="laurenlikesmovies@gmail.com", deleted=false, password_hash="123" },
     };
     private static List<Movie> _movies = new List<Movie>()
     {
@@ -63,8 +63,9 @@ public class WatchNextDB
         return _users.SingleOrDefault(user => user.user_id == id && user.deleted == false);
     }
 
-    public static User ? CreateUser(User user)
+    public static User ? CreateUser(User user, IPasswordHasher passwordHasher)
     {
+        user.password_hash = passwordHasher.Hash(user.password_hash);
         _users.Add(user);
         return user;
     }

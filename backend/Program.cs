@@ -1,8 +1,10 @@
+using WatchNext;
 using WatchNext.DB;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+PasswordHasher hasher = new PasswordHasher();   // TODO: Look into making a singleton instead
 
 // Fix CORS for development builds on the same machine
 var DevCorsPolicy = "_devCorsPolicy";
@@ -29,10 +31,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();   // navigate to http://localhost:{port}/openapi/v1.json to see the docs
 }
 
+// TODO: Look into turning these into builder services instead of app.map
 // USERS
 app.MapGet("/users", () => WatchNextDB.GetUsers());
 app.MapGet("/users/{id}", (Guid id) => WatchNextDB.GetUser(id));
-app.MapPost("/users", (User user) => WatchNextDB.CreateUser(user)); 
+app.MapPost("/users", (User user) => WatchNextDB.CreateUser(user, hasher)); 
 app.MapPut("/users", (User update) => WatchNextDB.UpdateUser(update)); 
 app.MapDelete("/users/{id}", (Guid id) => WatchNextDB.DeleteUser(id)); 
 
