@@ -62,11 +62,31 @@ public class WatchNextDB
 
     public static User ? GetUser(Guid id)
     {
-        return _users.SingleOrDefault(user => user.user_id == id && user.deleted == false);
+        User? user = _users.SingleOrDefault(user => user.user_id == id && user.deleted == false);
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+        return user;
+    }
+
+    public static User ? GetUserByEmail(string email)
+    {
+        User? user = _users.SingleOrDefault(user => user.primary_email == email && user.deleted == false);
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+        return user;
     }
 
     public static User ? CreateUser(User user, IPasswordHasher passwordHasher)
     {
+        User? existingUser = _users.SingleOrDefault(u => u.user_id == user.user_id);
+        if (existingUser != null)
+        {
+            throw new Exception("User already exists");
+        }
         user.password_hash = passwordHasher.Hash(user.password_hash);
         _users.Add(user);
         return user;
@@ -82,32 +102,54 @@ public class WatchNextDB
             }
             return user;
         }).ToList();
-        return update;
+        throw new Exception("User not found");
     }
 
     public static void DeleteUser(Guid id)
     {
         User? toUpdate = _users.Find(user => user.user_id == id);
-        if (toUpdate != null)
+        if (toUpdate == null)
         {
-            toUpdate.deleted = true;
-            UpdateUser(toUpdate);
+            throw new Exception("User not found");
         }
-    }
+		toUpdate.deleted = true;
+		UpdateUser(toUpdate);
+	}
 
-    // Movies ------------------------------------------------------------------
-    public static List<Movie> GetMovies()
+	public static User? LoginUser(string email, string password, PasswordHasher passwordHasher)
+	{
+		User? user = GetUserByEmail(email);
+		bool verified = passwordHasher.Verify(password, user.password_hash);
+		if (!verified)
+		{
+            throw new Exception("Password is incorrect");
+		}
+        return user;
+	}
+
+	// Movies ------------------------------------------------------------------
+	public static List<Movie> GetMovies()
     {
         return _movies;
     }
 
     public static Movie ? GetMovie(Guid id)
     {
-        return _movies.SingleOrDefault(movie => movie.movie_id == id);
+        Movie? movie = _movies.SingleOrDefault(movie => movie.movie_id == id);
+        if (movie == null)
+        {
+            throw new Exception("Movie not found");
+        }
+        return movie;
     }
 
     public static Movie ? CreateMovie(Movie movie)
     {
+        Movie? existingMovie = _movies.SingleOrDefault(m => m.movie_id == movie.movie_id);
+        if (existingMovie != null)
+        {
+            throw new Exception("Movie already exists");
+        }
         _movies.Add(movie);
         return movie;
     }
@@ -122,7 +164,7 @@ public class WatchNextDB
             }
             return movie;
         }).ToList();
-        return update;
+        throw new Exception("Movie not found");
     }
 
     public static void DeleteMovie(Guid id)
@@ -138,11 +180,21 @@ public class WatchNextDB
 
     public static MovieList ? GetMovieList(Guid id)
     {
-        return _movieLists.SingleOrDefault(list => list.list_id == id);
+        MovieList? list = _movieLists.SingleOrDefault(list => list.list_id == id);
+        if (list == null)
+        {
+            throw new Exception("MovieList not found");
+        }
+        return list;
     }
 
     public static MovieList ? CreateMovieList(MovieList list)
     {
+        MovieList? existingList = _movieLists.SingleOrDefault(l => l.list_id == list.list_id);
+        if (existingList != null)
+        {
+            throw new Exception("MovieList already exists");
+        }
         _movieLists.Add(list);
         return list;
     }
@@ -157,7 +209,7 @@ public class WatchNextDB
             }
             return list;
         }).ToList();
-        return update;
+        throw new Exception("MovieList not found");
     }
 
     public static void DeleteMovieList(Guid id)
