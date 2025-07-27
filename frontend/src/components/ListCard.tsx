@@ -66,6 +66,7 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
 
     function loadListScreen()
     {
+        // TODO: Make list screen :)
         console.log("LOAD LIST SCREEN");
     }
 

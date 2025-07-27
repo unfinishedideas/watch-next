@@ -10,6 +10,8 @@ interface UserSignupFormProps {
 
 const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFormProps) =>
 {
+    const whitespaceRegex = /\s/
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     enum FormStatus
     {
         AwaitingInput,
@@ -26,26 +28,26 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
     async function AttemptUserRegistration(formData)
     {
         setFormState(FormStatus.AwaitingInput);
-        // Possible Errors - Bad Email
         const uEmail = formData.get("emailInput");
-        if (!CheckEmailValidity(uEmail))
-        {
-            setFormState(FormStatus.BadEmailInput);
-            return;
-        }
-        // TODO: Email Already Exists
-        // TODO: Bad Username Input
-        // TODO: Username already exists
-        // TODO: BadPasswordInput
-
-        // Attempt registration
-        const newId = uuidv4();
         const uName = formData.get("usernameInput");
         const uPass = formData.get("passwordInput");
+
+        if (!CheckEmailValidity(uEmail) || 
+            !CheckUsernameValidity(uName) || 
+            !CheckPasswordValidity(uPass)
+        )
+        {
+            return;
+        }
+        // Attempt registration
+        const newId = uuidv4();
         const newUser :User = new User(newId, uName, uEmail, uPass);
         try
         {
             CreateUser(newUser);
+            // TODO: Actually wait to see if it worked before setting form status
+            // Also, remove registration form once successful
+            setFormState(FormStatus.Success);
         }
         catch(err: Error)
         {
@@ -55,8 +57,35 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
 
     function CheckEmailValidity(email: string) : boolean
     {
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        return emailRegex.test(email);
+        if (!emailRegex.test(email))
+        {
+            setFormState(FormStatus.BadEmailInput);
+            return false;
+        }
+        // TODO: Check if Email already in db
+        return true;
+    }
+
+    function CheckUsernameValidity(username: string) : boolean
+    {
+        if (username.length <= 3 || whitespaceRegex.test(username))
+        {
+            setFormState(FormStatus.BadUsernameInput);
+            return false;
+        }
+        // TODO: Check if username already in the db
+        return true;
+    }
+
+    function CheckPasswordValidity(password: string) : boolean
+    {
+        if (password.length <= 3 || whitespaceRegex.test(password))
+        {
+            setFormState(FormStatus.BadPasswordInput);
+            return false;
+        }
+        // TODO: Check if username already in the db
+        return true;
     }
 
     return(
@@ -76,11 +105,11 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
                 <br/>
                 <button type="submit">Register</button>
             </form>
-            {formState === FormStatus.BadEmailInput && <p>Email entered incorrectly!</p>}
+            {formState === FormStatus.BadEmailInput && <p>Email entered incorrectly. Use the form name@domain.com</p>}
             {formState === FormStatus.BadEmailInDb && <p>Email already in db! Try logging in instead.</p>}
-            {formState === FormStatus.BadUsernameInput && <p>Username entered incorrectly!</p>}
+            {formState === FormStatus.BadUsernameInput && <p>Username entered incorrectly. Usernames must not contain any special characters and must be longer than 3 characters</p>}
             {formState === FormStatus.BadUsernameAlreadyInDb && <p>Username already in db! Please choose another one</p>}
-            {formState === FormStatus.BadPasswordInput && <p>Bad Password, please include blah blah blah blah</p>}
+            {formState === FormStatus.BadPasswordInput && <p>Bad Password, Passwords must not contain any special characters and must be longer than 3 characters</p>}
             {formState === FormStatus.Success && <p>User successfully registered! Please Log in.</p>}
         </div>
     )

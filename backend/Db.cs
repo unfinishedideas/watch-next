@@ -132,6 +132,10 @@ public class WatchNextDB
 	public static User? LoginUser(string email, string password, PasswordHasher passwordHasher)
 	{
 		User? user = GetUserByEmail(email);
+        if (user == null)
+        {
+            throw new Exception("User was not found");
+        }
 		bool verified = passwordHasher.Verify(password, user.password_hash);
 		if (!verified)
 		{

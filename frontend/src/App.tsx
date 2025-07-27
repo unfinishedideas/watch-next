@@ -18,9 +18,9 @@ function App()
             <div className="app-container">
                 <Header/>
                 {isLoggedIn ? 
-                    <div/> : <LoginScreen setIsLoggedIn={setIsLoggedIn}/>
+                    <FeedScreen/> : <LoginScreen setIsLoggedIn={setIsLoggedIn}/>
                 }
-                <FeedScreen/>
+
             </div>
         </QueryClientProvider>
     )
