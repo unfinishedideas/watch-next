@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic.FileIO;
 using WatchNext.Users;
 
 namespace WatchNext.DB;
@@ -37,6 +38,12 @@ public record MovieList
 	required public Guid[] movie_ids { get; set; }
 	required public Guid[] owner_ids { get; set; }
 	required public Guid creator_id { get; set; }
+}
+
+public class CreateUserRequest
+{
+	public required UserFrontend user { get; set; }
+	public required string password { get; set; }
 }
 
 // Temporary in memory DB and test data to use to test connection to frontend app
@@ -89,11 +96,12 @@ public class WatchNextDB
 		return user;
 	}
 
-	public static bool UserInputValidator(User user)
+	public static bool UserInputValidator(UserFrontend user, string password)
 	{
+		// TODO: Send more specific exceptions
 		if (user.user_name == "" || user.user_name.Contains(' ') || user.user_id == Guid.Empty ||  user.user_name.Length <= 3 ||
 			user.primary_email == "" || user.primary_email.Contains(' ') || !user.primary_email.Contains('@') || 
-			user.password_hash == "")
+			password == "")
 		{
 			return false;
 		}
@@ -101,20 +109,20 @@ public class WatchNextDB
 		return true;
 	}
 
-	public static User? CreateUser(User user, IPasswordHasher passwordHasher)
+	public static UserFrontend? CreateUser(CreateUserRequest req, IPasswordHasher passwordHasher)
 	{
-		if (!UserInputValidator(user))
+		if (!UserInputValidator(req.user, req.password))
 		{
 			throw new Exception("Invalid user input data");
 		}
-		User? existingUser = _users.SingleOrDefault(u => u.user_id == user.user_id);
+		User? existingUser = _users.SingleOrDefault(u => u.primary_email == req.user.primary_email);
 		if (existingUser != null)
 		{
 			throw new Exception("User already exists");
 		}
-		user.password_hash = passwordHasher.Hash(user.password_hash);
-		_users.Add(user);
-		return user;
+		User toAdd = new() { user_id = Guid.NewGuid(), user_name = req.user.user_name, primary_email = req.user.primary_email, deleted = false, password_hash = passwordHasher.Hash(req.password) };
+		_users.Add(toAdd);
+		return new UserFrontend() { user_id = toAdd.user_id, user_name = toAdd.user_name, primary_email = toAdd.primary_email, deleted = false };
 	}
 
 	public static User UpdateUser(User update)
@@ -145,9 +153,10 @@ public class WatchNextDB
 		UpdateUser(toUpdate);
 	}
 
-	public static User? LoginUser(string email, string password, PasswordHasher passwordHasher)
+	public static User? LoginUser(string nameInput, string password, PasswordHasher passwordHasher)
 	{
-		User? user = GetUserByEmail(email);
+		// TODO: handle email/username or password not being sent in query
+		User? user = GetUserByEmail(nameInput);	// TODO: check if email or username first
         if (user == null)
         {
             throw new Exception("User was not found");

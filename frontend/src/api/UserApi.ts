@@ -9,6 +9,7 @@ function HandleError(err: unknown)
     } else {
         console.error(`An unknown error occurred`, err);
     }
+    // TODO: Throw an exception... probably remove this helper function
 }
 
 export async function GetUsers<T>(): Promise<T> {
@@ -21,6 +22,19 @@ export async function GetUsers<T>(): Promise<T> {
 
 export async function GetUser<T>(id: string): Promise<T> {
     const res = await fetch(`${base_url}/users/${id}`);
+    if (!res.ok) {
+        HandleError(res.statusText);
+    }
+    return await res.json() as T;
+}
+
+export async function LoginUser<T>(nameInput: string, password: string): Promise<T> {
+    const res = await fetch(`${base_url}/users/login?` + 
+        new URLSearchParams({nameInput: nameInput, password: password}).toString(),
+        {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+    });
     if (!res.ok) {
         HandleError(res.statusText);
     }
@@ -49,11 +63,13 @@ export async function DeleteUser<T>(id: string): Promise<T> {
     return res as T;
 }
 
-export async function CreateUser<T>(newUser: User): Promise<T> {
+export async function CreateUser<T>(newUser: User, pass: string): Promise<T> {
+    let req = {user: newUser, password: pass}
+    console.log(JSON.stringify(req));
     const res = await fetch(`${base_url}/users/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newUser),
+        body: JSON.stringify(req),
     });
     if (!res.ok) {
         HandleError(res.statusText);

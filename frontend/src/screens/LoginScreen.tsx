@@ -9,8 +9,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({setIsLoggedIn} : LoginScreenPr
 {
     return(
         <div>
-            <h2>Login</h2>
-            <br/>
             <LoginForm/>
             <br/>
             <UserSignupForm/>

@@ -12,22 +12,22 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
 {
     const whitespaceRegex = /\s/
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    // TODO: Create regex for passwords and usernames to prevent bad characters
+    // TODO: Change to an onSubmit form with event.preventDefault() to prevent wiping the data each attempt
+    
     enum FormStatus
     {
-        AwaitingInput,
-        BadEmailInput,
-        BadEmailInDb,
-        BadUsernameInput,
-        UsernameAlreadyInDb,
-        BadPasswordInput,
-        Success
+        FormAwaitingInput,
+        FormError,
+        FormSuccess
     }
 
-    const [formState, setFormState] = useState<FormStatus>(FormStatus.AwaitingInput);
+    const [formState, setFormState] = useState<FormStatus>(FormStatus.FormAwaitingInput);
+    const [errMsg, setErrMsg] = useState("");
 
     async function AttemptUserRegistration(formData)
     {
-        setFormState(FormStatus.AwaitingInput);
+        setFormState(FormStatus.FormAwaitingInput);
         const uEmail = formData.get("emailInput");
         const uName = formData.get("usernameInput");
         const uPass = formData.get("passwordInput");
@@ -41,11 +41,11 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
         }
         // Attempt registration
         const newId = uuidv4();
-        const newUser :User = new User(newId, uName, uEmail, uPass);
+        const newUser :User = new User(newId, uName, uEmail, false);
         try
         {
-            CreateUser(newUser);
-            // TODO: Actually wait to see if it worked before setting form status
+            CreateUser(newUser, uPass);
+            // TODO: Actually wait to see if it worked before setting form status, possibly log in too?
             setFormState(FormStatus.Success);
         }
         catch(err: Error)
@@ -58,7 +58,7 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
     {
         if (!emailRegex.test(email))
         {
-            setFormState(FormStatus.BadEmailInput);
+            setErrMsg("Invalid email");
             return false;
         }
         // TODO: Check if Email already in db
@@ -69,7 +69,7 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
     {
         if (username.length <= 3 || whitespaceRegex.test(username))
         {
-            setFormState(FormStatus.BadUsernameInput);
+            setErrMsg("Invalid username");
             return false;
         }
         // TODO: Check if username already in the db
@@ -80,7 +80,7 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
     {
         if (password.length <= 3 || whitespaceRegex.test(password))
         {
-            setFormState(FormStatus.BadPasswordInput);
+            setErrMsg("Invalid password");
             return false;
         }
         // TODO: Check if username already in the db
@@ -111,12 +111,7 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
                     <br/>
                     <button type="submit">Register</button>
                 </form>
-                {formState === FormStatus.BadEmailInput && <p>Email entered incorrectly. Use the form name@domain.com</p>}
-                {formState === FormStatus.BadEmailInDb && <p>Email already in db! Try logging in instead.</p>}
-                {formState === FormStatus.BadUsernameInput && <p>Username entered incorrectly. Usernames must not contain any special characters and must be longer than 3 characters</p>}
-                {formState === FormStatus.BadUsernameAlreadyInDb && <p>Username already in db! Please choose another one</p>}
-                {formState === FormStatus.BadPasswordInput && <p>Bad Password, Passwords must not contain any special characters and must be longer than 3 characters</p>}
-                {formState === FormStatus.Success && <p>User successfully registered! Please Log in.</p>}
+                {errMsg ?? <p>{errMsg}</p>}
             </div>
         )
     }

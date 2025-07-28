@@ -1,6 +1,8 @@
 import './LoginForm.css'
 import UserContext from '../context/UserContext.ts' 
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
+import { LoginUser } from '../api/UserApi.ts'
+import User from '../classes/User.ts'
 
 interface LoginFormProps {
 }
@@ -8,26 +10,65 @@ interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = () =>
 {
     const [user, setUser] = useContext(UserContext);
+    const [errMsg, setErrMsg] = useState("");
+    const [formData, setFormData] = useState({
+        nameInput: '',
+        password: '',
+    });
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
 
-    function AttemptLogin(event)
+    async function AttemptLogin(event)
     {
-        // TODO: Actual user login :P
-        setUser(1);
+        event.preventDefault();
+        try
+        {
+            let res = await LoginUser(formData.nameInput, formData.password);
+            const loggedInUser: User = new User(res.user_id, res.user_name, res.primary_email);
+            setUser(loggedInUser);
+        }
+        catch(err: Error)
+        {
+            console.log(`errrrrrrrr ${err}`);
+            //setErrMsg("User not found");
+            //setErrMsg("Wrong password");
+        }
     }
 
     return(
         <div>
-            <form action={AttemptLogin}>
-                <label>
-                    Username or Email: <input name="usernameInput"/>
-                </label>
+            <h2>Login</h2>
+            <form onSubmit={AttemptLogin}>
+                <label>Username or Email:</label>
+                <input 
+                    type="text"
+                    id="nameInput"
+                    name="nameInput"
+                    value={formData.nameInput}
+                    onChange={handleChange}
+                    required
+                />
                 <br/>
                 <label>
-                    Password: <input name="passwordInput"/>
+                    Password:
                 </label>
+                <input
+                    type="text"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                />
                 <br/>
                 <button type="submit">Login</button>
             </form>
+            {errMsg && <p>{errMsg}</p>}
         </div>
     )
 }
