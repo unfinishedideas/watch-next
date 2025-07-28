@@ -89,8 +89,24 @@ public class WatchNextDB
 		return user;
 	}
 
+	public static bool UserInputValidator(User user)
+	{
+		if (user.user_name == "" || user.user_name.Contains(' ') || user.user_id == Guid.Empty ||  user.user_name.Length <= 3 ||
+			user.primary_email == "" || user.primary_email.Contains(' ') || !user.primary_email.Contains('@') || 
+			user.password_hash == "")
+		{
+			return false;
+		}
+
+		return true;
+	}
+
 	public static User? CreateUser(User user, IPasswordHasher passwordHasher)
 	{
+		if (!UserInputValidator(user))
+		{
+			throw new Exception("Invalid user input data");
+		}
 		User? existingUser = _users.SingleOrDefault(u => u.user_id == user.user_id);
 		if (existingUser != null)
 		{
