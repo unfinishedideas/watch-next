@@ -3,7 +3,8 @@ using WatchNext.Users;
 
 namespace WatchNext.DB;
 
-// TODO: Implement this - send back only what the frontend needs
+// TODO: Implement correct Status codes for various errors!
+
 public record UserFrontend
 {
 	required public Guid user_id { get; set; }

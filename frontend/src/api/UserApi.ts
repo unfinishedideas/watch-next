@@ -7,9 +7,8 @@ function HandleError(err: unknown)
     if (err instanceof Error) {
         console.log(`GetUser: Error`, err.message);
     } else {
-        console.error(`An unknown error occurred`, err);
+        console.error(`An internal server error occurred: `, err);
     }
-    // TODO: Throw an exception... probably remove this helper function
 }
 
 export async function GetUsers<T>(): Promise<T> {
@@ -71,7 +70,17 @@ export async function LoginUser<T>(nameInput: string, pass: string): Promise<T> 
         body: JSON.stringify({name: nameInput, password: pass})
     });
     if (!res.ok) {
-        HandleError(res.statusText);
+        const text = await res.text();
+        if (text.includes("User not found")){
+            throw new Error("user not found");
+        }
+        else if (text.includes("Password is incorrect")) {
+            throw new Error("password incorrect");
+        }
+        else
+        {
+            HandleError(res.status);
+        }
     }
     return await res.json() as T;
 }

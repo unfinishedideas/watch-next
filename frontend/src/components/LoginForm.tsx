@@ -34,9 +34,18 @@ const LoginForm: React.FC<LoginFormProps> = () =>
         }
         catch(err: Error)
         {
-            console.log(`errrrrrrrr ${err}`);
-            //setErrMsg("User not found");
-            //setErrMsg("Wrong password");
+            if (err.message === "user not found")
+            {
+                setErrMsg("User not found");
+            }
+            else if (err.message === "password incorrect")
+            {
+                setErrMsg("Incorrect password");
+            }
+            else
+            {
+                setErrMsg("Something went wrong, please try again.");
+            }
         }
     }
 
