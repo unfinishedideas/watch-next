@@ -1,17 +1,18 @@
 import './LoginForm.css'
+import UserContext from '../context/UserContext.ts' 
+import { useContext } from 'react'
 
 interface LoginFormProps {
-    setIsLoggedIn: () => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : LoginFormProps) =>
+const LoginForm: React.FC<LoginFormProps> = () =>
 {
+    const [user, setUser] = useContext(UserContext);
+
     function AttemptLogin(event)
     {
-        console.log(event)
-
-        // TODO: Actual user login, for now, just setting to logged in
-        setIsLoggedIn(true);
+        // TODO: Actual user login :P
+        setUser(1);
     }
 
     return(

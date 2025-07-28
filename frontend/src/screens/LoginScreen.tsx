@@ -11,9 +11,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({setIsLoggedIn} : LoginScreenPr
         <div>
             <h2>Login</h2>
             <br/>
-            <LoginForm setIsLoggedIn={setIsLoggedIn}/>
+            <LoginForm/>
             <br/>
-            <UserSignupForm setIsLoggedIn={setIsLoggedIn}/>
+            <UserSignupForm/>
             <br/>
         </div>
     )

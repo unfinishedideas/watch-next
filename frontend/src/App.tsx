@@ -6,22 +6,25 @@ import FeedScreen from './screens/FeedScreen.tsx'
 
 import { useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import UserContext from './context/UserContext.ts'
+
 
 const queryClient = new QueryClient();
 
 function App()
 {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState(null);
     
     return(
         <QueryClientProvider client={queryClient}>
-            <div className="app-container">
-                <Header/>
-                {isLoggedIn ? 
-                    <FeedScreen/> : <LoginScreen setIsLoggedIn={setIsLoggedIn}/>
-                }
-
-            </div>
+            <UserContext.Provider value={[user, setUser]}>
+                <div className="app-container">
+                    <Header/>
+                    {user ? 
+                        <FeedScreen/> : <LoginScreen/>
+                    }
+                </div>
+            </UserContext.Provider>
         </QueryClientProvider>
     )
 }

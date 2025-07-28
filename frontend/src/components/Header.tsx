@@ -1,10 +1,13 @@
 import './Header.css';
+import HeaderLogo from './HeaderLogo.tsx'
+import HeaderUserPanel from './HeaderUserPanel.tsx'
 
 function Header()
 {
     return(
         <div className="header-container">
-            <h1 className="header-title-text">Watch Next!</h1>
+            <HeaderLogo/>
+            <HeaderUserPanel/>
         </div>
     )
 }

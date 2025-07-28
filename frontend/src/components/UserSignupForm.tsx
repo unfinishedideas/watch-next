@@ -120,7 +120,6 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
             </div>
         )
     }
-
 }
 
 export default UserSignupForm;
