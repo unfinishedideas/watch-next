@@ -28,19 +28,6 @@ export async function GetUser<T>(id: string): Promise<T> {
     return await res.json() as T;
 }
 
-export async function LoginUser<T>(nameInput: string, password: string): Promise<T> {
-    const res = await fetch(`${base_url}/users/login?` + 
-        new URLSearchParams({nameInput: nameInput, password: password}).toString(),
-        {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-    });
-    if (!res.ok) {
-        HandleError(res.statusText);
-    }
-    return await res.json() as T;
-}
-
 export async function UpdateUser<T>(update: User): Promise<T> {
     const res = await fetch(`${base_url}/users/`, {
         method: 'PUT',
@@ -65,7 +52,6 @@ export async function DeleteUser<T>(id: string): Promise<T> {
 
 export async function CreateUser<T>(newUser: User, pass: string): Promise<T> {
     let req = {user: newUser, password: pass}
-    console.log(JSON.stringify(req));
     const res = await fetch(`${base_url}/users/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -76,6 +62,20 @@ export async function CreateUser<T>(newUser: User, pass: string): Promise<T> {
     }
     return await res.json() as T;
 }
+
+export async function LoginUser<T>(nameInput: string, pass: string): Promise<T> {
+    const res = await fetch(`${base_url}/users/login?`,
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({name: nameInput, password: pass})
+    });
+    if (!res.ok) {
+        HandleError(res.statusText);
+    }
+    return await res.json() as T;
+}
+
 
 /*
 export async function LoginUser<T>(password_attempt: string): Promise<T> {

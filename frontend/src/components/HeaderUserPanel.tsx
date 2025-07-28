@@ -21,7 +21,7 @@ function HeaderUserPanel()
     {
         return(
             <div className="header-userpanel">
-                <p>John Doe</p>
+                <p>{user.user_name}</p>
                 <button onClick={LogOutUser}>Log Out</button>
             </div>
         )

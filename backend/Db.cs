@@ -46,6 +46,12 @@ public class CreateUserRequest
 	public required string password { get; set; }
 }
 
+public class LoginUserRequest
+{
+	public required string name { get; set; }
+	public required string password { get; set; }
+}
+
 // Temporary in memory DB and test data to use to test connection to frontend app
 public class WatchNextDB
 {
@@ -88,7 +94,7 @@ public class WatchNextDB
 
 	public static User? GetUserByEmail(string email)
 	{
-		User? user = _users.SingleOrDefault(user => user.primary_email == email && user.deleted == false);
+		User? user = _users.SingleOrDefault(user => user.primary_email == email);
 		if (user == null)
 		{
 			throw new Exception("User not found");
@@ -153,15 +159,15 @@ public class WatchNextDB
 		UpdateUser(toUpdate);
 	}
 
-	public static User? LoginUser(string nameInput, string password, PasswordHasher passwordHasher)
+	public static User? LoginUser(LoginUserRequest req, PasswordHasher passwordHasher)
 	{
 		// TODO: handle email/username or password not being sent in query
-		User? user = GetUserByEmail(nameInput);	// TODO: check if email or username first
+		User? user = GetUserByEmail(req.name);	// TODO: check if email or username first
         if (user == null)
         {
             throw new Exception("User was not found");
         }
-		bool verified = passwordHasher.Verify(password, user.password_hash);
+		bool verified = passwordHasher.Verify(req.password, user.password_hash);
 		if (!verified)
 		{
 			throw new Exception("Password is incorrect");

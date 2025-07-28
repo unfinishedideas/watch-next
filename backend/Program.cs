@@ -35,7 +35,7 @@ if (app.Environment.IsDevelopment())
 // USERS
 app.MapGet("/users", () => WatchNextDB.GetUsers());
 app.MapGet("/users/{id}", (Guid id) => WatchNextDB.GetUser(id));
-app.MapPost("/users/login", (string nameInput, string password) => WatchNextDB.LoginUser(nameInput, password, hasher));
+app.MapPost("/users/login", (LoginUserRequest req) => WatchNextDB.LoginUser(req, hasher));
 app.MapPost("/users", (CreateUserRequest req) => WatchNextDB.CreateUser(req, hasher)); 
 app.MapPut("/users", (User update) => WatchNextDB.UpdateUser(update)); 
 app.MapDelete("/users/{id}", (Guid id) => WatchNextDB.DeleteUser(id)); 
