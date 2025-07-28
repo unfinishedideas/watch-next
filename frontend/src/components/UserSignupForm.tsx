@@ -46,7 +46,6 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
         {
             CreateUser(newUser);
             // TODO: Actually wait to see if it worked before setting form status
-            // Also, remove registration form once successful
             setFormState(FormStatus.Success);
         }
         catch(err: Error)
@@ -88,31 +87,40 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
         return true;
     }
 
-    return(
-        <div>
-            <form action={AttemptUserRegistration}>
-                <label>
-                    Email: <input name="emailInput"/>
-                </label>
-                <br/>
-                <label>
-                    Username: <input name="usernameInput"/>
-                </label>
-                <br/>
-                <label>
-                    Password: <input name="passwordInput"/>
-                </label>
-                <br/>
-                <button type="submit">Register</button>
-            </form>
-            {formState === FormStatus.BadEmailInput && <p>Email entered incorrectly. Use the form name@domain.com</p>}
-            {formState === FormStatus.BadEmailInDb && <p>Email already in db! Try logging in instead.</p>}
-            {formState === FormStatus.BadUsernameInput && <p>Username entered incorrectly. Usernames must not contain any special characters and must be longer than 3 characters</p>}
-            {formState === FormStatus.BadUsernameAlreadyInDb && <p>Username already in db! Please choose another one</p>}
-            {formState === FormStatus.BadPasswordInput && <p>Bad Password, Passwords must not contain any special characters and must be longer than 3 characters</p>}
-            {formState === FormStatus.Success && <p>User successfully registered! Please Log in.</p>}
-        </div>
-    )
+    if (formState === FormStatus.Success)
+    {
+        return(<p>User successfully registered, log in and start sharing movies!</p>)
+    }
+    else
+    {
+        return(
+            <div>
+                <h2>Sign Up</h2>
+                <form action={AttemptUserRegistration}>
+                    <label>
+                        Email: <input name="emailInput"/>
+                    </label>
+                    <br/>
+                    <label>
+                        Username: <input name="usernameInput"/>
+                    </label>
+                    <br/>
+                    <label>
+                        Password: <input name="passwordInput"/>
+                    </label>
+                    <br/>
+                    <button type="submit">Register</button>
+                </form>
+                {formState === FormStatus.BadEmailInput && <p>Email entered incorrectly. Use the form name@domain.com</p>}
+                {formState === FormStatus.BadEmailInDb && <p>Email already in db! Try logging in instead.</p>}
+                {formState === FormStatus.BadUsernameInput && <p>Username entered incorrectly. Usernames must not contain any special characters and must be longer than 3 characters</p>}
+                {formState === FormStatus.BadUsernameAlreadyInDb && <p>Username already in db! Please choose another one</p>}
+                {formState === FormStatus.BadPasswordInput && <p>Bad Password, Passwords must not contain any special characters and must be longer than 3 characters</p>}
+                {formState === FormStatus.Success && <p>User successfully registered! Please Log in.</p>}
+            </div>
+        )
+    }
+
 }
 
 export default UserSignupForm;
