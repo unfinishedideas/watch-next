@@ -95,7 +95,7 @@ public class WatchNextDB
 
 	public static User? GetUserByEmail(string email)
 	{
-		User? user = _users.SingleOrDefault(user => user.primary_email == email);
+		User? user = _users.SingleOrDefault(user => user.primary_email == email.ToLower());
 		if (user == null)
 		{
 			throw new Exception("User not found");
@@ -122,12 +122,12 @@ public class WatchNextDB
 		{
 			throw new Exception("Invalid user input data");
 		}
-		User? existingUser = _users.SingleOrDefault(u => u.primary_email == req.user.primary_email);
+		User? existingUser = _users.SingleOrDefault(u => u.primary_email == req.user.primary_email.ToLower());
 		if (existingUser != null)
 		{
 			throw new Exception("User already exists");
 		}
-		User toAdd = new() { user_id = Guid.NewGuid(), user_name = req.user.user_name, primary_email = req.user.primary_email, deleted = false, password_hash = passwordHasher.Hash(req.password) };
+		User toAdd = new() { user_id = Guid.NewGuid(), user_name = req.user.user_name.ToLower(), primary_email = req.user.primary_email.ToLower(), deleted = false, password_hash = passwordHasher.Hash(req.password.ToLower()) };
 		_users.Add(toAdd);
 		return new UserFrontend() { user_id = toAdd.user_id, user_name = toAdd.user_name, primary_email = toAdd.primary_email, deleted = false };
 	}
@@ -168,7 +168,7 @@ public class WatchNextDB
         {
             throw new Exception("User was not found");
         }
-		bool verified = passwordHasher.Verify(req.password, user.password_hash);
+		bool verified = passwordHasher.Verify(req.password.ToLower(), user.password_hash);
 		if (!verified)
 		{
 			throw new Exception("Password is incorrect");
