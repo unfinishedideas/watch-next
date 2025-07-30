@@ -135,7 +135,7 @@ namespace WatchNext.MovieLists
 				return Results.NotFound();
 			}
 
-			// Check to see if user is already in movie list
+			// Check to see if user is already associated with movie list
 			var res1 = await conn.QueryFirstOrDefaultAsync(
 				"SELECT * FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id"	,
 				new { req.user_id, req.list_id }
@@ -145,13 +145,23 @@ namespace WatchNext.MovieLists
 				return Results.BadRequest("User already associated with list");
 			}
 
-
 			var res2 = await conn.QueryFirstOrDefaultAsync(
 				@"INSERT INTO user_movie_lists (user_id, list_id) VALUES (@user_id, @list_id)", 
 				new { req.user_id, req.list_id }
 			);
-
 			return Results.Ok(res2);
+		}
+
+		public async Task<IResult> RemoveUserFromMovieList(UpdateUserMovieListRequest req, string connStr)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryFirstOrDefaultAsync(
+				"DELETE FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id;", 
+				new { req.user_id, req.list_id }
+			);
+			return Results.Ok(res);
 		}
 
 		// TODO: Make this more explicit than a bool so user knows what went wrong
@@ -160,11 +170,9 @@ namespace WatchNext.MovieLists
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
 
-			// Check to see if list is in db
 			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
 				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.list_id }
 			);
-			// Check to see if user is in db
 			var existingUser = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
 				"SELECT * FROM users WHERE id=@user_id", new { req.user_id }
 			);
