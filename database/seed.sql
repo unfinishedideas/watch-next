@@ -4,7 +4,7 @@ INSERT INTO users (username, email, password_hash, deleted)
 SELECT
     'user_' || gs.id AS username,
     'user_' || gs.id || '@example.com' AS email,
-    '7715F5391F6785727C85D375E14787A5FC3E2697AA83AA1BF8165B5A1402EEBC-7F6D77B0645E6EB3CBC8FEE9172570A8' AS password_hash,
+    '7715F5391F6785727C85D375E14787A5FC3E2697AA83AA1BF8165B5A1402EEBC-7F6D77B0645E6EB3CBC8FEE9172570A8' AS password_hash,   -- everyone has 123456 as password
     (random() < 0.5)::boolean
 FROM generate_series(1,30) AS gs(id);
 
@@ -49,6 +49,7 @@ FROM numbered;
 INSERT INTO movie_lists(list_title)
 VALUES
 ('Timmy and Jannys Crappy List'),
+('David Lynch Is Not Playing Around'),
 ('David Lynch Is Not Playing Around');
 
 

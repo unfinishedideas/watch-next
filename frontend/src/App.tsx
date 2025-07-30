@@ -13,6 +13,7 @@ const queryClient = new QueryClient();
 function App()
 {
     const [user, setUser] = useState(null);
+//<FeedScreen/> : <LoginScreen/>
     
     return(
         <QueryClientProvider client={queryClient}>
@@ -20,7 +21,7 @@ function App()
                 <div className="app-container">
                     <Header/>
                     {user ? 
-                        <FeedScreen/> : <LoginScreen/>
+                        <div/> : <LoginScreen/>
                     }
                 </div>
             </UserContext.Provider>
