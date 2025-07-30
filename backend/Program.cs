@@ -39,7 +39,7 @@ app.MapGet("users/", (string email) => uAPI.GetUser(email, connStr));
 app.MapGet("users/{id}", (Guid id) => uAPI.GetUserById(id, connStr));
 app.MapPost("users/delete", (LoginUserRequest req) => uAPI.DeleteUser(req, pHasher, connStr));
 app.MapPut("users/", (UpdateUserRequest req) => uAPI.UpdateUser(req, connStr, pHasher));
-// TODO: DeleteUser()
+app.MapGet("users/all", () => uAPI.GetUsers(connStr));
 // TODO: GetUsers()
 
 // Movie Lists

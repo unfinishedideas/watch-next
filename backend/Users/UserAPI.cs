@@ -201,6 +201,17 @@ namespace WatchNext.Users
 			return Results.Ok(res);
 		}
 
+		public async Task<IResult> GetUsers(string connStr)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryAsync<UserFrontend>(
+				"SELECT * FROM users WHERE deleted=false;"
+			);
+			return Results.Ok(res);
+		}
+
 		// TODO: Write email validator function!		public bool IsValidEmail(string email){}
 		// TODO: Write password validator function!		public bool IsValidPassword(string password){}
 	}
