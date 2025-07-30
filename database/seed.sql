@@ -1,5 +1,5 @@
 -- USERS -----------------------------------------------------------------------
--- Generated
+-- Generated --
 INSERT INTO users (username, email, password_hash, deleted)
 SELECT
     'user_' || gs.id AS username,
@@ -8,7 +8,7 @@ SELECT
     (random() < 0.5)::boolean
 FROM generate_series(1,30) AS gs(id);
 
--- Custom Users
+-- Custom Users --
 INSERT INTO users (username, email, password_hash)
 VALUES
 ('janny', 'jan@jan.com', '1CFFDAE473B95719F3650370ABB498EC1D201B9EC5A8F5AAC8B602B2708751DC-F9CEEFFD9ABDA407072A5308AD68B765'),    
@@ -17,7 +17,7 @@ VALUES
 
 
 -- MOVIE LISTS -----------------------------------------------------------------
--- Generated
+-- Generated --
 WITH titles AS (
     SELECT unnest(ARRAY[
         'Top Picks', 'Must Watch', 'Favorites', 'Weekend Watchlist', 'Critically Acclaimed',
@@ -45,7 +45,7 @@ SELECT
     genre || ' - ' || label AS list_title
 FROM numbered;
 
--- Custom Lists
+-- Custom Lists --
 INSERT INTO movie_lists(list_title)
 VALUES
 ('Timmy and Jannys Crappy List'),
@@ -53,7 +53,7 @@ VALUES
 
 
 -- USER_MOVIE_LISTS ------------------------------------------------------------
--- Generated
+-- Generated --
 INSERT INTO user_movie_lists (user_id, list_id)
 SELECT
     u.id,
@@ -65,7 +65,7 @@ LATERAL (
     SELECT id FROM movie_lists ORDER BY RANDOM() limit 3
 ) as ml;
 
--- Custom relations
+-- Custom Relations --
 INSERT INTO user_movie_lists (user_id, list_id)
 SELECT
     u.id,
@@ -106,8 +106,8 @@ WHERE u.email = 'tim@tim.com'
 );
 
 
--- MOVIES
--- Generated
+-- MOVIES ----------------------------------------------------------------------
+-- Generated --
 WITH titles AS (
   SELECT unnest(ARRAY[
     'The Last Horizon', 'Midnight Mirage', 'Echoes of Tomorrow', 'Shadows of the Past',
@@ -129,8 +129,9 @@ SELECT gen_random_uuid(), movie_title
 FROM titles
 LIMIT 50;
 
--- MOVIE_LIST_MOVIES
--- Generated
+
+-- MOVIE_LIST_MOVIES -----------------------------------------------------------
+-- Generated --
 INSERT INTO movie_list_movies (movie_id, list_id)
 SELECT
     m.id,
