@@ -40,10 +40,11 @@ namespace WatchNext.MovieLists
 			await conn.OpenAsync();
 
 			var res = await conn.QueryAsync<UserFrontend>(
-				@"SELECT id, username, email, created_at, deleted
-				FROM user_movie_lists UML RIGHT JOIN users U
-				ON UML.user_id = U.id
-				WHERE list_id=@list_id;",
+				@"SELECT u.*
+				FROM users u
+				JOIN user_movie_lists uml ON u.id = uml.user_id
+				JOIN movie_lists ml ON uml.list_id = ml.id
+				WHERE ml.id = @list_id",
 			new { list_id });
 
 			return Results.Ok(res);

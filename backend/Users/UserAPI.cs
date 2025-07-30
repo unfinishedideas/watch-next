@@ -136,9 +136,12 @@ namespace WatchNext.Users
 			await conn.OpenAsync();
 
 			var res = await conn.QueryAsync<MovieList>(
-				@"SELECT id, list_title	FROM user_movie_lists UML
-				RIGHT JOIN movie_lists ML ON UML.list_id = ML.id 
-				WHERE user_id=@user_id;",
+				@"SELECT ml.*
+				FROM movie_lists ml
+				JOIN user_movie_lists uml ON ml.id = uml.list_id
+				JOIN users u on uml.user_id = u.id
+				WHERE u.id = @user_id;
+				",
 			new { user_id });
 
 			return Results.Ok(res);
