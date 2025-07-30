@@ -2,6 +2,23 @@ using WatchNext.MovieLists;
 using WatchNext.Users;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Fix CORS for development builds on the same machine
+var DevCorsPolicy = "_devCorsPolicy";
+if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(name: DevCorsPolicy,
+            policy =>
+            {
+                policy
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+    });
+}
 var app = builder.Build();
 
 string? connStr = builder.Configuration.GetConnectionString("Debug");
@@ -21,6 +38,8 @@ app.MapGet("users/movie-lists", (Guid user_id) => uAPI.GetUserMovieLists(user_id
 app.MapGet("users/", (string email) => uAPI.GetUser(email, connStr));
 app.MapGet("users/{id}", (Guid id) => uAPI.GetUserById(id, connStr));
 app.MapPut("users/", (UpdateUserRequest req) => uAPI.UpdateUser(req, connStr, pHasher));
+// TODO: DeleteUser()
+// TODO: GetUsers()
 
 // Movie Lists
 app.MapGet("movie-lists/title", (string listTitle) => mlAPI.GetMovieListsByTitle(listTitle, connStr));
@@ -29,69 +48,16 @@ app.MapGet("movie-lists/users", (Guid list_id) => mlAPI.GetMovieListUsers(list_i
 app.MapPost("movie-lists/", (string listTitle) => mlAPI.CreateMovieList(listTitle, connStr));
 app.MapPut("movie-lists/", (UpdateMovieListRequest req) => mlAPI.UpdateMovieList(req, connStr));
 app.MapDelete("movie-lists/", (Guid list_id) => mlAPI.DeleteMovieList(list_id, connStr));
+// TODO: GetMovieLists()
+// TODO: AddUserToMovieList()
+// TODO: RemoveUserFromMovieList()
+// TODO: AddMovieToMovieList()
+// TODO: RemoveMovieFromMovieList()
+
+// Movies
+// TODO: CreateMovie()
+// TODO: GetMovie()
+// TODO: UpdateMovie()
+// TODO: DeleteMovie()
 
 app.Run();
-
-
-
-
-/*
-TODO: DELETE THIS AS SOON AS FULL FUNCTIONALITY RETURNED
-using WatchNext.DB;
-using WatchNext.Users;
-
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddOpenApi();
-PasswordHasher hasher = new PasswordHasher();   // TODO: Look into making a singleton instead
-
-// Fix CORS for development builds on the same machine
-var DevCorsPolicy = "_devCorsPolicy";
-if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-{
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy(name: DevCorsPolicy,
-            policy =>
-            {
-                policy
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-            });
-    });
-}
-
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseCors(DevCorsPolicy);
-    app.MapOpenApi();   // navigate to http://localhost:{port}/openapi/v1.json to see the docs
-}
-
-// TODO: Look into turning these into builder services instead of app.map (see Users folder for start of that)
-// USERS
-app.MapGet("/users", () => WatchNextDB.GetUsers());
-app.MapGet("/users/{id}", (Guid id) => WatchNextDB.GetUser(id));
-app.MapPost("/users/login", (LoginUserRequest req) => WatchNextDB.LoginUser(req, hasher));
-app.MapPost("/users", (CreateUserRequest req) => WatchNextDB.CreateUser(req, hasher)); 
-app.MapPut("/users", (User update) => WatchNextDB.UpdateUser(update)); 
-app.MapDelete("/users/{id}", (Guid id) => WatchNextDB.DeleteUser(id)); 
-
-// MOVIES
-app.MapGet("/movies", () => WatchNextDB.GetMovies());
-app.MapGet("/movies/{id}", (Guid id) => WatchNextDB.GetMovie(id));
-app.MapPost("/movies", (Movie movie) => WatchNextDB.CreateMovie(movie)); 
-app.MapPut("/movies",(Movie update) => WatchNextDB.UpdateMovie(update)); 
-app.MapDelete("/movies/{id}", (Guid id) => WatchNextDB.DeleteMovie(id)); 
-
-// LISTS
-app.MapGet("/lists", () => WatchNextDB.GetMovieLists());
-app.MapGet("/lists/{id}", (Guid id) => WatchNextDB.GetMovieList(id));
-app.MapPost("/lists", (MovieList list) => WatchNextDB.CreateMovieList(list)); 
-app.MapPut("/lists", (MovieList update) => WatchNextDB.UpdateMovieList(update)); 
-app.MapDelete("/lists/{id}", (Guid id) => WatchNextDB.DeleteMovieList(id)); 
-
-app.Run();
-*/
