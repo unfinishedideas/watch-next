@@ -129,17 +129,11 @@ namespace WatchNext.MovieLists
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
 
-			// Check to see if list is in db
-			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
-				"SELECT * FROM user_movie_lists WHERE list_id=@list_id", new { req.list_id }
-			);
-			if (existingList == null) return Results.NotFound();
-
-			// Check to see if user is in db
-			var existingUser = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
-				"SELECT * FROM users WHERE id=@user_id", new { req.user_id }
-			);
-			if (existingUser == null) return Results.NotFound();
+			bool isValid = await IsUserAndListValid(req, connStr);
+			if (!isValid)
+			{
+				return Results.NotFound();
+			}
 
 			// Check to see if user is already in movie list
 			var res1 = await conn.QueryFirstOrDefaultAsync(
@@ -147,7 +141,10 @@ namespace WatchNext.MovieLists
 				new { req.user_id, req.list_id }
 			);
 			if (res1 != null)
+			{
 				return Results.BadRequest("User already associated with list");
+			}
+
 
 			var res2 = await conn.QueryFirstOrDefaultAsync(
 				@"INSERT INTO user_movie_lists (user_id, list_id) VALUES (@user_id, @list_id)", 
@@ -155,6 +152,27 @@ namespace WatchNext.MovieLists
 			);
 
 			return Results.Ok(res2);
+		}
+
+		// TODO: Make this more explicit than a bool so user knows what went wrong
+		private async Task<bool> IsUserAndListValid(UpdateUserMovieListRequest req, string connStr)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			// Check to see if list is in db
+			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
+				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.list_id }
+			);
+			// Check to see if user is in db
+			var existingUser = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
+				"SELECT * FROM users WHERE id=@user_id", new { req.user_id }
+			);
+			if (existingUser == null || existingList == null)
+			{
+				return false;
+			}
+			return true;
 		}
 
 		private static bool EnsureMinimumLength(string toCheck, int length)
