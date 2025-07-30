@@ -100,17 +100,22 @@ namespace WatchNext.MovieLists
 			return toCheck.Length >= length;
 		}
 
-		public async Task<IResult> DeleteMovieList(string id, string connStr)
+		public async Task<IResult> DeleteMovieList(Guid list_id, string connStr)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
 
-			var res = await conn.QueryFirstOrDefaultAsync(
-				"DELETE * FROM movie_lists WHERE id = @id", new {id}
+			// Delete associations in join tables first
+			var res1 = await conn.QueryAsync(
+				"DELETE FROM user_movie_lists WHERE list_id=@list_id", new { list_id });
+			var res2 = await conn.QueryAsync(
+				"DELETE FROM movie_list_movies WHERE list_id=@list_id", new { list_id });
+			// Delete actual movie_list from db
+			var res3 = await conn.QueryFirstOrDefaultAsync(
+				"DELETE FROM movie_lists WHERE id = @list_id", new { list_id }
 			);
 
-			return Results.Ok();
-
+			return Results.Ok("Movie list deleted");
 		}
 	}
 

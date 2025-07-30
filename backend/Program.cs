@@ -4,15 +4,15 @@ using WatchNext.Users;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-UserAPI uAPI = new UserAPI();
-MovieListAPI mlAPI = new MovieListAPI();
-
 string? connStr = builder.Configuration.GetConnectionString("Debug");
 if (connStr == null)
 {
 	throw new Exception("API: connStr not set!");
 }
+
 PasswordHasher pHasher = new PasswordHasher();
+UserAPI uAPI = new UserAPI();
+MovieListAPI mlAPI = new MovieListAPI();
 
 // Users
 app.MapPost("users/register", (UserRegister user) => uAPI.RegisterUser(user, connStr, pHasher));
@@ -27,6 +27,7 @@ app.MapGet("movie-lists/", (Guid id) => mlAPI.GetMovieListById(id, connStr));
 app.MapGet("movie-lists/users", (Guid list_id) => mlAPI.GetMovieListUsers(list_id, connStr));
 app.MapPost("movie-lists/", (string listTitle) => mlAPI.CreateMovieList(listTitle, connStr));
 app.MapPut("movie-lists/", (UpdateMovieListRequest req) => mlAPI.UpdateMovieList(req, connStr));
+app.MapDelete("movie-lists/", (Guid list_id) => mlAPI.DeleteMovieList(list_id, connStr));
 
 app.Run();
 
