@@ -53,7 +53,10 @@ namespace WatchNext.Users
 					return Results.NotFound("User not found");
 				}
 			}
-
+			if (user.Deleted == true)
+			{
+				return Results.BadRequest("Cannot log in, User is deleted");
+			}
 			bool isValid = pHasher.Verify(req.password, user.Password_Hash);
 
 			// TODO: return JWT Token 
@@ -72,16 +75,16 @@ namespace WatchNext.Users
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
-			
+
 			email = email.ToLower();
 
 			var user = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
-				"SELECT id, username, email, created_at, deleted FROM users WHERE email = @email", new { email });
+				"SELECT * FROM users WHERE email = @email", new { email });
 			// Try the username if email fails
 			if (user == null)
 			{
 				user = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
-				"SELECT id, username, email, created_at, deleted FROM users WHERE username = @email", new { email });
+				"SELECT * FROM users WHERE username = @email", new { email });
 				if (user == null)
 				{
 					return Results.NotFound("User not found");
@@ -127,9 +130,9 @@ namespace WatchNext.Users
 
 			// update user info
 			string newPassword = "";
-			if (req.new_password != null) 
+			if (req.new_password != null)
 				newPassword = pHasher.Hash(req.new_password);
-			else						  
+			else
 				newPassword = existingUser.Password_Hash;
 
 			bool newDeleted = req.deleted ?? existingUser.Deleted;
@@ -158,6 +161,43 @@ namespace WatchNext.Users
 				",
 			new { user_id });
 
+			return Results.Ok(res);
+		}
+
+		public async Task<IResult> DeleteUser(LoginUserRequest req, PasswordHasher pHasher, string connStr)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			string email = req.email.ToLower();
+
+			var user = await conn.QueryFirstOrDefaultAsync<User>(
+				"SELECT * FROM users WHERE email = @email", new { email });
+			// Try the username if email fails
+			if (user == null)
+			{
+				user = await conn.QueryFirstOrDefaultAsync<User>(
+					"SELECT * FROM users WHERE username = @email", new { email });
+				if (user == null)
+				{
+					return Results.NotFound("User not found");
+				}
+			}
+			if (user.Deleted == true)
+			{
+				return Results.BadRequest("User is already deleted");
+			}
+			bool isValid = pHasher.Verify(req.password, user.Password_Hash);
+			if (!isValid)
+			{
+				return Results.Unauthorized();
+			}
+
+			var res = await conn.QueryAsync(
+				@"UPDATE users SET deleted = true WHERE id = @id
+				RETURNING id, username, email, created_at, deleted;",
+				new { id=user.Id  }
+			);
 			return Results.Ok(res);
 		}
 
