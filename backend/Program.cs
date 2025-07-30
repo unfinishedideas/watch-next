@@ -19,11 +19,12 @@ app.MapPost("users/register", (UserRegister user) => uAPI.RegisterUser(user, con
 app.MapPost("users/login", (LoginUserRequest req) => uAPI.LoginUser(req, connStr, pHasher));
 app.MapGet("users/movie-lists", (Guid user_id) => uAPI.GetUserMovieLists(user_id, connStr));
 app.MapGet("users/", (string email) => uAPI.GetUser(email, connStr));
+app.MapGet("users/{id}", (Guid id) => uAPI.GetUserById(id, connStr));
 app.MapPut("users/", (UpdateUserRequest req) => uAPI.UpdateUser(req, connStr, pHasher));
 
 // Movie Lists
 app.MapGet("movie-lists/title", (string listTitle) => mlAPI.GetMovieListsByTitle(listTitle, connStr));
-app.MapGet("movie-lists/", (Guid id) => mlAPI.GetMovieListById(id, connStr));
+app.MapGet("movie-lists/{id}", (Guid id) => mlAPI.GetMovieListById(id, connStr));
 app.MapGet("movie-lists/users", (Guid list_id) => mlAPI.GetMovieListUsers(list_id, connStr));
 app.MapPost("movie-lists/", (string listTitle) => mlAPI.CreateMovieList(listTitle, connStr));
 app.MapPut("movie-lists/", (UpdateMovieListRequest req) => mlAPI.UpdateMovieList(req, connStr));

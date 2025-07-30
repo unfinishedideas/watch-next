@@ -95,11 +95,6 @@ namespace WatchNext.MovieLists
 			return Results.Ok(res);
 		}
 
-		private static bool EnsureMinimumLength(string toCheck, int length)
-		{
-			return toCheck.Length >= length;
-		}
-
 		public async Task<IResult> DeleteMovieList(Guid list_id, string connStr)
 		{
 			using var conn = new NpgsqlConnection(connStr);
@@ -116,6 +111,11 @@ namespace WatchNext.MovieLists
 			);
 
 			return Results.Ok("Movie list deleted");
+		}
+
+		private static bool EnsureMinimumLength(string toCheck, int length)
+		{
+			return toCheck.Length >= length;
 		}
 	}
 

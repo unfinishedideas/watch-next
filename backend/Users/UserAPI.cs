@@ -90,6 +90,20 @@ namespace WatchNext.Users
 			return Results.Ok(new { user });
 		}
 
+		public async Task<IResult> GetUserById(Guid user_id, string connStr)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+			var user = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
+				"SELECT * FROM users WHERE id=@user_id", new { user_id }
+			);
+			if (user == null)
+			{
+				return Results.NotFound("User not found");
+			}
+			return Results.Ok(new { user });
+		}
+
 		public async Task<IResult> UpdateUser(UpdateUserRequest req, string connStr, PasswordHasher pHasher)
 		{
 			using var conn = new NpgsqlConnection(connStr);
