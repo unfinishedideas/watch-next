@@ -113,6 +113,45 @@ namespace WatchNext.MovieLists
 			return Results.Ok("Movie list deleted");
 		}
 
+		public async Task<IResult> GetMovieLists(string connStr)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryAsync<MovieList>(
+				"SELECT * FROM movie_lists;"
+			);
+			return Results.Ok(res);
+		}
+
+		public async Task<IResult> AddUserToMovieList(UpdateUserMovieListRequest req, string connStr)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			// Check to see if user is in db
+			var existingUser = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
+				"SELECT * FROM users WHERE id=@user_id", new { req.user_id }
+			);
+			if (existingUser == null)
+				return Results.NotFound();
+
+			// Check to see if user is already in movie list
+			var res1 = await conn.QueryFirstOrDefaultAsync(
+				"SELECT * FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id"	,
+				new { req.user_id, req.list_id }
+			);
+			if (res1 != null)
+				return Results.BadRequest("User already associated with list");
+
+			var res2 = await conn.QueryFirstOrDefaultAsync(
+				@"INSERT INTO user_movie_lists (user_id, list_id) VALUES (@user_id, @list_id)", 
+				new { req.user_id, req.list_id }
+			);
+
+			return Results.Ok(res2);
+		}
+
 		private static bool EnsureMinimumLength(string toCheck, int length)
 		{
 			return toCheck.Length >= length;
@@ -123,5 +162,11 @@ namespace WatchNext.MovieLists
 	{
 		public required Guid id { get; set; }
 		public required string listTitle { get; set; }
+	}
+
+	public class UpdateUserMovieListRequest()
+	{
+		public required Guid list_id { get; set; }
+		public required Guid user_id { get; set; }
 	}
 }
