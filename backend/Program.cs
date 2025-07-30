@@ -49,7 +49,7 @@ app.MapPost("movie-lists/", (string listTitle) => mlAPI.CreateMovieList(listTitl
 app.MapPut("movie-lists/", (UpdateMovieListRequest req) => mlAPI.UpdateMovieList(req, connStr));
 app.MapDelete("movie-lists/", (Guid list_id) => mlAPI.DeleteMovieList(list_id, connStr));
 app.MapGet("movie-lists/all", () => mlAPI.GetMovieLists(connStr));
-app.MapPost("movie-lists/{id}/add-user", (UpdateUserMovieListRequest req) => mlAPI.AddUserToMovieList(req, connStr));
+app.MapPost("movie-lists/add-user", (UpdateUserMovieListRequest req) => mlAPI.AddUserToMovieList(req, connStr));
 // TODO: RemoveUserFromMovieList()
 // TODO: AddMovieToMovieList()
 // TODO: RemoveMovieFromMovieList()

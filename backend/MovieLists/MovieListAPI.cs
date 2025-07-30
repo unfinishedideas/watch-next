@@ -129,12 +129,17 @@ namespace WatchNext.MovieLists
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
 
+			// Check to see if list is in db
+			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
+				"SELECT * FROM user_movie_lists WHERE list_id=@list_id", new { req.list_id }
+			);
+			if (existingList == null) return Results.NotFound();
+
 			// Check to see if user is in db
 			var existingUser = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
 				"SELECT * FROM users WHERE id=@user_id", new { req.user_id }
 			);
-			if (existingUser == null)
-				return Results.NotFound();
+			if (existingUser == null) return Results.NotFound();
 
 			// Check to see if user is already in movie list
 			var res1 = await conn.QueryFirstOrDefaultAsync(
