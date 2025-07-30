@@ -10,7 +10,8 @@ namespace WatchNext.Users
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
 
-			var passwordHash = pHasher.Hash(user.Password);
+			user.LowercaseFields();
+			string passwordHash = pHasher.Hash(user.Password);
 
 			var res = await conn.QueryFirstOrDefaultAsync<User>(
 				@"INSERT INTO users (username, email, password_hash)
@@ -37,13 +38,15 @@ namespace WatchNext.Users
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
 
+			string email = req.email.ToLower();
+
 			var user = await conn.QueryFirstOrDefaultAsync<User>(
-				"SELECT * FROM users WHERE email = @email", new { req.email });
+				"SELECT * FROM users WHERE email = @email", new { email });
 			// Try the username if email fails
 			if (user == null)
 			{
 				user = await conn.QueryFirstOrDefaultAsync<User>(
-					"SELECT * FROM users WHERE username = @email", new { req.email });
+					"SELECT * FROM users WHERE username = @email", new { email });
 				if (user == null)
 				{
 					return Results.NotFound("User not found");
@@ -68,6 +71,8 @@ namespace WatchNext.Users
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
+			
+			email = email.ToLower();
 
 			var user = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
 				"SELECT id, username, email, created_at, deleted FROM users WHERE email = @email", new { email });
@@ -105,21 +110,14 @@ namespace WatchNext.Users
 
 			// update user info
 			string newPassword = "";
-			if (req.new_password != null)
-			{
+			if (req.new_password != null) 
 				newPassword = pHasher.Hash(req.new_password);
-			}
-			bool newDeleted = false;
-			if (req.new_deleted == null)
-			{
-				newDeleted = existingUser.Deleted;
-			}
-			string newUsername = req.new_username ?? existingUser.Username;
-			string newEmail = req.new_email ?? existingUser.Email;
-			if (newPassword == "")
-			{
+			else						  
 				newPassword = existingUser.Password_Hash;
-			}
+
+			bool newDeleted = req.deleted ?? existingUser.Deleted;
+			string newUsername = req.username ?? existingUser.Username;
+			string newEmail = req.email ?? existingUser.Email;
 
 			var res = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
 				@"UPDATE users SET username = @newUsername, email = @newEmail, password_hash = @newPassword, deleted = @newDeleted WHERE id = @id
@@ -140,13 +138,10 @@ namespace WatchNext.Users
 	public class UpdateUserRequest
 	{
 		public required Guid id { get; set; }
-		public required string email { get; set; }
 		public required string password { get; set; }
-		public required string username { get; set; }
-		public required bool deleted { get; set; }
-		public string? new_email { get; set; }
+		public string? email { get; set; }
+		public string? username { get; set; }
+		public bool? deleted { get; set; }
 		public string? new_password { get; set; }
-		public string? new_username { get; set; }
-		public bool? new_deleted { get; set; }
 	}
 }
