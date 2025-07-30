@@ -23,6 +23,6 @@
 		required public string Username { get; set; } = "";
 		required public string Email { get; set; } = "";
 		required public bool Deleted { get; set; } = false;
-		public DateTime CreatedAt { get; set; }
+		public DateTime Created_At { get; set; }
 	}
 }

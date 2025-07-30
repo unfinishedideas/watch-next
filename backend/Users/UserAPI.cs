@@ -26,7 +26,7 @@ namespace WatchNext.Users
 				Username = res.Username,
 				Email = res.Email,
 				Deleted = res.Deleted,
-				CreatedAt = res.Created_At,
+				Created_At = res.Created_At,
 			};
 
 			return Results.Ok(newUser);
@@ -59,7 +59,7 @@ namespace WatchNext.Users
 				Username = user.Username,
 				Email = user.Email,
 				Deleted = user.Deleted,
-				CreatedAt = user.Created_At,
+				Created_At = user.Created_At,
 			};
 			return isValid ? Results.Ok(new { loggedInUser }) : Results.Unauthorized();
 		}
@@ -81,8 +81,52 @@ namespace WatchNext.Users
 					return Results.NotFound("User not found");
 				}
 			}
-
 			return Results.Ok(new { user });
+		}
+
+		public async Task<IResult> UpdateUser(UpdateUserRequest req, string connStr, PasswordHasher pHasher)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			// see if the user exists
+			var existingUser = await conn.QueryFirstOrDefaultAsync<User>(
+				"SELECT * FROM users WHERE id = @id", new { req.id });
+
+			if (existingUser is null)
+				return Results.NotFound("User not found.");
+
+			// verify the user has a correct password
+			bool isValid = pHasher.Verify(req.password, existingUser.Password_Hash);
+			if (!isValid)
+			{
+				return Results.Unauthorized();
+			}
+
+			// update user info
+			string newPassword = "";
+			if (req.new_password != null)
+			{
+				newPassword = pHasher.Hash(req.new_password);
+			}
+			bool newDeleted = false;
+			if (req.new_deleted == null)
+			{
+				newDeleted = existingUser.Deleted;
+			}
+			string newUsername = req.new_username ?? existingUser.Username;
+			string newEmail = req.new_email ?? existingUser.Email;
+			if (newPassword == "")
+			{
+				newPassword = existingUser.Password_Hash;
+			}
+
+			var res = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
+				@"UPDATE users SET username = @newUsername, email = @newEmail, password_hash = @newPassword, deleted = @newDeleted WHERE id = @id
+				RETURNING id, username, email, created_at, deleted;",
+				new { newUsername, newEmail, newPassword, newDeleted, req.id });
+
+			return Results.Ok(res);
 		}
 
 	}
@@ -91,5 +135,18 @@ namespace WatchNext.Users
 	{
 		public required string email { get; set; }
 		public required string password { get; set; }
+	}
+
+	public class UpdateUserRequest
+	{
+		public required Guid id { get; set; }
+		public required string email { get; set; }
+		public required string password { get; set; }
+		public required string username { get; set; }
+		public required bool deleted { get; set; }
+		public string? new_email { get; set; }
+		public string? new_password { get; set; }
+		public string? new_username { get; set; }
+		public bool? new_deleted { get; set; }
 	}
 }

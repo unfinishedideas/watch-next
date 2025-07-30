@@ -17,6 +17,7 @@ PasswordHasher pHasher = new PasswordHasher();
 app.MapPost("users/register", (UserRegister user) => uAPI.RegisterUser(user, connStr, pHasher));
 app.MapPost("users/login", (LoginUserRequest req) => uAPI.LoginUser(req, connStr, pHasher));
 app.MapGet("users/", (string email) => uAPI.GetUser(email, connStr));
+app.MapPut("users/", (UpdateUserRequest req) => uAPI.UpdateUser(req, connStr, pHasher));
 
 app.Run();
 
