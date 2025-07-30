@@ -20,11 +20,16 @@ They can leave reviews, comments and share lists publicly or privately.
 - navigate to the backend directory `./backend` with a shell 
 - build and run the backend with `dotnet run`
 
+- Install postgreSQL on server
+- Create `.env` file based on `example.env`
+- Run `python ./database/init.py` to setup a database with some preconfigured users
+
 ## Technology
 
 - React + Vite
 - Typescript + SWC
 - ASP.NET Core / C# (for minimal api)
+- PostgreSQL (for database)
 
 ## Created by Peter Wells
 

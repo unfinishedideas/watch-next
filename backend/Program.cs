@@ -1,5 +1,3 @@
-using Dapper;
-using Npgsql;
 using WatchNext.Users;
 
 var builder = WebApplication.CreateBuilder(args);

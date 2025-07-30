@@ -103,7 +103,7 @@ namespace WatchNext.Users
 			if (existingUser is null)
 				return Results.NotFound("User not found.");
 
-			// verify the user has a correct password
+			// verify the user has the correct password
 			bool isValid = pHasher.Verify(req.password, existingUser.Password_Hash);
 			if (!isValid)
 			{
