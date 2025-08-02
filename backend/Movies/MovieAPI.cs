@@ -20,7 +20,15 @@ namespace WatchNext.Movies
 
 			if (existingMovie != null)
 			{
-				return Results.Conflict("Movie already in database");
+				bool sameTitle = newMovie.Title == existingMovie.Title;
+				bool sameRelease = newMovie.Release_Date == existingMovie.Release_Date;
+				bool sameDirector = newMovie.Director == existingMovie.Director;
+				//bool sameGenre = newMovie.Genre == existingMovie.Genre;
+				
+				if (sameTitle && sameRelease && sameDirector)
+				{
+					return Results.Conflict("Movie already in database");
+				}
 			}
 			var res = await conn.QueryFirstOrDefaultAsync<Movie>(
 				@"INSERT INTO movies (title, release_date, director, genre)
@@ -38,16 +46,72 @@ namespace WatchNext.Movies
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
 
-			var movieList = await conn.QueryAsync<Movie>(
+			var movie = await conn.QueryFirstOrDefaultAsync<Movie>(
 			"SELECT * FROM movies WHERE id = @movie_id", new { movie_id });
-			if (movieList == null)
+			if (movie == null)
 			{
-				return Results.NotFound("MovieList not found");
+				return Results.NotFound("Movie not found");
 			}
-			return Results.Ok(new { movieList });
+			return Results.Ok(new { movie });
 		}
 
-		// TODO: GetMovieByTitle()
+		public async Task<IResult> GetMoviesByTitle(string title)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			var movie = await conn.QueryAsync<Movie>(
+				"SELECT * FROM movies WHERE title=@title", new { title });
+			if (movie == null)
+			{
+				return Results.NotFound("Movie not found");
+			}
+			return Results.Ok(new { movie });
+		}
+
+		public async Task<IResult> GetMoviesByDirector(string director)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			var movies = await conn.QueryAsync<Movie>(
+				"SELECT * FROM movies WHERE director=@director", new { director });
+			if (movies == null)
+			{
+				return Results.NotFound("No movies found");
+			}
+			return Results.Ok(new { movies });
+		}
+
+		public async Task<IResult> GetMoviesByGenre(string genre)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			var movies = await conn.QueryAsync<Movie>(
+				"SELECT * FROM movies WHERE genre=@genre", new { genre });
+			if (movies == null)
+			{
+				return Results.NotFound("No movies found");
+			}
+			return Results.Ok(new { movies });
+		}
+
+		public async Task<IResult> GetMoviesByYear(int year)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			var movies = await conn.QueryAsync<Movie>(
+				"SELECT * FROM movies WHERE EXTRACT(YEAR FROM release_date) = @year", new { year });
+			if (movies == null)
+			{
+				return Results.NotFound("No movies found");
+			}
+			return Results.Ok(new { movies });
+		}
+
+		// TODO: GetMoviesByGenre()
 		// TODO: UpdateMovie()
 		// TODO: DeleteMovie()
 	}

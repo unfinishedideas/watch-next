@@ -10,7 +10,6 @@
 		required public string Genre { get; set; }
 		// TODO: Reintroduce these
 		//required public string imdb_id { get; set; }
-
 	}
 	public sealed class MovieRegister
 	{
