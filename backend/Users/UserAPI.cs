@@ -6,7 +6,9 @@ namespace WatchNext.Users
 {
 	public class UserAPI
 	{
-		public async Task<IResult> RegisterUser(UserRegister user, string connStr, PasswordHasher pHasher)
+		public required string connStr {  get; set; }
+
+		public async Task<IResult> RegisterUser(UserRegister user, PasswordHasher pHasher)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -34,7 +36,7 @@ namespace WatchNext.Users
 			return Results.Ok(newUser);
 		}
 
-		public async Task<IResult> LoginUser(LoginUserRequest req, string connStr, PasswordHasher pHasher)
+		public async Task<IResult> LoginUser(LoginUserRequest req,  PasswordHasher pHasher)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -71,7 +73,7 @@ namespace WatchNext.Users
 			return isValid ? Results.Ok(new { loggedInUser }) : Results.Unauthorized();
 		}
 
-		public async Task<IResult> GetUser(string email, string connStr)
+		public async Task<IResult> GetUser(string email)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -93,7 +95,7 @@ namespace WatchNext.Users
 			return Results.Ok(new { user });
 		}
 
-		public async Task<IResult> GetUserById(Guid user_id, string connStr)
+		public async Task<IResult> GetUserById(Guid user_id)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -107,7 +109,7 @@ namespace WatchNext.Users
 			return Results.Ok(new { user });
 		}
 
-		public async Task<IResult> UpdateUser(UpdateUserRequest req, string connStr, PasswordHasher pHasher)
+		public async Task<IResult> UpdateUser(UpdateUserRequest req,  PasswordHasher pHasher)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -147,7 +149,7 @@ namespace WatchNext.Users
 			return Results.Ok(res);
 		}
 
-		public async Task<IResult> GetUserMovieLists(Guid user_id, string connStr)
+		public async Task<IResult> GetUserMovieLists(Guid user_id)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -164,7 +166,7 @@ namespace WatchNext.Users
 			return Results.Ok(res);
 		}
 
-		public async Task<IResult> DeleteUser(LoginUserRequest req, PasswordHasher pHasher, string connStr)
+		public async Task<IResult> DeleteUser(LoginUserRequest req, PasswordHasher pHasher)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -201,7 +203,7 @@ namespace WatchNext.Users
 			return Results.Ok(res);
 		}
 
-		public async Task<IResult> GetUsers(string connStr)
+		public async Task<IResult> GetUsers()
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();

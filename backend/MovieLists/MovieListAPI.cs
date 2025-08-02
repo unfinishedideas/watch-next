@@ -1,12 +1,15 @@
 ﻿using Dapper;
 using Npgsql;
+using WatchNext.Movies;
 using WatchNext.Users;
 
 namespace WatchNext.MovieLists
 {
 	public class MovieListAPI
 	{
-		public async Task<IResult> GetMovieListsByTitle(string listTitle, string connStr)
+		public required string connStr {  get; set; }
+
+		public async Task<IResult> GetMovieListsByTitle(string listTitle)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -20,7 +23,7 @@ namespace WatchNext.MovieLists
 			return Results.Ok(new { movieList });
 		}
 
-		public async Task<IResult> GetMovieListById(Guid id, string connStr)
+		public async Task<IResult> GetMovieListById(Guid id)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -34,7 +37,7 @@ namespace WatchNext.MovieLists
 			return Results.Ok(new { movieList });
 		}
 
-		public async Task<IResult> GetMovieListUsers(Guid list_id, string connStr)
+		public async Task<IResult> GetMovieListUsers(Guid list_id)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -50,7 +53,23 @@ namespace WatchNext.MovieLists
 			return Results.Ok(res);
 		}
 
-		public async Task<IResult> CreateMovieList(string listTitle, string connStr)
+		public async Task<IResult> GetMovieListMovies(Guid list_id)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryAsync<Movie>(
+				@"SELECT m.*
+				FROM movies m
+				JOIN movie_list_movies mlm ON m.id = mlm.movie_id
+				JOIN movie_lists ml ON mlm.list_id = ml.id
+				WHERE ml.id = @list_id;",
+			new { list_id });
+
+			return Results.Ok(res);
+		}
+
+		public async Task<IResult> CreateMovieList(string listTitle)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -74,7 +93,7 @@ namespace WatchNext.MovieLists
 			return Results.Ok(new { res });
 		}
 
-		public async Task<IResult> UpdateMovieList(UpdateMovieListRequest req,  string connStr)
+		public async Task<IResult> UpdateMovieList(UpdateMovieListRequest req)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -95,7 +114,7 @@ namespace WatchNext.MovieLists
 			return Results.Ok(res);
 		}
 
-		public async Task<IResult> DeleteMovieList(Guid list_id, string connStr)
+		public async Task<IResult> DeleteMovieList(Guid list_id)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -113,7 +132,7 @@ namespace WatchNext.MovieLists
 			return Results.Ok("Movie list deleted");
 		}
 
-		public async Task<IResult> GetMovieLists(string connStr)
+		public async Task<IResult> GetMovieLists()
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -124,12 +143,12 @@ namespace WatchNext.MovieLists
 			return Results.Ok(res);
 		}
 
-		public async Task<IResult> AddUserToMovieList(UpdateUserMovieListRequest req, string connStr)
+		public async Task<IResult> AddUserToMovieList(UpdateUserMovieListRequest req)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
 
-			bool isValid = await IsUserAndListValid(req, connStr);
+			bool isValid = await IsUserAndListValid(req);
 			if (!isValid)
 			{
 				return Results.NotFound();
@@ -142,7 +161,7 @@ namespace WatchNext.MovieLists
 			);
 			if (res1 != null)
 			{
-				return Results.BadRequest("User already associated with list");
+				return Results.Conflict("User already associated with movie list");
 			}
 
 			var res2 = await conn.QueryFirstOrDefaultAsync(
@@ -152,7 +171,7 @@ namespace WatchNext.MovieLists
 			return Results.Ok(res2);
 		}
 
-		public async Task<IResult> RemoveUserFromMovieList(UpdateUserMovieListRequest req, string connStr)
+		public async Task<IResult> RemoveUserFromMovieList(UpdateUserMovieListRequest req)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
@@ -165,7 +184,7 @@ namespace WatchNext.MovieLists
 		}
 
 		// TODO: Make this more explicit than a bool so user knows what went wrong
-		private async Task<bool> IsUserAndListValid(UpdateUserMovieListRequest req, string connStr)
+		private async Task<bool> IsUserAndListValid(UpdateUserMovieListRequest req)
 		{
 			using var conn = new NpgsqlConnection(connStr);
 			await conn.OpenAsync();
