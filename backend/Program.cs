@@ -1,4 +1,5 @@
 using WatchNext.MovieLists;
+using WatchNext.Movies;
 using WatchNext.Users;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,7 @@ if (connString == null)
 
 PasswordHasher pHasher = new PasswordHasher();
 UserAPI uAPI = new() { connStr = connString };
+MovieAPI mAPI = new() { connStr = connString };
 MovieListAPI mlAPI = new() { connStr = connString };
 
 // Users
@@ -56,8 +58,12 @@ app.MapPost("movie-lists/remove-user", (UpdateUserMovieListRequest req) => mlAPI
 // TODO: RemoveMovieFromMovieList()
 
 // Movies
-// TODO: CreateMovie()
+app.MapPost("movies/", (MovieRegister req) => mAPI.CreateMovie(req));
+app.MapGet("movies/{id}", (Guid id) => mAPI.GetMovieById(id));
 // TODO: GetMovie()
+// TODO: GetMoviesByDirector()
+// TODO: GetMoviesByYear()
+// TODO: GetMoviesByGenre()
 // TODO: UpdateMovie()
 // TODO: DeleteMovie()
 

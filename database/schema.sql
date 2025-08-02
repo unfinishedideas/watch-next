@@ -24,7 +24,10 @@ CREATE TABLE IF NOT EXISTS user_movie_lists (
 
 CREATE TABLE IF NOT EXISTS movies (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    movie_title VARCHAR(50) NOT NULL,
+    title VARCHAR(50) NOT NULL,
+    release_date DATE NOT NULL,
+    director VARCHAR(50) NOT NULL,
+    genre VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

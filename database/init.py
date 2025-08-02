@@ -23,6 +23,9 @@ def main():
     # Optional: seed data
     if os.path.exists("seed.sql"):
         print("Running seed.sql...")
+        run_sql_file("./seed/seed_users.sql", conn)
+        run_sql_file("./seed/seed_movies.sql", conn)
+        run_sql_file("./seed/seed_movie_lists.sql", conn)
         run_sql_file("seed.sql", conn)
 
     print("Database initialized successfully.")
