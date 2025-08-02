@@ -111,7 +111,33 @@ namespace WatchNext.Movies
 			return Results.Ok(new { movies });
 		}
 
-		// TODO: UpdateMovie()
+		public async Task<IResult> UpdateMovie(UpdateMovieRequest req)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			var existingMovie = await conn.QueryFirstOrDefaultAsync<Movie>(
+				"SELECT * FROM movies WHERE id=@id", new {req.Id});
+
+			if (existingMovie == null)
+			{
+				return Results.NotFound("Movie not found");
+			}
+
+			// Update movie info
+			string newTitle = req.Title ?? existingMovie.Title;
+			string newDirector = req.Director ?? existingMovie.Director;
+			string newGenre = req.Genre ?? existingMovie.Genre;
+			DateTime newRelease = req.Release_Date ?? existingMovie.Release_Date;
+
+			var res = await conn.QueryFirstOrDefaultAsync<Movie>(
+				@"UPDATE movies SET title=@newTitle, director=@newDirector, genre=@newGenre, release_date=@newRelease 
+				WHERE id=@id RETURNING *;",
+				new {newTitle, newDirector, newGenre, newRelease, req.Id}
+			);
+
+			return Results.Ok(res);
+		}
 		// TODO: DeleteMovie()
 	}
 }

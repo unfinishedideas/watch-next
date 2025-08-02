@@ -18,4 +18,12 @@
 		required public string Director { get; set; }
 		required public string Genre { get; set; }
 	}
+	public class UpdateMovieRequest()
+	{
+		required public Guid Id { get; set; }
+		public string? Title { get; set; }
+		public DateTime? Release_Date { get; set; }
+		public string? Director { get; set; }
+		public string? Genre { get; set; }
+	}
 }

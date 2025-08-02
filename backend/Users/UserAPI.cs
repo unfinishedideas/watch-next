@@ -216,36 +216,4 @@ namespace WatchNext.Users
 		// TODO: Write email validator function!		public bool IsValidEmail(string email){}
 		// TODO: Write password validator function!		public bool IsValidPassword(string password){}
 	}
-
-	public class LoginUserRequest
-	{
-		public required string email { get; set; }
-		public required string password { get; set; }
-	}
-
-	public class UpdateUserRequest
-	{
-		public required Guid id { get; set; }
-		public required string password { get; set; }
-		public string? email { get; set; }
-		public string? username { get; set; }
-		public bool? deleted { get; set; }
-		public string? new_password { get; set; }
-
-		public void LowercaseFields()
-		{
-			if (email != null)
-			{
-				email = email.ToLower();
-			}
-			if (username != null)
-			{
-				username = username.ToLower();
-			}
-			if (new_password != null)
-			{
-				new_password = new_password.ToLower();
-			}
-		}
-	}
 }

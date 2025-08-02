@@ -64,7 +64,7 @@ app.MapGet("movies/title/{title}/", (string title) => mAPI.GetMoviesByTitle(titl
 app.MapGet("movies/director/{director}/", (string director) => mAPI.GetMoviesByDirector(director));
 app.MapGet("movies/genre/{genre}/", (string genre) => mAPI.GetMoviesByGenre(genre));
 app.MapGet("movies/year/{year}/", (int year) => mAPI.GetMoviesByYear(year));
-// TODO: UpdateMovie()
+app.MapPut("movies/", (UpdateMovieRequest req) => mAPI.UpdateMovie(req));
 // TODO: DeleteMovie()
 
 app.Run();

@@ -207,16 +207,4 @@ namespace WatchNext.MovieLists
 			return toCheck.Length >= length;
 		}
 	}
-
-	public class UpdateMovieListRequest()
-	{
-		public required Guid id { get; set; }
-		public required string listTitle { get; set; }
-	}
-
-	public class UpdateUserMovieListRequest()
-	{
-		public required Guid list_id { get; set; }
-		public required Guid user_id { get; set; }
-	}
 }
