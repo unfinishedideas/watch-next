@@ -29,41 +29,41 @@ if (connString == null)
 }
 
 PasswordHasher pHasher = new PasswordHasher();
-UserAPI uAPI = new() { connStr = connString };
+UserAPI uAPI = new() { ConnStr = connString };
 MovieAPI mAPI = new() { connStr = connString };
-MovieListAPI mlAPI = new() { connStr = connString };
+MovieListAPI mlAPI = new() { ConnStr = connString };
 
 // Users
-app.MapPost("users/register", (UserRegister user) => uAPI.RegisterUser(user, pHasher));
-app.MapPost("users/login", (LoginUserRequest req) => uAPI.LoginUser(req, pHasher));
-app.MapPost("users/delete", (LoginUserRequest req) => uAPI.DeleteUser(req, pHasher));
-app.MapGet("users/movie-lists", (Guid user_id) => uAPI.GetUserMovieLists(user_id));
-app.MapGet("users/", (string email) => uAPI.GetUser(email));
-app.MapGet("users/{id}", (Guid id) => uAPI.GetUserById(id));
-app.MapGet("users/all", () => uAPI.GetUsers());
+app.MapPost("users/", (UserRegister user) => uAPI.RegisterUser(user, pHasher));
+app.MapPost("users/login/", (LoginUserRequest req) => uAPI.LoginUser(req, pHasher));
+app.MapPost("users/delete/", (LoginUserRequest req) => uAPI.DeleteUser(req, pHasher));
+app.MapGet("users/", () => uAPI.GetUsers());
+app.MapGet("users/{id}/", (Guid id) => uAPI.GetUserById(id));
+app.MapGet("users/email/{email}/", (string email) => uAPI.GetUserByEmail(email));
+app.MapGet("users/{id}/movie-lists/", (Guid id) => uAPI.GetUserMovieLists(id));
 app.MapPut("users/", (UpdateUserRequest req) => uAPI.UpdateUser(req, pHasher));
 
 // Movie Lists
 app.MapPost("movie-lists/", (string listTitle) => mlAPI.CreateMovieList(listTitle));
-app.MapPost("movie-lists/add-user", (UpdateUserMovieListRequest req) => mlAPI.AddUserToMovieList(req));
-app.MapPost("movie-lists/remove-user", (UpdateUserMovieListRequest req) => mlAPI.RemoveUserFromMovieList(req));
-app.MapGet("movie-lists/title", (string listTitle) => mlAPI.GetMovieListsByTitle(listTitle));
-app.MapGet("movie-lists/{id}", (Guid id) => mlAPI.GetMovieListById(id));
-app.MapGet("movie-lists/users", (Guid list_id) => mlAPI.GetMovieListUsers(list_id));
-app.MapGet("movie-lists/movies", (Guid list_id) => mlAPI.GetMovieListMovies(list_id));
-app.MapGet("movie-lists/all", () => mlAPI.GetMovieLists());
-app.MapPut("movie-lists/", (UpdateMovieListRequest req) => mlAPI.UpdateMovieList(req));
-app.MapDelete("movie-lists/", (Guid list_id) => mlAPI.DeleteMovieList(list_id));
+app.MapPost("movie-lists/add-user/", (UpdateUserMovieListRequest req) => mlAPI.AddUserToMovieList(req));
+app.MapPost("movie-lists/remove-user/", (UpdateUserMovieListRequest req) => mlAPI.RemoveUserFromMovieList(req));
 // TODO: AddMovieToMovieList()
 // TODO: RemoveMovieFromMovieList()
+app.MapGet("movie-lists/", () => mlAPI.GetAllMovieLists());
+app.MapGet("movie-lists/{id}/", (Guid id) => mlAPI.GetMovieListById(id));
+app.MapGet("movie-lists/title/{listTitle}", (string listTitle) => mlAPI.GetMovieListsByTitle(listTitle));
+app.MapGet("movie-lists/{id}/users/", (Guid id) => mlAPI.GetMovieListUsers(id));
+app.MapGet("movie-lists/{id}/movies/", (Guid id) => mlAPI.GetMovieListMovies(id));
+app.MapPut("movie-lists/", (UpdateMovieListRequest req) => mlAPI.UpdateMovieList(req));
+app.MapDelete("movie-lists/", (Guid list_id) => mlAPI.DeleteMovieList(list_id));
 
 // Movies
 app.MapPost("movies/", (MovieRegister req) => mAPI.CreateMovie(req));
-app.MapGet("movies/{id}", (Guid id) => mAPI.GetMovieById(id));
-app.MapGet("movies/title/{title}", (string title) => mAPI.GetMoviesByTitle(title));
-app.MapGet("movies/director/{director}", (string director) => mAPI.GetMoviesByDirector(director));
-app.MapGet("movies/genre/{genre}", (string genre) => mAPI.GetMoviesByGenre(genre));
-app.MapGet("movies/year/{year}", (int year) => mAPI.GetMoviesByYear(year));
+app.MapGet("movies/{id}/", (Guid id) => mAPI.GetMovieById(id));
+app.MapGet("movies/title/{title}/", (string title) => mAPI.GetMoviesByTitle(title));
+app.MapGet("movies/director/{director}/", (string director) => mAPI.GetMoviesByDirector(director));
+app.MapGet("movies/genre/{genre}/", (string genre) => mAPI.GetMoviesByGenre(genre));
+app.MapGet("movies/year/{year}/", (int year) => mAPI.GetMoviesByYear(year));
 // TODO: UpdateMovie()
 // TODO: DeleteMovie()
 

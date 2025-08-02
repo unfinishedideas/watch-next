@@ -7,71 +7,11 @@ namespace WatchNext.MovieLists
 {
 	public class MovieListAPI
 	{
-		public required string connStr {  get; set; }
-
-		public async Task<IResult> GetMovieListsByTitle(string listTitle)
-		{
-			using var conn = new NpgsqlConnection(connStr);
-			await conn.OpenAsync();
-
-			var movieList = await conn.QueryAsync<MovieList>(
-				"SELECT * FROM movie_lists WHERE list_title = @listTitle", new { listTitle });
-			if (movieList == null)
-			{
-				return Results.NotFound("MovieList not found");
-			}
-			return Results.Ok(new { movieList });
-		}
-
-		public async Task<IResult> GetMovieListById(Guid id)
-		{
-			using var conn = new NpgsqlConnection(connStr);
-			await conn.OpenAsync();
-
-			var movieList = await conn.QueryAsync<MovieList>(
-				"SELECT * FROM movie_lists WHERE id = @id", new { id });
-			if (movieList == null)
-			{
-				return Results.NotFound("MovieList not found");
-			}
-			return Results.Ok(new { movieList });
-		}
-
-		public async Task<IResult> GetMovieListUsers(Guid list_id)
-		{
-			using var conn = new NpgsqlConnection(connStr);
-			await conn.OpenAsync();
-
-			var res = await conn.QueryAsync<UserFrontend>(
-				@"SELECT u.*
-				FROM users u
-				JOIN user_movie_lists uml ON u.id = uml.user_id
-				JOIN movie_lists ml ON uml.list_id = ml.id
-				WHERE ml.id = @list_id",
-			new { list_id });
-
-			return Results.Ok(res);
-		}
-
-		public async Task<IResult> GetMovieListMovies(Guid list_id)
-		{
-			using var conn = new NpgsqlConnection(connStr);
-			await conn.OpenAsync();
-
-			var res = await conn.QueryAsync<Movie>(
-				@"SELECT m.*
-				FROM movies m
-				JOIN movie_list_movies mlm ON m.id = mlm.movie_id
-				JOIN movie_lists ml ON mlm.list_id = ml.id
-				WHERE ml.id = @list_id;",
-			new { list_id });
-
-			return Results.Ok(res);
-		}
+		public required string ConnStr { get; set; }
 
 		public async Task<IResult> CreateMovieList(string listTitle)
 		{
-			using var conn = new NpgsqlConnection(connStr);
+			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
 			if (!EnsureMinimumLength(listTitle, 1))
@@ -93,9 +33,120 @@ namespace WatchNext.MovieLists
 			return Results.Ok(new { res });
 		}
 
+		public async Task<IResult> AddUserToMovieList(UpdateUserMovieListRequest req)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			bool isValid = await IsUserAndListValid(req);
+			if (!isValid)
+			{
+				return Results.NotFound();
+			}
+
+			// Check to see if user is already associated with movie list
+			var res1 = await conn.QueryFirstOrDefaultAsync(
+				"SELECT * FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id",
+				new { req.user_id, req.list_id }
+			);
+			if (res1 != null)
+			{
+				return Results.Conflict("User already associated with movie list");
+			}
+
+			var res2 = await conn.QueryFirstOrDefaultAsync(
+				@"INSERT INTO user_movie_lists (user_id, list_id) VALUES (@user_id, @list_id)",
+				new { req.user_id, req.list_id }
+			);
+			return Results.Ok(res2);
+		}
+
+		public async Task<IResult> RemoveUserFromMovieList(UpdateUserMovieListRequest req)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryFirstOrDefaultAsync(
+				"DELETE FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id;",
+				new { req.user_id, req.list_id }
+			);
+			return Results.Ok(res);
+		}
+
+		public async Task<IResult> GetAllMovieLists()
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryAsync<MovieList>(
+				"SELECT * FROM movie_lists;"
+			);
+			return Results.Ok(res);
+		}
+
+		public async Task<IResult> GetMovieListById(Guid id)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var movieList = await conn.QueryAsync<MovieList>(
+				"SELECT * FROM movie_lists WHERE id = @id", new { id });
+			if (movieList == null)
+			{
+				return Results.NotFound("MovieList not found");
+			}
+			return Results.Ok(new { movieList });
+		}
+
+		public async Task<IResult> GetMovieListsByTitle(string listTitle)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var movieList = await conn.QueryAsync<MovieList>(
+				"SELECT * FROM movie_lists WHERE list_title = @listTitle", new { listTitle });
+			if (movieList == null)
+			{
+				return Results.NotFound("MovieList not found");
+			}
+			return Results.Ok(new { movieList });
+		}
+
+		public async Task<IResult> GetMovieListUsers(Guid list_id)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryAsync<UserFrontend>(
+				@"SELECT u.*
+				FROM users u
+				JOIN user_movie_lists uml ON u.id = uml.user_id
+				JOIN movie_lists ml ON uml.list_id = ml.id
+				WHERE ml.id = @list_id",
+			new { list_id });
+
+			return Results.Ok(res);
+		}
+
+		public async Task<IResult> GetMovieListMovies(Guid list_id)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryAsync<Movie>(
+				@"SELECT m.*
+				FROM movies m
+				JOIN movie_list_movies mlm ON m.id = mlm.movie_id
+				JOIN movie_lists ml ON mlm.list_id = ml.id
+				WHERE ml.id = @list_id;",
+			new { list_id });
+
+			return Results.Ok(res);
+		}
+
 		public async Task<IResult> UpdateMovieList(UpdateMovieListRequest req)
 		{
-			using var conn = new NpgsqlConnection(connStr);
+			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
 			var existingMovieList = await conn.QueryFirstOrDefaultAsync<MovieList>(
@@ -108,7 +159,7 @@ namespace WatchNext.MovieLists
 			// Update MovieList
 			var res = await conn.QueryFirstOrDefaultAsync<MovieList>(
 				@"UPDATE movie_lists SET list_title = @listTitle WHERE id = @id
-				RETURNING id, list_title;", 
+				RETURNING id, list_title;",
 			new { req.listTitle, req.id });
 
 			return Results.Ok(res);
@@ -116,7 +167,7 @@ namespace WatchNext.MovieLists
 
 		public async Task<IResult> DeleteMovieList(Guid list_id)
 		{
-			using var conn = new NpgsqlConnection(connStr);
+			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
 			// Delete associations in join tables first
@@ -132,61 +183,10 @@ namespace WatchNext.MovieLists
 			return Results.Ok("Movie list deleted");
 		}
 
-		public async Task<IResult> GetMovieLists()
-		{
-			using var conn = new NpgsqlConnection(connStr);
-			await conn.OpenAsync();
-
-			var res = await conn.QueryAsync<MovieList>(
-				"SELECT * FROM movie_lists;"
-			);
-			return Results.Ok(res);
-		}
-
-		public async Task<IResult> AddUserToMovieList(UpdateUserMovieListRequest req)
-		{
-			using var conn = new NpgsqlConnection(connStr);
-			await conn.OpenAsync();
-
-			bool isValid = await IsUserAndListValid(req);
-			if (!isValid)
-			{
-				return Results.NotFound();
-			}
-
-			// Check to see if user is already associated with movie list
-			var res1 = await conn.QueryFirstOrDefaultAsync(
-				"SELECT * FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id"	,
-				new { req.user_id, req.list_id }
-			);
-			if (res1 != null)
-			{
-				return Results.Conflict("User already associated with movie list");
-			}
-
-			var res2 = await conn.QueryFirstOrDefaultAsync(
-				@"INSERT INTO user_movie_lists (user_id, list_id) VALUES (@user_id, @list_id)", 
-				new { req.user_id, req.list_id }
-			);
-			return Results.Ok(res2);
-		}
-
-		public async Task<IResult> RemoveUserFromMovieList(UpdateUserMovieListRequest req)
-		{
-			using var conn = new NpgsqlConnection(connStr);
-			await conn.OpenAsync();
-
-			var res = await conn.QueryFirstOrDefaultAsync(
-				"DELETE FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id;", 
-				new { req.user_id, req.list_id }
-			);
-			return Results.Ok(res);
-		}
-
 		// TODO: Make this more explicit than a bool so user knows what went wrong
 		private async Task<bool> IsUserAndListValid(UpdateUserMovieListRequest req)
 		{
-			using var conn = new NpgsqlConnection(connStr);
+			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
 			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(

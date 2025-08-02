@@ -111,7 +111,6 @@ namespace WatchNext.Movies
 			return Results.Ok(new { movies });
 		}
 
-		// TODO: GetMoviesByGenre()
 		// TODO: UpdateMovie()
 		// TODO: DeleteMovie()
 	}

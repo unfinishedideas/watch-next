@@ -6,11 +6,11 @@ namespace WatchNext.Users
 {
 	public class UserAPI
 	{
-		public required string connStr {  get; set; }
+		public required string ConnStr { get; set; }
 
 		public async Task<IResult> RegisterUser(UserRegister user, PasswordHasher pHasher)
 		{
-			using var conn = new NpgsqlConnection(connStr);
+			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
 			user.LowercaseFields();
@@ -36,9 +36,9 @@ namespace WatchNext.Users
 			return Results.Ok(newUser);
 		}
 
-		public async Task<IResult> LoginUser(LoginUserRequest req,  PasswordHasher pHasher)
+		public async Task<IResult> LoginUser(LoginUserRequest req, PasswordHasher pHasher)
 		{
-			using var conn = new NpgsqlConnection(connStr);
+			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
 			string email = req.email.ToLower();
@@ -73,9 +73,71 @@ namespace WatchNext.Users
 			return isValid ? Results.Ok(new { loggedInUser }) : Results.Unauthorized();
 		}
 
-		public async Task<IResult> GetUser(string email)
+		public async Task<IResult> DeleteUser(LoginUserRequest req, PasswordHasher pHasher)
 		{
-			using var conn = new NpgsqlConnection(connStr);
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			string email = req.email.ToLower();
+
+			var user = await conn.QueryFirstOrDefaultAsync<User>(
+				"SELECT * FROM users WHERE email = @email", new { email });
+			// Try the username if email fails
+			if (user == null)
+			{
+				user = await conn.QueryFirstOrDefaultAsync<User>(
+					"SELECT * FROM users WHERE username = @email", new { email });
+				if (user == null)
+				{
+					return Results.NotFound("User not found");
+				}
+			}
+			if (user.Deleted == true)
+			{
+				return Results.BadRequest("User is already deleted");
+			}
+			bool isValid = pHasher.Verify(req.password, user.Password_Hash);
+			if (!isValid)
+			{
+				return Results.Unauthorized();
+			}
+
+			var res = await conn.QueryAsync(
+				@"UPDATE users SET deleted = true WHERE id = @id
+				RETURNING id, username, email, created_at, deleted;",
+				new { id = user.Id }
+			);
+			return Results.Ok(res);
+		}
+
+		public async Task<IResult> GetUsers()
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryAsync<UserFrontend>(
+				"SELECT * FROM users WHERE deleted=false;"
+			);
+			return Results.Ok(res);
+		}
+
+		public async Task<IResult> GetUserById(Guid user_id)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+			var user = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
+				"SELECT * FROM users WHERE id=@user_id", new { user_id }
+			);
+			if (user == null)
+			{
+				return Results.NotFound("User not found");
+			}
+			return Results.Ok(new { user });
+		}
+
+		public async Task<IResult> GetUserByEmail(string email)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
 			email = email.ToLower();
@@ -95,23 +157,26 @@ namespace WatchNext.Users
 			return Results.Ok(new { user });
 		}
 
-		public async Task<IResult> GetUserById(Guid user_id)
+		public async Task<IResult> GetUserMovieLists(Guid user_id)
 		{
-			using var conn = new NpgsqlConnection(connStr);
+			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
-			var user = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
-				"SELECT * FROM users WHERE id=@user_id", new { user_id }
-			);
-			if (user == null)
-			{
-				return Results.NotFound("User not found");
-			}
-			return Results.Ok(new { user });
+
+			var res = await conn.QueryAsync<MovieList>(
+				@"SELECT ml.*
+				FROM movie_lists ml
+				JOIN user_movie_lists uml ON ml.id = uml.list_id
+				JOIN users u on uml.user_id = u.id
+				WHERE u.id = @user_id;
+				",
+			new { user_id });
+
+			return Results.Ok(res);
 		}
 
-		public async Task<IResult> UpdateUser(UpdateUserRequest req,  PasswordHasher pHasher)
+		public async Task<IResult> UpdateUser(UpdateUserRequest req, PasswordHasher pHasher)
 		{
-			using var conn = new NpgsqlConnection(connStr);
+			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
 			req.LowercaseFields();
@@ -148,72 +213,6 @@ namespace WatchNext.Users
 
 			return Results.Ok(res);
 		}
-
-		public async Task<IResult> GetUserMovieLists(Guid user_id)
-		{
-			using var conn = new NpgsqlConnection(connStr);
-			await conn.OpenAsync();
-
-			var res = await conn.QueryAsync<MovieList>(
-				@"SELECT ml.*
-				FROM movie_lists ml
-				JOIN user_movie_lists uml ON ml.id = uml.list_id
-				JOIN users u on uml.user_id = u.id
-				WHERE u.id = @user_id;
-				",
-			new { user_id });
-
-			return Results.Ok(res);
-		}
-
-		public async Task<IResult> DeleteUser(LoginUserRequest req, PasswordHasher pHasher)
-		{
-			using var conn = new NpgsqlConnection(connStr);
-			await conn.OpenAsync();
-
-			string email = req.email.ToLower();
-
-			var user = await conn.QueryFirstOrDefaultAsync<User>(
-				"SELECT * FROM users WHERE email = @email", new { email });
-			// Try the username if email fails
-			if (user == null)
-			{
-				user = await conn.QueryFirstOrDefaultAsync<User>(
-					"SELECT * FROM users WHERE username = @email", new { email });
-				if (user == null)
-				{
-					return Results.NotFound("User not found");
-				}
-			}
-			if (user.Deleted == true)
-			{
-				return Results.BadRequest("User is already deleted");
-			}
-			bool isValid = pHasher.Verify(req.password, user.Password_Hash);
-			if (!isValid)
-			{
-				return Results.Unauthorized();
-			}
-
-			var res = await conn.QueryAsync(
-				@"UPDATE users SET deleted = true WHERE id = @id
-				RETURNING id, username, email, created_at, deleted;",
-				new { id=user.Id  }
-			);
-			return Results.Ok(res);
-		}
-
-		public async Task<IResult> GetUsers()
-		{
-			using var conn = new NpgsqlConnection(connStr);
-			await conn.OpenAsync();
-
-			var res = await conn.QueryAsync<UserFrontend>(
-				"SELECT * FROM users WHERE deleted=false;"
-			);
-			return Results.Ok(res);
-		}
-
 		// TODO: Write email validator function!		public bool IsValidEmail(string email){}
 		// TODO: Write password validator function!		public bool IsValidPassword(string password){}
 	}
