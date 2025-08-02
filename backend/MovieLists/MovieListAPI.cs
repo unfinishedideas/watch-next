@@ -73,6 +73,46 @@ namespace WatchNext.MovieLists
 			return Results.Ok(res);
 		}
 
+		public async Task<IResult> AddMovieToMovieList(UpdateMoviesMovieListRequest req)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			bool isValid = await IsMovieAndListValid(req);
+			if (!isValid)
+			{
+				return Results.NotFound();
+			}
+
+			// Check to see if movie is already associated with movie list
+			var res1 = await conn.QueryFirstOrDefaultAsync(
+				"SELECT * FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id",
+				new { req.movie_id, req.list_id }
+			);
+			if (res1 != null)
+			{
+				return Results.Conflict("Movie already associated with movie list");
+			}
+
+			var res2 = await conn.QueryFirstOrDefaultAsync(
+				@"INSERT INTO movie_list_movies (movie_id, list_id) VALUES (@movie_id, @list_id)",
+				new { req.movie_id, req.list_id }
+			);
+			return Results.Ok(res2);
+		}
+
+		public async Task<IResult> RemoveMovieFromMovieList(UpdateMoviesMovieListRequest req)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryFirstOrDefaultAsync(
+				"DELETE FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id;",
+				new { req.movie_id, req.list_id }
+			);
+			return Results.Ok(res);
+		}
+
 		public async Task<IResult> GetAllMovieLists()
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
@@ -204,6 +244,24 @@ namespace WatchNext.MovieLists
 				"SELECT * FROM users WHERE id=@user_id", new { req.user_id }
 			);
 			if (existingUser == null || existingList == null)
+			{
+				return false;
+			}
+			return true;
+		}
+
+		private async Task<bool> IsMovieAndListValid(UpdateMoviesMovieListRequest req)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+		
+			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
+				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.list_id }
+			);
+			var existingMovie = await conn.QueryFirstOrDefaultAsync<Movie>(
+				"SELECT * FROM movies WHERE id=@movie_id", new { req.movie_id }
+			);
+			if (existingMovie == null || existingList == null)
 			{
 				return false;
 			}
