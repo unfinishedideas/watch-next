@@ -138,6 +138,30 @@ namespace WatchNext.Movies
 
 			return Results.Ok(res);
 		}
-		// TODO: DeleteMovie()
+
+
+		public async Task<IResult> DeleteMovie(Guid movie_id)
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			var existingMovie = await conn.QueryFirstOrDefaultAsync<Movie>(
+				"SELECT * FROM movies WHERE id=@movie_id", new {movie_id});
+
+			if (existingMovie == null)
+			{
+				return Results.NotFound("Movie not found");
+			}
+
+			// Delete from movie_list_movies
+			var res1 = await conn.QueryAsync(
+				"DELETE FROM movie_list_movies WHERE movie_id=@movie_id", new { movie_id });
+
+			// Delete from movies
+			var res2 = await conn.QueryFirstOrDefaultAsync(
+				"DELETE FROM movies WHERE id=@movie_id", new { movie_id });
+
+			return Results.Ok("Movie deleted");	
+		}
 	}
 }

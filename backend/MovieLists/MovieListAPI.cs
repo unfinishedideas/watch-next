@@ -170,6 +170,14 @@ namespace WatchNext.MovieLists
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
+			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
+				"SELECT * FROM movies WHERE id=@list_id", new {list_id});
+
+			if (existingList == null)
+			{
+				return Results.NotFound("Movie not found");
+			}
+
 			// Delete associations in join tables first
 			var res1 = await conn.QueryAsync(
 				"DELETE FROM user_movie_lists WHERE list_id=@list_id", new { list_id });
