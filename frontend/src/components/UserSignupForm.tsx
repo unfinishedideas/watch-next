@@ -40,7 +40,7 @@ const UserSignupForm: React.FC<LoginFormProps> = () =>
     {
         event.preventDefault();
         setErrMsg("");
-        try{
+        try {
             CheckEmailValidity(formData.emailInput);
             CheckUsernameValidity(formData.usernameInput);
             CheckPasswordValidity(formData.passwordInput);
@@ -52,8 +52,7 @@ const UserSignupForm: React.FC<LoginFormProps> = () =>
             }
             setFormState(FormStatus.Success);
         }
-        catch(err: Error)
-        {
+        catch(err: Error) {
             if (err.message === "email already registered") {
                 setErrMsg("Error: email already registered");
             }
@@ -69,8 +68,7 @@ const UserSignupForm: React.FC<LoginFormProps> = () =>
 
     function CheckEmailValidity(email: string)
     {
-        if (!emailRegex.test(email))
-        {
+        if (!emailRegex.test(email)) {
             setErrMsg("Invalid email");
             throw new Error("Invalid email");
         }
@@ -78,8 +76,7 @@ const UserSignupForm: React.FC<LoginFormProps> = () =>
 
     function CheckUsernameValidity(username: string)
     {
-        if (username.length <= 3 || whitespaceRegex.test(username))
-        {
+        if (username.length <= 3 || whitespaceRegex.test(username)) {
             setErrMsg("Invalid username");
             throw new Error("Invalid username");
         }
@@ -87,19 +84,16 @@ const UserSignupForm: React.FC<LoginFormProps> = () =>
 
     function CheckPasswordValidity(password: string)
     {
-        if (password.length <= 3 || whitespaceRegex.test(password))
-        {
+        if (password.length <= 3 || whitespaceRegex.test(password)) {
             setErrMsg("Invalid password");
             throw new Error("Invalid password");
         }
     }
 
-    if (formState === FormStatus.Success)
-    {
+    if (formState === FormStatus.Success) {
         return(<p>User successfully registered, log in and start sharing movies!</p>)
     }
-    else
-    {
+    else {
         return(
             <div>
                 <h2>Sign Up</h2>

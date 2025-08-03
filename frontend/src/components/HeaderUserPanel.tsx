@@ -6,19 +6,16 @@ function HeaderUserPanel()
 {
     const [user, setUser] = useContext(UserContext);
 
-    function LogOutUser()
-    {
+    function LogOutUser() {
         setUser(null); 
     }
 
-    if (user === null)
-    {
+    if (user === null) {
         return(
             <div/>
         )
     }
-    else
-    {
+    else {
         return(
             <div className="header-userpanel">
                 <p>{user.username}</p>

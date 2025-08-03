@@ -5,7 +5,6 @@ import List from '../classes/list.ts'
 
 const ListScreen: React.FC = () =>
 {
-        
 
     return(
         <div>

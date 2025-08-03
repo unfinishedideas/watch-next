@@ -51,10 +51,8 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
         mutation.mutate({list: listData, id: id});
     }
 
-    function getUsernames()
-    {
-        if (!listUserIds.pending)
-        {
+    function getUsernames() {
+        if (!listUserIds.pending) {
             let names: string = "";
             for (const user of listUserIds.data) {
                 names += user.username + ", ";
@@ -64,8 +62,7 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
         return "Loading usernames..."
     }
 
-    function loadListScreen()
-    {
+    function loadListScreen() {
         // TODO: Make list screen :)
         console.log("LOAD LIST SCREEN");
     }

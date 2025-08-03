@@ -26,14 +26,12 @@ const LoginForm: React.FC<LoginFormProps> = () =>
     async function AttemptLogin(event)
     {
         event.preventDefault();
-        try
-        {
+        try {
             let res = await LoginUser(formData.nameInput, formData.password);
             const loggedInUser: User = new User(res.id, res.username, res.email, res.deleted);
             setUser(loggedInUser);
         }
-        catch(err: Error)
-        {
+        catch(err: Error) {
             if (err.message === "user not found") {
                 setErrMsg("User not found");
             }
@@ -43,8 +41,7 @@ const LoginForm: React.FC<LoginFormProps> = () =>
             else if (err.message === "user is deleted") {
                 setErrMsg("Cannot log in, user is deleted");
             }
-            else
-            {
+            else {
                 setErrMsg("Something went wrong, please try again.");
             }
         }
