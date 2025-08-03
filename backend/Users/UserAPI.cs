@@ -16,6 +16,19 @@ namespace WatchNext.Users
 			user.LowercaseFields();
 			string passwordHash = pHasher.Hash(user.Password);
 
+			// Check to see if user is already in the DB
+			var existingUser = await conn.QueryFirstOrDefaultAsync<User>(
+				"SELECT * FROM users WHERE email = @email", new { user.Email });
+
+			if (existingUser != null)
+				return Results.BadRequest("Email already registered.");
+
+			existingUser = await conn.QueryFirstOrDefaultAsync<User>(
+				"SELECT * FROM users WHERE username = @username", new { user.Username });
+
+			if (existingUser != null)
+				return Results.BadRequest("Username already registered.");
+
 			var res = await conn.QueryFirstOrDefaultAsync<User>(
 				@"INSERT INTO users (username, email, password_hash)
 				  VALUES (@Username, @Email, @PasswordHash)
@@ -62,15 +75,7 @@ namespace WatchNext.Users
 			bool isValid = pHasher.Verify(req.password, user.Password_Hash);
 
 			// TODO: return JWT Token 
-			UserFrontend loggedInUser = new UserFrontend
-			{
-				Id = user.Id,
-				Username = user.Username,
-				Email = user.Email,
-				Deleted = user.Deleted,
-				Created_At = user.Created_At,
-			};
-			return isValid ? Results.Ok(new { loggedInUser }) : Results.Unauthorized();
+			return isValid ? Results.Ok(user) : Results.Unauthorized();
 		}
 
 		public async Task<IResult> DeleteUser(LoginUserRequest req, PasswordHasher pHasher)
@@ -110,7 +115,7 @@ namespace WatchNext.Users
 			return Results.Ok(res);
 		}
 
-		public async Task<IResult> GetUsers()
+		public async Task<IResult> GetAllUsers()
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();

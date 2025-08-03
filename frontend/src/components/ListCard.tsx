@@ -57,7 +57,7 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
         {
             let names: string = "";
             for (const user of listUserIds.data) {
-                names += user.user_name + ", ";
+                names += user.username + ", ";
             }
             return names.substring(0, names.length - 2);
         }

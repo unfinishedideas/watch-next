@@ -1,14 +1,13 @@
 import './UserSignupForm.css'
-import { useState } from 'react'
-import { CreateUser } from '../api/UserApi.ts'
-import { v4 as uuidv4 } from 'uuid';
-import User from '../classes/User.ts'
+import UserContext from '../context/UserContext.ts' 
+import { useContext, useState } from 'react'
+import { RegisterUser } from '../api/UserApi.ts'
+import {UserRegister, User} from '../classes/User.ts'
 
 interface UserSignupFormProps {
-    setIsLoggedIn: () => void;
 }
 
-const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFormProps) =>
+const UserSignupForm: React.FC<LoginFormProps> = () =>
 {
     const whitespaceRegex = /\s/
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -21,70 +20,78 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
         FormError,
         FormSuccess
     }
-
     const [formState, setFormState] = useState<FormStatus>(FormStatus.FormAwaitingInput);
+    const [user, setUser] = useContext(UserContext);
     const [errMsg, setErrMsg] = useState("");
+    const [formData, setFormData] = useState({
+        emailInput: '',
+        usernameInput: '',
+        passwordInput: '',
+    });
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
 
-    async function AttemptUserRegistration(formData)
+    async function AttemptUserRegistration(event)
     {
-        setFormState(FormStatus.FormAwaitingInput);
-        const uEmail = formData.get("emailInput");
-        const uName = formData.get("usernameInput");
-        const uPass = formData.get("passwordInput");
-
-        if (!CheckEmailValidity(uEmail) || 
-            !CheckUsernameValidity(uName) || 
-            !CheckPasswordValidity(uPass)
-        )
-        {
-            return;
-        }
-        // Attempt registration
-        const newId = uuidv4();
-        const newUser :User = new User(newId, uName, uEmail, false);
-        try
-        {
-            CreateUser(newUser, uPass);
-            // TODO: Actually wait to see if it worked before setting form status, possibly log in too?
+        event.preventDefault();
+        setErrMsg("");
+        try{
+            CheckEmailValidity(formData.emailInput);
+            CheckUsernameValidity(formData.usernameInput);
+            CheckPasswordValidity(formData.passwordInput);
+            const newUser :User = new UserRegister(formData.usernameInput, formData.emailInput, formData.passwordInput);
+            let loggedInUser = await RegisterUser(newUser);
+            if (loggedInUser != null)
+            {
+                setUser(loggedInUser);
+            }
             setFormState(FormStatus.Success);
         }
         catch(err: Error)
         {
-            console.error(err);
+            if (err.message === "email already registered") {
+                setErrMsg("Error: email already registered");
+            }
+            else if (err.message === "username already registered") {
+                setErrMsg("Error: username already registered");
+            }
+            else {
+                setErrMsg("Something went wrong, please try again");
+            }
+            console.log(err.message);
         }
     }
 
-    function CheckEmailValidity(email: string) : boolean
+    function CheckEmailValidity(email: string)
     {
         if (!emailRegex.test(email))
         {
             setErrMsg("Invalid email");
-            return false;
+            throw new Error("Invalid email");
         }
-        // TODO: Check if Email already in db
-        return true;
     }
 
-    function CheckUsernameValidity(username: string) : boolean
+    function CheckUsernameValidity(username: string)
     {
         if (username.length <= 3 || whitespaceRegex.test(username))
         {
             setErrMsg("Invalid username");
-            return false;
+            throw new Error("Invalid username");
         }
-        // TODO: Check if username already in the db
-        return true;
     }
 
-    function CheckPasswordValidity(password: string) : boolean
+    function CheckPasswordValidity(password: string)
     {
         if (password.length <= 3 || whitespaceRegex.test(password))
         {
             setErrMsg("Invalid password");
-            return false;
+            throw new Error("Invalid password");
         }
-        // TODO: Check if username already in the db
-        return true;
     }
 
     if (formState === FormStatus.Success)
@@ -96,20 +103,35 @@ const UserSignupForm: React.FC<LoginFormProps> = ({setIsLoggedIn} : UserSignupFo
         return(
             <div>
                 <h2>Sign Up</h2>
-                <form action={AttemptUserRegistration}>
-                    <label>
-                        Email: <input name="emailInput"/>
-                    </label>
-                    <br/>
-                    <label>
-                        Username: <input name="usernameInput"/>
-                    </label>
-                    <br/>
-                    <label>
-                        Password: <input name="passwordInput"/>
-                    </label>
-                    <br/>
-                    <button type="submit">Register</button>
+                <form onSubmit={AttemptUserRegistration}>
+                    <label>Email:</label>
+                    <input
+                        type="text"
+                        id="emailInput"
+                        name="emailInput"
+                        value={formData.emailInput}
+                        onChange={handleChange}
+                        required
+                    />
+                    <label>Username:</label>
+                    <input 
+                        type="text"
+                        id="usernameInput"
+                        name="usernameInput"
+                        value={formData.usernameInput}
+                        onChange={handleChange}
+                        required
+                    />
+                    <label>Password:</label>
+                    <input
+                        type="text"
+                        id="passwordInput"
+                        name="passwordInput"
+                        value={formData.passwordInput}
+                        onChange={handleChange}
+                        required
+                    />
+                    <button type="submit">Register User</button>
                 </form>
                 {errMsg ?? <p>{errMsg}</p>}
             </div>

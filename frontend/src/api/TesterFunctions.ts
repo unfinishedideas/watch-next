@@ -88,11 +88,11 @@ async function update_user(formData: formData)
     try {
         const query = formData.get("user_id");
         let res  = await GetUser(query);
-        res.user_name = "PoopyMcButtFace!";
+        res.username = "PoopyMcButtFace!";
         const to_update: User = new User(
             res.user_id,
-            res.user_name,
-            res.primary_email, 
+            res.username,
+            res.email, 
             res.deleted,
         );
         await UpdateUser(to_update);    

@@ -29,18 +29,19 @@ const LoginForm: React.FC<LoginFormProps> = () =>
         try
         {
             let res = await LoginUser(formData.nameInput, formData.password);
-            const loggedInUser: User = new User(res.user_id, res.user_name, res.primary_email);
+            const loggedInUser: User = new User(res.id, res.username, res.email, res.deleted);
             setUser(loggedInUser);
         }
         catch(err: Error)
         {
-            if (err.message === "user not found")
-            {
+            if (err.message === "user not found") {
                 setErrMsg("User not found");
             }
-            else if (err.message === "password incorrect")
-            {
+            else if (err.message === "incorrect password") {
                 setErrMsg("Incorrect password");
+            }
+            else if (err.message === "user is deleted") {
+                setErrMsg("Cannot log in, user is deleted");
             }
             else
             {

@@ -1,5 +1,5 @@
 import { base_url } from './Vars.ts';
-import User from '../classes/User.ts';
+import { User, UserRegister } from '../classes/User.ts';
 
 
 function HandleError(err: unknown)
@@ -49,15 +49,25 @@ export async function DeleteUser<T>(id: string): Promise<T> {
     return res as T;
 }
 
-export async function CreateUser<T>(newUser: User, pass: string): Promise<T> {
-    let req = {user: newUser, password: pass}
+export async function RegisterUser<T>(newUser: UserRegister): Promise<T> {
+    let req = {newUser}
     const res = await fetch(`${base_url}/users/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(req),
+        body: JSON.stringify(newUser),
     });
     if (!res.ok) {
+        if(res.status === 400) {
+            const text = await res.text();
+            if (text.includes("Email already registered")) {
+                throw new Error("email already registered");
+            }
+            else if (text.includes("Username already registered")) {
+                throw new Error("username already registered");
+            }
+        }
         HandleError(res.statusText);
+        throw new Error("something went wrong");
     }
     return await res.json() as T;
 }
@@ -67,19 +77,21 @@ export async function LoginUser<T>(nameInput: string, pass: string): Promise<T> 
     {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({name: nameInput, password: pass})
+        body: JSON.stringify({email: nameInput, password: pass}),
     });
     if (!res.ok) {
         const text = await res.text();
-        if (text.includes("User not found")){
+        if (res.status === 401){
+            throw new Error("incorrect password");
+        }
+        else if (res.status === 404){
             throw new Error("user not found");
         }
-        else if (text.includes("Password is incorrect")) {
-            throw new Error("password incorrect");
+        else if (res.status === 400){
+            throw new Error("user is deleted");
         }
-        else
-        {
-            HandleError(res.status);
+        else {
+            HandleError(res.statusText);
         }
     }
     return await res.json() as T;

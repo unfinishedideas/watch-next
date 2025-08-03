@@ -3,9 +3,10 @@ using WatchNext.Movies;
 using WatchNext.Users;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddOpenApi();
 
-// Fix CORS for development builds on the same machine
-var DevCorsPolicy = "_devCorsPolicy";
+// CORS policy for development builds on the same machine
+const string DevCorsPolicy = "_devCorsPolicy";
 if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
 {
     builder.Services.AddCors(options =>
@@ -28,6 +29,12 @@ if (connString == null)
 	throw new Exception("API: connStr not set!");
 }
 
+if (app.Environment.IsDevelopment())
+{
+	app.UseCors(DevCorsPolicy);
+	app.MapOpenApi();   // navigate to http://localhost:{port}/openapi/v1.json to see the docs
+}
+
 PasswordHasher pHasher = new PasswordHasher();
 UserAPI uAPI = new() { ConnStr = connString };
 MovieAPI mAPI = new() { connStr = connString };
@@ -37,7 +44,7 @@ MovieListAPI mlAPI = new() { ConnStr = connString };
 app.MapPost("users/", (UserRegister user) => uAPI.RegisterUser(user, pHasher));
 app.MapPost("users/login/", (LoginUserRequest req) => uAPI.LoginUser(req, pHasher));
 app.MapPost("users/delete/", (LoginUserRequest req) => uAPI.DeleteUser(req, pHasher));
-app.MapGet("users/", () => uAPI.GetUsers());
+app.MapGet("users/", () => uAPI.GetAllUsers());
 app.MapGet("users/{id}/", (Guid id) => uAPI.GetUserById(id));
 app.MapGet("users/email/{email}/", (string email) => uAPI.GetUserByEmail(email));
 app.MapGet("users/{id}/movie-lists/", (Guid id) => uAPI.GetUserMovieLists(id));
@@ -45,6 +52,7 @@ app.MapPut("users/", (UpdateUserRequest req) => uAPI.UpdateUser(req, pHasher));
 
 // Movie Lists
 app.MapPost("movie-lists/", (string listTitle) => mlAPI.CreateMovieList(listTitle));
+// TODO: Remove request classes and just use movie-lists/{id}/action/{id}/ ?
 app.MapPost("movie-lists/add-user/", (UpdateUserMovieListRequest req) => mlAPI.AddUserToMovieList(req));
 app.MapPost("movie-lists/remove-user/", (UpdateUserMovieListRequest req) => mlAPI.RemoveUserFromMovieList(req));
 app.MapPost("movie-lists/add-movie/", (UpdateMoviesMovieListRequest req) => mlAPI.AddMovieToMovieList(req));
