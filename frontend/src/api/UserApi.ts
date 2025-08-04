@@ -97,6 +97,15 @@ export async function LoginUser<T>(nameInput: string, pass: string): Promise<T> 
     return await res.json() as T;
 }
 
+export async function GetUserLists<T>(user_id: string)
+{
+    const res = await fetch(`${base_url}/users/${user_id}/movie-lists`);
+    if (!res.ok) {
+        HandleError(res.statusText);
+    }
+    return await res.json() as T;
+}
+
 
 /*
 export async function LoginUser<T>(password_attempt: string): Promise<T> {

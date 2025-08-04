@@ -14,6 +14,7 @@ interface ListCardProps {
 
 const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
 {
+    /*
     const listMovies = useQueries({
         queries: listData.movie_ids.map((id: string) => ({
             queryKey: ['listMovies', id],
@@ -43,7 +44,7 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
 
     const mutation = useMutation({
         mutationFn: RemoveMovieFromList,
-        /*onSuccess: (data) => { },*/
+        /*onSuccess: (data) => { },
     })
 
     const handleRemoveMovie: AsyncApiFunc = (id: string) =>
@@ -96,6 +97,12 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
             </div>
         )
     }
+    */
+    return(
+        <div className="list-card-container">
+            <Button btnText={listData.list_Title}/>
+        </div>
+    )
 }
 
 export default ListCard;
