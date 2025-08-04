@@ -15,5 +15,8 @@
 
 .header-userpanel {
     display: flex;
+}
 
+.nav-link {
+    padding: 12px;
 }

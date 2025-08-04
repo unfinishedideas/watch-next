@@ -1,18 +1,14 @@
 import LoginForm from '../components/LoginForm.tsx'
-import UserSignupForm from '../components/UserSignupForm.tsx'
+import './Screen.css'
 
 interface LoginScreenProps {
-    setIsLoggedIn: () => void;
 }
 
-const LoginScreen: React.FC<LoginScreenProps> = ({setIsLoggedIn} : LoginScreenProps) =>
+const LoginScreen: React.FC<LoginScreenProps> = () =>
 {
     return(
-        <div>
+        <div className="screen-container">
             <LoginForm/>
-            <br/>
-            <UserSignupForm/>
-            <br/>
         </div>
     )
 }

@@ -1,6 +1,7 @@
 import './Header.css'
 import UserContext from '../context/UserContext.ts' 
 import { useContext } from 'react'
+import { NavLink } from 'react-router'
 
 function HeaderUserPanel()
 {
@@ -12,15 +13,19 @@ function HeaderUserPanel()
 
     if (user === null) {
         return(
-            <div/>
+            <div className="header-userpanel">
+                <NavLink className="nav-link" to="home">Home</NavLink>
+                <NavLink className="nav-link" to="login">Log In</NavLink>
+                <NavLink className="nav-link" to="signup">Sign Up</NavLink>
+            </div>
         )
     }
     else {
         return(
             <div className="header-userpanel">
-                <Link>test</Link>
-                <p>{user.username}</p>
-                <button onClick={LogOutUser}>Log Out</button>
+                <NavLink className="nav-link" to="settings">{user.username}</NavLink>
+                <NavLink className="nav-link" to="home">Home</NavLink>
+                <NavLink className="nav-link" to="home" onClick={LogOutUser}>Sign Out</NavLink>
             </div>
         )
     }

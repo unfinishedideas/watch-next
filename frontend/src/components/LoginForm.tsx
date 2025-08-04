@@ -1,6 +1,7 @@
 import './Form.css'
 import UserContext from '../context/UserContext.ts' 
 import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router';
 import { LoginUser } from '../api/UserApi.ts'
 import User from '../classes/User.ts'
 import FormErrorMessage from './FormErrorMessage.tsx'
@@ -10,6 +11,7 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = () =>
 {
+    let navigate = useNavigate();
     const [user, setUser] = useContext(UserContext);
     const [nameError, setNameError] = useState("");
     const [passwordError, setPasswordError] = useState("");
@@ -35,6 +37,7 @@ const LoginForm: React.FC<LoginFormProps> = () =>
             let res = await LoginUser(formData.nameInput, formData.password);
             const loggedInUser: User = new User(res.id, res.username, res.email, res.deleted);
             setUser(loggedInUser);
+            navigate("/home");
         }
         catch(err: Error) {
             if (err.message === "user not found") {
