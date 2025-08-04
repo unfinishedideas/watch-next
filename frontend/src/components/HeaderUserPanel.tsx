@@ -18,6 +18,7 @@ function HeaderUserPanel()
     else {
         return(
             <div className="header-userpanel">
+                <Link>test</Link>
                 <p>{user.username}</p>
                 <button onClick={LogOutUser}>Log Out</button>
             </div>

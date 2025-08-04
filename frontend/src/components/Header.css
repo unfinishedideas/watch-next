@@ -1,8 +1,12 @@
 .header-container {
     display: flex;
-    width="100%";
+    justify-content: space-between;
     margin: 0 auto;
     border-bottom: dotted 8px red;
+}
+
+.header-logo-container {
+    margin-left: 2em;
 }
 
 .header-title-text {
@@ -10,5 +14,6 @@
 }
 
 .header-userpanel {
+    display: flex;
 
 }
