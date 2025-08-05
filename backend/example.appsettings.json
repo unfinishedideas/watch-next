@@ -1,0 +1,18 @@
+{
+	"Logging": {
+		"LogLevel": {
+			"Default": "Information",
+			"Microsoft.AspNetCore": "Warning"
+		}
+	},
+	"ConnectionStrings": {
+		"Default": "Host=localhost;Port=5432;Database=user_auth_db;Username=postgres;Password=yourpassword",
+		"Debug": "Host=localhost;Port=5432;Database=user_auth_db;Username=postgres;Password=12345"
+	},
+	"Jwt": {
+		"Key": "your_super_secret_key_here_123!",
+		"Issuer": "UserAuthApi",
+		"Audience": "UserAuthApi"
+	},
+	"AllowedHosts": "*"
+}

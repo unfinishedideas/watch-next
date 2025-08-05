@@ -1,13 +1,12 @@
-using WatchNext.DB;
+using WatchNext.MovieLists;
+using WatchNext.Movies;
 using WatchNext.Users;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddOpenApi();
-PasswordHasher hasher = new PasswordHasher();   // TODO: Look into making a singleton instead
 
-// Fix CORS for development builds on the same machine
-var DevCorsPolicy = "_devCorsPolicy";
+// CORS policy for development builds on the same machine
+const string DevCorsPolicy = "_devCorsPolicy";
 if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
 {
     builder.Services.AddCors(options =>
@@ -22,36 +21,58 @@ if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development
             });
     });
 }
-
 var app = builder.Build();
+
+string? connString = builder.Configuration.GetConnectionString("Debug");
+if (connString == null)
+{
+	throw new Exception("API: connStr not set!");
+}
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseCors(DevCorsPolicy);
-    app.MapOpenApi();   // navigate to http://localhost:{port}/openapi/v1.json to see the docs
+	app.UseCors(DevCorsPolicy);
+	app.MapOpenApi();   // navigate to http://localhost:{port}/openapi/v1.json to see the docs
 }
 
-// TODO: Look into turning these into builder services instead of app.map (see Users folder for start of that)
-// USERS
-app.MapGet("/users", () => WatchNextDB.GetUsers());
-app.MapGet("/users/{id}", (Guid id) => WatchNextDB.GetUser(id));
-app.MapPost("/users/login", (LoginUserRequest req) => WatchNextDB.LoginUser(req, hasher));
-app.MapPost("/users", (CreateUserRequest req) => WatchNextDB.CreateUser(req, hasher)); 
-app.MapPut("/users", (User update) => WatchNextDB.UpdateUser(update)); 
-app.MapDelete("/users/{id}", (Guid id) => WatchNextDB.DeleteUser(id)); 
+PasswordHasher pHasher = new PasswordHasher();
+UserAPI uAPI = new() { ConnStr = connString };
+MovieAPI mAPI = new() { connStr = connString };
+MovieListAPI mlAPI = new() { ConnStr = connString };
 
-// MOVIES
-app.MapGet("/movies", () => WatchNextDB.GetMovies());
-app.MapGet("/movies/{id}", (Guid id) => WatchNextDB.GetMovie(id));
-app.MapPost("/movies", (Movie movie) => WatchNextDB.CreateMovie(movie)); 
-app.MapPut("/movies",(Movie update) => WatchNextDB.UpdateMovie(update)); 
-app.MapDelete("/movies/{id}", (Guid id) => WatchNextDB.DeleteMovie(id)); 
+// Users
+app.MapPost("users/", (UserRegister user) => uAPI.RegisterUser(user, pHasher));
+app.MapPost("users/login/", (LoginUserRequest req) => uAPI.LoginUser(req, pHasher));
+app.MapPost("users/delete/", (LoginUserRequest req) => uAPI.DeleteUser(req, pHasher));
+app.MapGet("users/", () => uAPI.GetAllUsers());
+app.MapGet("users/{id}/", (Guid id) => uAPI.GetUserById(id));
+app.MapGet("users/email/{email}/", (string email) => uAPI.GetUserByEmail(email));
+app.MapGet("users/{id}/movie-lists/", (Guid id) => uAPI.GetUserMovieLists(id));
+app.MapPut("users/", (UpdateUserRequest req) => uAPI.UpdateUser(req, pHasher));
 
-// LISTS
-app.MapGet("/lists", () => WatchNextDB.GetMovieLists());
-app.MapGet("/lists/{id}", (Guid id) => WatchNextDB.GetMovieList(id));
-app.MapPost("/lists", (MovieList list) => WatchNextDB.CreateMovieList(list)); 
-app.MapPut("/lists", (MovieList update) => WatchNextDB.UpdateMovieList(update)); 
-app.MapDelete("/lists/{id}", (Guid id) => WatchNextDB.DeleteMovieList(id)); 
+// Movie Lists
+app.MapPost("movie-lists/", (RegisterMovieListRequest req) => mlAPI.CreateMovieList(req));
+// TODO: Remove request classes and just use movie-lists/{id}/action/{id}/ ?
+app.MapPost("movie-lists/add-user/", (UpdateUserMovieListRequest req) => mlAPI.AddUserToMovieList(req));
+app.MapPost("movie-lists/remove-user/", (UpdateUserMovieListRequest req) => mlAPI.RemoveUserFromMovieList(req));
+app.MapPost("movie-lists/add-movie/", (UpdateMoviesMovieListRequest req) => mlAPI.AddMovieToMovieList(req));
+app.MapPost("movie-lists/remove-movie/", (UpdateMoviesMovieListRequest req) => mlAPI.RemoveMovieFromMovieList(req));
+app.MapGet("movie-lists/", () => mlAPI.GetAllMovieLists());
+app.MapGet("movie-lists/{id}/", (Guid id) => mlAPI.GetMovieListById(id));
+app.MapGet("movie-lists/title/{listTitle}", (string listTitle) => mlAPI.GetMovieListsByTitle(listTitle));
+app.MapGet("movie-lists/{id}/users/", (Guid id) => mlAPI.GetMovieListUsers(id));
+app.MapGet("movie-lists/{id}/movies/", (Guid id) => mlAPI.GetMovieListMovies(id));
+app.MapPut("movie-lists/", (UpdateMovieListRequest req) => mlAPI.UpdateMovieList(req));
+app.MapDelete("movie-lists/{id}", (Guid id) => mlAPI.DeleteMovieList(id));
+
+// Movies
+app.MapPost("movies/", (MovieRegister req) => mAPI.CreateMovie(req));
+app.MapGet("movies/{id}/", (Guid id) => mAPI.GetMovieById(id));
+app.MapGet("movies/title/{title}/", (string title) => mAPI.GetMoviesByTitle(title));
+app.MapGet("movies/director/{director}/", (string director) => mAPI.GetMoviesByDirector(director));
+app.MapGet("movies/genre/{genre}/", (string genre) => mAPI.GetMoviesByGenre(genre));
+app.MapGet("movies/year/{year}/", (int year) => mAPI.GetMoviesByYear(year));
+app.MapPut("movies/", (UpdateMovieRequest req) => mAPI.UpdateMovie(req));
+app.MapDelete("movies/{id}", (Guid id) => mAPI.DeleteMovie(id));
 
 app.Run();

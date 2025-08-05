@@ -1,15 +1,20 @@
-import './LoginForm.css'
+import './Form.css'
 import UserContext from '../context/UserContext.ts' 
 import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router';
 import { LoginUser } from '../api/UserApi.ts'
 import User from '../classes/User.ts'
+import FormErrorMessage from './FormErrorMessage.tsx'
 
 interface LoginFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = () =>
 {
+    let navigate = useNavigate();
     const [user, setUser] = useContext(UserContext);
+    const [nameError, setNameError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
     const [errMsg, setErrMsg] = useState("");
     const [formData, setFormData] = useState({
         nameInput: '',
@@ -26,58 +31,67 @@ const LoginForm: React.FC<LoginFormProps> = () =>
     async function AttemptLogin(event)
     {
         event.preventDefault();
-        try
-        {
+        setNameError("");
+        setPasswordError("");
+        try {
             let res = await LoginUser(formData.nameInput, formData.password);
-            const loggedInUser: User = new User(res.user_id, res.user_name, res.primary_email);
+            const loggedInUser: User = new User(res.id, res.username, res.email, res.deleted);
             setUser(loggedInUser);
+            navigate("/home");
         }
-        catch(err: Error)
-        {
-            if (err.message === "user not found")
-            {
-                setErrMsg("User not found");
+        catch(err: Error) {
+            if (err.message === "user not found") {
+                setNameError("User not found");
             }
-            else if (err.message === "password incorrect")
-            {
-                setErrMsg("Incorrect password");
+            else if (err.message === "incorrect password") {
+                setPasswordError("Incorrect password");
             }
-            else
-            {
+            else if (err.message === "user is deleted") {
+                setErrMsg("Cannot log in, user is deleted");
+            }
+            else {
                 setErrMsg("Something went wrong, please try again.");
             }
         }
     }
 
     return(
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={AttemptLogin}>
-                <label>Username or Email:</label>
-                <input 
-                    type="text"
-                    id="nameInput"
-                    name="nameInput"
-                    value={formData.nameInput}
-                    onChange={handleChange}
-                    required
-                />
-                <br/>
-                <label>
-                    Password:
-                </label>
-                <input
-                    type="text"
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
-                <br/>
-                <button type="submit">Login</button>
+        <div className="form-container">
+            <h2 className="form-title">Login</h2>
+            <form className="form-style" onSubmit={AttemptLogin}>
+                    <div className="field-container">
+                    <label>Username or Email Address</label>
+                    <br/>
+                    <input 
+                        className="text-input"
+                        placeholder="Username or Email"
+                        type="text"
+                        id="nameInput"
+                        name="nameInput"
+                        value={formData.nameInput}
+                        onChange={handleChange}
+                        required
+                    />
+                    <FormErrorMessage message={nameError}/>
+                </div>
+                <div className="field-container">
+                    <label>Password</label>
+                    <br/>
+                    <input
+                        className="text-input"
+                        placeholder="Password"
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
+                    <FormErrorMessage message={passwordError}/>
+                </div>
+                <button className="submit-btn" type="submit">Login</button>
             </form>
-            {errMsg && <p>{errMsg}</p>}
+            {errMsg && <p className="error-text">{errMsg}</p>}
         </div>
     )
 }

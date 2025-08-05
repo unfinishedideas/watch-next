@@ -13,7 +13,7 @@ namespace WatchNext.Users
 		public string Hash(string password)
 		{
 			byte[] salt = RandomNumberGenerator.GetBytes(SaltSize);                                         // array of crypto strong random values
-			byte[] hash = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, Algorithm, HashSize);       // password-based key derivation function
+			byte[] hash = Rfc2898DeriveBytes.Pbkdf2(password.ToLower(), salt, Iterations, Algorithm, HashSize);       // password-based key derivation function
 			return $"{Convert.ToHexString(hash)}-{Convert.ToHexString(salt)}";
 		}
 
@@ -23,7 +23,7 @@ namespace WatchNext.Users
 			byte[] hash = Convert.FromHexString(parts[0]);
 			byte[] salt = Convert.FromHexString(parts[1]);
 
-			byte[] inputHash = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, Algorithm, HashSize);
+			byte[] inputHash = Rfc2898DeriveBytes.Pbkdf2(password.ToLower(), salt, Iterations, Algorithm, HashSize);
 			return CryptographicOperations.FixedTimeEquals(hash, inputHash);	// we use this instead of hash.SequenceEqual(inputHash) to avoid timing attacks
 		}
 	}

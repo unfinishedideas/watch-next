@@ -18,13 +18,20 @@ They can leave reviews, comments and share lists publicly or privately.
 
 - clone the repo if not already cloned: `git clone git@github.com:unfinishedideas/watch-next.git`
 - navigate to the backend directory `./backend` with a shell 
+- Create new `appsettings.json` file based on `example.appsettings.json`
 - build and run the backend with `dotnet run`
+
+## Setup database (Database)
+- Install postgreSQL on server
+- Create new `.env` file based on `example.env`
+- Run `python ./database/init.py` to setup a database with some preconfigured users
 
 ## Technology
 
 - React + Vite
 - Typescript + SWC
 - ASP.NET Core / C# (for minimal api)
+- PostgreSQL (for database)
 
 ## Created by Peter Wells
 

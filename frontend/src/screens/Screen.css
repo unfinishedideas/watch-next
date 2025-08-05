@@ -1,0 +1,13 @@
+.screen-container {
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+}
+
+.screen-title {
+    margin: 0;
+}
+
+.screen-link {
+    font-size: 24px;
+}

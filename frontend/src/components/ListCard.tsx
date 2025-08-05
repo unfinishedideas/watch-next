@@ -14,6 +14,7 @@ interface ListCardProps {
 
 const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
 {
+    /*
     const listMovies = useQueries({
         queries: listData.movie_ids.map((id: string) => ({
             queryKey: ['listMovies', id],
@@ -43,7 +44,7 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
 
     const mutation = useMutation({
         mutationFn: RemoveMovieFromList,
-        /*onSuccess: (data) => { },*/
+        /*onSuccess: (data) => { },
     })
 
     const handleRemoveMovie: AsyncApiFunc = (id: string) =>
@@ -51,21 +52,18 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
         mutation.mutate({list: listData, id: id});
     }
 
-    function getUsernames()
-    {
-        if (!listUserIds.pending)
-        {
+    function getUsernames() {
+        if (!listUserIds.pending) {
             let names: string = "";
             for (const user of listUserIds.data) {
-                names += user.user_name + ", ";
+                names += user.username + ", ";
             }
             return names.substring(0, names.length - 2);
         }
         return "Loading usernames..."
     }
 
-    function loadListScreen()
-    {
+    function loadListScreen() {
         // TODO: Make list screen :)
         console.log("LOAD LIST SCREEN");
     }
@@ -99,6 +97,12 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
             </div>
         )
     }
+    */
+    return(
+        <div className="list-card-container">
+            <Button btnText={listData.list_Title}/>
+        </div>
+    )
 }
 
 export default ListCard;
