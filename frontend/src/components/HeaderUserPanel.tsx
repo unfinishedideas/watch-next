@@ -24,7 +24,7 @@ function HeaderUserPanel()
             <div className="header-userpanel">
                 <NavLink className="nav-link" to="/">home</NavLink>
                 <NavLink className="nav-link" to="settings">{user.username}</NavLink>
-                <NavLink className="nav-link" to="/" onClick={LogOutUser}>sign out</NavLink>
+                <NavLink className="nav-link" to="/" onClick={LogOutUser}>log out</NavLink>
             </div>
         )
     }

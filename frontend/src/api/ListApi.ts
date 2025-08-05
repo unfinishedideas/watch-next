@@ -75,4 +75,34 @@ export async function RemoveMovieFromList<T>(query: object): Promise<T>{
     }
 }
 
+export async function GetMovieListMovies<T>(id: string): Promise<T>{
+    try {
+        const res = await fetch(`${base_url}/movie-lists/${id}/movies`, {
+            method: "GET",
+        });
+        if (!res.ok) {
+            HandleError(res.statusText);
+        }
+        return await res.json() as T;
+    }
+    catch (err: Error) {
+        HandleError(err);
+    }
+}
+
+export async function GetMovieListUsers<T>(id: string): Promise<T>{
+    try {
+        const res = await fetch(`${base_url}/movie-lists/${id}/users`, {
+            method: "GET",
+        });
+        if (!res.ok) {
+            HandleError(res.statusText);
+        }
+        return await res.json() as T;
+    }
+    catch (err: Error) {
+        HandleError(err);
+    }
+}
+
 export type AsyncApiFunc = (id: string) => Promise;

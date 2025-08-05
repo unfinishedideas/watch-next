@@ -1,2 +1,7 @@
-.feed-screen-container {
+.feed-container {
+}
+
+.feed-title {
+    font-size: 24px;
+    color: white;
 }

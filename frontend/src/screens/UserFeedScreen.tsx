@@ -1,13 +1,15 @@
 import "./FeedScreen.css";
 import { useUser } from '../hooks/UserHooks.ts';
 import { useQuery } from "@tanstack/react-query";
-
+import { NavLink } from 'react-router';
 import { GetUserLists } from "../api/UserApi.ts";
 import List from "../classes/List.ts";
-import ListCard from "../components/ListCard.tsx";
+import ListPreview from "../components/ListPreview.tsx";
 
 const UserFeedScreen: React.FC = () => {
   const {user, setUser} = useUser();
+  // TODO: Make this more generic so users can view other user's feeds, feed in userID instead of 
+  // using context user object. Conditionally render title based on if looking at own feed
 
   const { isPending, error, data } = useQuery({
     queryKey: ["user_id"],
@@ -31,10 +33,10 @@ const UserFeedScreen: React.FC = () => {
   }
 
   return (
-    <div className="user-feed-container">
-      <h3>{user.username}'s saved lists</h3>
+    <div className="feed-container">
+      <h2 className="feed-title">{user.username}'s saved lists</h2>
       {data.map((list: List, index: number) => (
-        <ListCard listData={list} key={index} />
+        <ListPreview listData={list} key={index} />
       ))}
     </div>
   );
