@@ -51,7 +51,7 @@ app.MapGet("users/{id}/movie-lists/", (Guid id) => uAPI.GetUserMovieLists(id));
 app.MapPut("users/", (UpdateUserRequest req) => uAPI.UpdateUser(req, pHasher));
 
 // Movie Lists
-app.MapPost("movie-lists/", (string listTitle) => mlAPI.CreateMovieList(listTitle));
+app.MapPost("movie-lists/", (RegisterMovieListRequest req) => mlAPI.CreateMovieList(req));
 // TODO: Remove request classes and just use movie-lists/{id}/action/{id}/ ?
 app.MapPost("movie-lists/add-user/", (UpdateUserMovieListRequest req) => mlAPI.AddUserToMovieList(req));
 app.MapPost("movie-lists/remove-user/", (UpdateUserMovieListRequest req) => mlAPI.RemoveUserFromMovieList(req));

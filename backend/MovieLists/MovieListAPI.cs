@@ -9,21 +9,21 @@ namespace WatchNext.MovieLists
 	{
 		public required string ConnStr { get; set; }
 
-		public async Task<IResult> CreateMovieList(string listTitle)
+		public async Task<IResult> CreateMovieList(RegisterMovieListRequest req)
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
-			if (!EnsureMinimumLength(listTitle, 1))
+			if (!EnsureMinimumLength(req.List_Title, 1))
 			{
 				return Results.BadRequest("List title must not be empty");
 			}
 
 			var res = await conn.QueryFirstOrDefaultAsync<MovieList>(
-				@"INSERT INTO movie_lists (list_title)
-				VALUES (@ListTitle)
-				RETURNING id, list_title",
-				new { listTitle }
+				@"INSERT INTO movie_lists (list_title, is_private)
+				VALUES (@List_Title, @Is_Private)
+				RETURNING *;",
+				new { req.List_Title, req.Is_Private }
 			);
 
 			if (res == null)
@@ -47,7 +47,7 @@ namespace WatchNext.MovieLists
 			// Check to see if user is already associated with movie list
 			var res1 = await conn.QueryFirstOrDefaultAsync(
 				"SELECT * FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id",
-				new { req.user_id, req.list_id }
+				new { req.User_Id, req.List_Id }
 			);
 			if (res1 != null)
 			{
@@ -56,7 +56,7 @@ namespace WatchNext.MovieLists
 
 			var res2 = await conn.QueryFirstOrDefaultAsync(
 				@"INSERT INTO user_movie_lists (user_id, list_id) VALUES (@user_id, @list_id)",
-				new { req.user_id, req.list_id }
+				new { req.User_Id, req.List_Id }
 			);
 			return Results.Ok(res2);
 		}
@@ -68,7 +68,7 @@ namespace WatchNext.MovieLists
 
 			var res = await conn.QueryFirstOrDefaultAsync(
 				"DELETE FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id;",
-				new { req.user_id, req.list_id }
+				new { req.User_Id, req.List_Id }
 			);
 			return Results.Ok(res);
 		}
@@ -87,7 +87,7 @@ namespace WatchNext.MovieLists
 			// Check to see if movie is already associated with movie list
 			var res1 = await conn.QueryFirstOrDefaultAsync(
 				"SELECT * FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id",
-				new { req.movie_id, req.list_id }
+				new { req.Movie_Id, req.List_Id }
 			);
 			if (res1 != null)
 			{
@@ -96,7 +96,7 @@ namespace WatchNext.MovieLists
 
 			var res2 = await conn.QueryFirstOrDefaultAsync(
 				@"INSERT INTO movie_list_movies (movie_id, list_id) VALUES (@movie_id, @list_id)",
-				new { req.movie_id, req.list_id }
+				new { req.Movie_Id, req.List_Id }
 			);
 			return Results.Ok(res2);
 		}
@@ -108,7 +108,7 @@ namespace WatchNext.MovieLists
 
 			var res = await conn.QueryFirstOrDefaultAsync(
 				"DELETE FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id;",
-				new { req.movie_id, req.list_id }
+				new { req.Movie_Id, req.List_Id }
 			);
 			return Results.Ok(res);
 		}
@@ -190,17 +190,21 @@ namespace WatchNext.MovieLists
 			await conn.OpenAsync();
 
 			var existingMovieList = await conn.QueryFirstOrDefaultAsync<MovieList>(
-				"SELECT * FROM movie_lists WHERE id = @id", new { req.id });
+				"SELECT * FROM movie_lists WHERE id = @id", new { req.Id });
 			if (existingMovieList == null)
 			{
 				return Results.NotFound("Movie List not found");
 			}
 
+			string newListTitle = req.List_Title ?? existingMovieList.List_Title;
+			bool newIsPrivate = req.Is_Private ?? existingMovieList.Is_Private;
+
 			// Update MovieList
 			var res = await conn.QueryFirstOrDefaultAsync<MovieList>(
-				@"UPDATE movie_lists SET list_title = @listTitle WHERE id = @id
-				RETURNING id, list_title;",
-			new { req.listTitle, req.id });
+				@"UPDATE movie_lists SET list_title = @newListTitle, is_private = @newIsPrivate
+				WHERE id = @id
+				RETURNING *;",
+			new { newListTitle, newIsPrivate, req.Id });
 
 			return Results.Ok(res);
 		}
@@ -238,10 +242,10 @@ namespace WatchNext.MovieLists
 			await conn.OpenAsync();
 
 			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
-				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.list_id }
+				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.List_Id }
 			);
 			var existingUser = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
-				"SELECT * FROM users WHERE id=@user_id", new { req.user_id }
+				"SELECT * FROM users WHERE id=@user_id", new { req.User_Id }
 			);
 			if (existingUser == null || existingList == null)
 			{
@@ -256,10 +260,10 @@ namespace WatchNext.MovieLists
 			await conn.OpenAsync();
 		
 			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
-				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.list_id }
+				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.List_Id }
 			);
 			var existingMovie = await conn.QueryFirstOrDefaultAsync<Movie>(
-				"SELECT * FROM movies WHERE id=@movie_id", new { req.movie_id }
+				"SELECT * FROM movies WHERE id=@movie_id", new { req.Movie_Id }
 			);
 			if (existingMovie == null || existingList == null)
 			{
