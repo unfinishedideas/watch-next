@@ -4,8 +4,11 @@
     margin-bottom: 2em;
 }
 
-.list-preview-users-container {
-    display: flex;
+.list-preview-userlist-container {
+}
+
+.list-preview-user-container {
+    display: inline;    
 }
 
 .list-preview-title{
@@ -13,6 +16,6 @@
 }
 
 .list-preview-username{
-    font-size: 20px;
+    font-size: 16px;
     color: white;
 }

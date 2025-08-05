@@ -36,7 +36,7 @@ const UserFeedScreen: React.FC = () => {
     <div className="feed-container">
       <h2 className="feed-title">{user.username}'s saved lists</h2>
       {data.map((list: List, index: number) => (
-        <ListPreview listData={list} key={index} />
+        <ListPreview listData={list} key={index} prevId={index.toString()} />
       ))}
     </div>
   );

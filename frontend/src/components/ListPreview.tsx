@@ -6,20 +6,20 @@ import { GetMovieListMovies, GetMovieListUsers } from "../api/ListApi.ts";
 
 interface ListPreviewProps {
   listData: List;
+  prevId :string; // necessary to avoid duplicate queries when there are multiple lists
 }
 
 const ListPreview: React.FC<ListPreviewProps> = ({
-  listData,
+  listData, prevId
 }: ListPreviewProps) => {
-
-    const listMovies = useQuery({
-      queryKey: ["list_id_movies"],
-      queryFn: () => GetMovieListMovies(listData.id),
-    });
-    const listUsers = useQuery({
-      queryKey: ["list_id_users"],
-      queryFn: () => GetMovieListUsers(listData.id),
-    });
+  const listMovies = useQuery({
+    queryKey: [`list_id_movies_${prevId}`],
+    queryFn: () => GetMovieListMovies(listData.id),
+  });
+  const listUsers = useQuery({
+    queryKey: [`list_id_users_${prevId}`],
+    queryFn: () => GetMovieListUsers(listData.id),
+  });
 
   if (listMovies.isPending || listUsers.isPending) {
     return (
@@ -41,21 +41,30 @@ const ListPreview: React.FC<ListPreviewProps> = ({
       </div>
     );
   } else {
+    const manyUsers: boolean = listUsers.data.length > 20;
+    let previewUsers: Array<object> = listUsers.data;
+    if (manyUsers === true) {
+      previewUsers = previewUsers.slice(20);
+    }
     return (
       <div className="list-preview-container">
         <NavLink className="list-preview-title" to={`list/${listData.id}`}>
           {listData.list_Title}
         </NavLink>
-        <div className="list-preview-users-container">
-          {listUsers.data.map((user, index) => (
-            <NavLink
-              className="list-preview-username"
-              to={`user/${user.id}`}
-              key={index}
-            >
-              {user.username}&nbsp;&nbsp;&nbsp;
-            </NavLink>
+        <div className="list-preview-userlist-container">
+          {previewUsers.map((user, index) => (
+              <div className="list-preview-user-container" key={index}>
+                <NavLink
+                  className="list-preview-username"
+                  to={`user/${user.id}`}
+                >
+                  {user.username}&nbsp;&nbsp;&nbsp;
+                </NavLink>
+                {index % 4 === 0 && index !== 0 && <br />}
+              </div>
           ))}
+          
+          {manyUsers && <p>and more!</p>}
         </div>
       </div>
     );
