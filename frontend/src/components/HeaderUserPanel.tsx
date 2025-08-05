@@ -13,7 +13,7 @@ function HeaderUserPanel()
     if (user === undefined) {
         return(
             <div className="header-userpanel">
-                <NavLink className="nav-link" to="home">home</NavLink>
+                <NavLink className="nav-link" to="/">home</NavLink>
                 <NavLink className="nav-link" to="login">log in</NavLink>
                 <NavLink className="nav-link" to="signup">sign up</NavLink>
             </div>
@@ -22,9 +22,9 @@ function HeaderUserPanel()
     else {
         return(
             <div className="header-userpanel">
+                <NavLink className="nav-link" to="/">home</NavLink>
                 <NavLink className="nav-link" to="settings">{user.username}</NavLink>
-                <NavLink className="nav-link" to="home">home</NavLink>
-                <NavLink className="nav-link" to="home" onClick={LogOutUser}>sign out</NavLink>
+                <NavLink className="nav-link" to="/" onClick={LogOutUser}>sign out</NavLink>
             </div>
         )
     }

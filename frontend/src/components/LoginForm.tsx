@@ -11,7 +11,7 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = () =>
 {
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const {user, setUser} = useUser();
     const [nameError, setNameError] = useState("");
     const [passwordError, setPasswordError] = useState("");
@@ -36,9 +36,8 @@ const LoginForm: React.FC<LoginFormProps> = () =>
         try {
             let res: object = await LoginUser(formData.nameInput, formData.password);
             const loggedInUser: User = new User(res.id, res.username, res.email, res.deleted)
-            console.log(loggedInUser);
             setUser(loggedInUser);
-            await navigate("/home");
+            await navigate("/");
         }
         catch(err: Error) {
             if (err.message === "user not found") {

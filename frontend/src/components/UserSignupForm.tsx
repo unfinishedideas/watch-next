@@ -53,7 +53,7 @@ const UserSignupForm: React.FC = () =>
             if (loggedInUser instanceof User)
             {
                 setUser(loggedInUser);
-                await navigate("/home");
+                await navigate("/");
             }
             else {
                 setErrMsg("Try logging in")
