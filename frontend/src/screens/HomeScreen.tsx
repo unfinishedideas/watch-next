@@ -1,13 +1,12 @@
-import './Screen.css'
-import { useContext, useState } from 'react'
+import './Screen.css';
 import { Link } from 'react-router';
-import UserContext from '../context/UserContext.ts'
-import UserFeedScreen from './UserFeedScreen.tsx'
+import { useUser } from '../hooks/UserHooks.ts';
+import UserFeedScreen from './UserFeedScreen.tsx';
 
 
 function HomeScreen()
 {
-    const [user, setUser] = useContext(UserContext);
+    const {user, setUser} = useUser();
 
     return(
         <div className='screen-container'>

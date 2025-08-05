@@ -1,17 +1,16 @@
 import './Header.css'
-import UserContext from '../context/UserContext.ts' 
-import { useContext } from 'react'
+import { useUser } from '../hooks/UserHooks.ts';
 import { NavLink } from 'react-router'
 
 function HeaderUserPanel()
 {
-    const [user, setUser] = useContext(UserContext);
+    const {user, setUser} = useUser();
 
     function LogOutUser() {
-        setUser(null); 
+        setUser(undefined); 
     }
 
-    if (user === null) {
+    if (user === undefined) {
         return(
             <div className="header-userpanel">
                 <NavLink className="nav-link" to="home">home</NavLink>

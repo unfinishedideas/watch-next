@@ -1,6 +1,5 @@
 import { base_url } from './Vars.ts';
-import { User, UserRegister } from '../classes/User.ts';
-
+import User, { UserRegister } from '../classes/User.ts';
 
 function HandleError(err: unknown)
 {

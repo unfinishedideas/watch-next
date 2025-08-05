@@ -3,7 +3,7 @@ export default class User
     user_id: string;
     username: string;
     email: string;
-    deleted: bool; 
+    deleted: boolean; 
 
     constructor(user_id:string="", username:string="", email:string="", deleted:boolean=false) 
     {
@@ -12,6 +12,11 @@ export default class User
         this.email = email;
         this.deleted = deleted; 
     }
+}
+
+export interface UserContextType {
+    user: User | undefined;
+    setUser: (user:User | undefined) => void;
 }
 
 export class UserRegister

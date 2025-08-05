@@ -139,7 +139,6 @@ namespace WatchNext.Movies
 			return Results.Ok(res);
 		}
 
-
 		public async Task<IResult> DeleteMovie(Guid movie_id)
 		{
 			using var conn = new NpgsqlConnection(connStr);

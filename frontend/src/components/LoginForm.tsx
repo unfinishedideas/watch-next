@@ -1,6 +1,6 @@
 import './Form.css'
-import UserContext from '../context/UserContext.ts' 
-import { useContext, useState } from 'react'
+import { useUser } from '../hooks/UserHooks.ts';
+import { useState } from 'react'
 import { useNavigate } from 'react-router';
 import { LoginUser } from '../api/UserApi.ts'
 import User from '../classes/User.ts'
@@ -12,7 +12,7 @@ interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = () =>
 {
     let navigate = useNavigate();
-    const [user, setUser] = useContext(UserContext);
+    const {user, setUser} = useUser();
     const [nameError, setNameError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [errMsg, setErrMsg] = useState("");
@@ -34,10 +34,11 @@ const LoginForm: React.FC<LoginFormProps> = () =>
         setNameError("");
         setPasswordError("");
         try {
-            let res = await LoginUser(formData.nameInput, formData.password);
-            const loggedInUser: User = new User(res.id, res.username, res.email, res.deleted);
+            let res: object = await LoginUser(formData.nameInput, formData.password);
+            const loggedInUser: User = new User(res.id, res.username, res.email, res.deleted)
+            console.log(loggedInUser);
             setUser(loggedInUser);
-            navigate("/home");
+            await navigate("/home");
         }
         catch(err: Error) {
             if (err.message === "user not found") {
@@ -50,6 +51,7 @@ const LoginForm: React.FC<LoginFormProps> = () =>
                 setErrMsg("Cannot log in, user is deleted");
             }
             else {
+                console.log(err)
                 setErrMsg("Something went wrong, please try again.");
             }
         }

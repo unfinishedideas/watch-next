@@ -1,10 +1,7 @@
 import './Screen.css'
-import UserSignupForm from '../components/UserSignupForm.tsx'
+import UserSignupForm from '../components/UserSignUpForm.tsx'
 
-interface SignUpScreenProps {
-}
-
-const SignUpScreen: React.FC<SignUpScreenProps> = () =>
+const SignUpScreen: React.FC = () =>
 {
     return(
         <div className="screen-container">
