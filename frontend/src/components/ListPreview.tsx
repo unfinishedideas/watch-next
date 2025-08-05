@@ -54,13 +54,13 @@ const ListPreview: React.FC<ListPreviewProps> = ({
         <div className="list-preview-userlist-container">
           {previewUsers.map((user, index) => (
               <div className="list-preview-user-container" key={index}>
+                {index % 4 === 0 && index !== 0 && <br />}
                 <NavLink
                   className="list-preview-username"
                   to={`user/${user.id}`}
                 >
                   {user.username}&nbsp;&nbsp;&nbsp;
                 </NavLink>
-                {index % 4 === 0 && index !== 0 && <br />}
               </div>
           ))}
           
