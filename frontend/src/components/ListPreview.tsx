@@ -26,7 +26,7 @@ const ListPreview: React.FC<ListPreviewProps> = ({
     return (
       <div className="list-preview-container">
         <NavLink className="list-preview-title" to={`list/${listData.id}`}>
-          {listData.list_Title}
+          {listData.list_title}
         </NavLink>
         <h3> Loading List Data...</h3>
       </div>
@@ -36,7 +36,7 @@ const ListPreview: React.FC<ListPreviewProps> = ({
     return (
       <div className="list-preview-container">
         <NavLink className="list-preview-title" to={`list/${listData.id}`}>
-          {listData.list_Title}
+          {listData.list_title}
         </NavLink>
         <h3> Failed to Load List!</h3>
       </div>
@@ -50,7 +50,7 @@ const ListPreview: React.FC<ListPreviewProps> = ({
     return (
       <div className="list-preview-container">
         <NavLink className="list-preview-title" to={`list/${listData.id}`}>
-          {listData.list_Title}
+          {listData.list_title}
         </NavLink>
         <div className="list-preview-userlist-container">
           {previewUsers.map((user, index) => (
@@ -61,7 +61,6 @@ const ListPreview: React.FC<ListPreviewProps> = ({
               </NavLink>
             </div>
           ))}
-
           {manyUsers && <p>and more!</p>}
         </div>
       </div>

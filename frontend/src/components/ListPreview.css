@@ -1,21 +1,21 @@
-.list-preview-container{
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 2em;
+.list-preview-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2em;
 }
 
 .list-preview-userlist-container {
 }
 
 .list-preview-user-container {
-    display: inline;    
+  display: inline;
 }
 
-.list-preview-title{
-   font-size: 24px; 
+.list-preview-title {
+  font-size: 24px;
 }
 
-.list-preview-username{
-    font-size: 16px;
-    color: white;
+.list-preview-username {
+  font-size: 16px;
+  color: white;
 }

@@ -1,20 +1,20 @@
 .movie-card-container {
-    #background-color: red;
-    --movie-card-width: 320px;
-    padding: 1rem;
-    width: var(--movie-card-width);
-    border: 2px solid red;
-    margin: 8px;
+  #background-color: red;
+  --movie-card-width: 320px;
+  padding: 1rem;
+  width: var(--movie-card-width);
+  border: 2px solid red;
+  margin: 8px;
 }
 
 .movie-title-text {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .movie-poster-preview {
-    max-width: var(--movie-card-width);
+  max-width: var(--movie-card-width);
 }
 
 .info-small {
-    margin:0;
+  margin: 0;
 }

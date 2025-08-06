@@ -1,13 +1,13 @@
 export default class User
 {
-    user_id: string;
+    id: string;
     username: string;
     email: string;
     deleted: boolean; 
 
-    constructor(user_id:string="", username:string="", email:string="", deleted:boolean=false) 
+    constructor(id:string="", username:string="", email:string="", deleted:boolean=false) 
     {
-        this.user_id = user_id;
+        this.id = id;
         this.username = username;
         this.email = email;
         this.deleted = deleted; 

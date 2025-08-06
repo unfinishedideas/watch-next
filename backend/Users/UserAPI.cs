@@ -73,9 +73,14 @@ namespace WatchNext.Users
 				return Results.BadRequest("Cannot log in, User is deleted");
 			}
 			bool isValid = pHasher.Verify(req.password, user.password_hash);
-
+			if (!isValid)
+			{
+				return Results.Unauthorized();
+			}
+			UserFrontend loggedInUser = new UserFrontend { id=user.id, username=user.username, email=user.email, 
+				deleted = user.deleted, created_at=user.created_at };
 			// TODO: return JWT Token 
-			return isValid ? Results.Ok(user) : Results.Unauthorized();
+			return Results.Ok(loggedInUser);
 		}
 
 		public async Task<IResult> DeleteUser(LoginUserRequest req, PasswordHasher pHasher)

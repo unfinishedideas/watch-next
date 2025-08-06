@@ -1,22 +1,22 @@
 .header-container {
-    display: flex;
-    justify-content: space-between;
-    margin: 0 auto;
-    border-bottom: dotted 8px red;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  border-bottom: dotted 8px red;
 }
 
 .header-logo-container {
-    margin-left: 2em;
+  margin-left: 2em;
 }
 
 .header-title-text {
-    color: red;
+  color: red;
 }
 
 .header-userpanel {
-    display: flex;
+  display: flex;
 }
 
 .nav-link {
-    padding: 12px;
+  padding: 12px;
 }
