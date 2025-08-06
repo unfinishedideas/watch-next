@@ -6,11 +6,12 @@ import { GetMovieListMovies, GetMovieListUsers } from "../api/ListApi.ts";
 
 interface ListPreviewProps {
   listData: List;
-  prevId :string; // necessary to avoid duplicate queries when there are multiple lists
+  prevId: string; // necessary to avoid duplicate queries when there are multiple lists
 }
 
 const ListPreview: React.FC<ListPreviewProps> = ({
-  listData, prevId
+  listData,
+  prevId,
 }: ListPreviewProps) => {
   const listMovies = useQuery({
     queryKey: [`list_id_movies_${prevId}`],
@@ -43,7 +44,7 @@ const ListPreview: React.FC<ListPreviewProps> = ({
   } else {
     const manyUsers: boolean = listUsers.data.length > 20;
     let previewUsers: Array<object> = listUsers.data;
-    if (manyUsers === true) {
+    if (manyUsers) {
       previewUsers = previewUsers.slice(20);
     }
     return (
@@ -53,17 +54,14 @@ const ListPreview: React.FC<ListPreviewProps> = ({
         </NavLink>
         <div className="list-preview-userlist-container">
           {previewUsers.map((user, index) => (
-              <div className="list-preview-user-container" key={index}>
-                {index % 4 === 0 && index !== 0 && <br />}
-                <NavLink
-                  className="list-preview-username"
-                  to={`user/${user.id}`}
-                >
-                  {user.username}&nbsp;&nbsp;&nbsp;
-                </NavLink>
-              </div>
+            <div className="list-preview-user-container" key={index}>
+              {index % 4 === 0 && index !== 0 && <br />}
+              <NavLink className="list-preview-username" to={`user/${user.id}`}>
+                {user.username}&nbsp;&nbsp;&nbsp;
+              </NavLink>
+            </div>
           ))}
-          
+
           {manyUsers && <p>and more!</p>}
         </div>
       </div>

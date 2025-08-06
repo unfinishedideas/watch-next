@@ -52,21 +52,22 @@ app.MapPut("users/", (UpdateUserRequest req) => uAPI.UpdateUser(req, pHasher));
 
 // Movie Lists
 app.MapPost("movie-lists/", (RegisterMovieListRequest req) => mlAPI.CreateMovieList(req));
-// TODO: Remove request classes and just use movie-lists/{id}/action/{id}/ ?
-app.MapPost("movie-lists/add-user/", (UpdateUserMovieListRequest req) => mlAPI.AddUserToMovieList(req));
-app.MapPost("movie-lists/remove-user/", (UpdateUserMovieListRequest req) => mlAPI.RemoveUserFromMovieList(req));
-app.MapPost("movie-lists/add-movie/", (UpdateMoviesMovieListRequest req) => mlAPI.AddMovieToMovieList(req));
-app.MapPost("movie-lists/remove-movie/", (UpdateMoviesMovieListRequest req) => mlAPI.RemoveMovieFromMovieList(req));
 app.MapGet("movie-lists/", () => mlAPI.GetAllMovieLists());
 app.MapGet("movie-lists/{id}/", (Guid id) => mlAPI.GetMovieListById(id));
 app.MapGet("movie-lists/title/{listTitle}", (string listTitle) => mlAPI.GetMovieListsByTitle(listTitle));
 app.MapGet("movie-lists/{id}/users/", (Guid id) => mlAPI.GetMovieListUsers(id));
 app.MapGet("movie-lists/{id}/movies/", (Guid id) => mlAPI.GetMovieListMovies(id));
 app.MapPut("movie-lists/", (UpdateMovieListRequest req) => mlAPI.UpdateMovieList(req));
+// TODO: Remove request classes and just use movie-lists/{id}/action/{id}/ ?
+app.MapPost("movie-lists/add-user/", (UpdateUserMovieListRequest req) => mlAPI.AddUserToMovieList(req));
+app.MapPost("movie-lists/remove-user/", (UpdateUserMovieListRequest req) => mlAPI.RemoveUserFromMovieList(req));
+app.MapPost("movie-lists/add-movie/", (UpdateMoviesMovieListRequest req) => mlAPI.AddMovieToMovieList(req));
+app.MapPost("movie-lists/remove-movie/", (UpdateMoviesMovieListRequest req) => mlAPI.RemoveMovieFromMovieList(req));
 app.MapDelete("movie-lists/{id}", (Guid id) => mlAPI.DeleteMovieList(id));
 
 // Movies
 app.MapPost("movies/", (MovieRegister req) => mAPI.CreateMovie(req));
+app.MapGet("movies/", () => mAPI.GetAllMovies());
 app.MapGet("movies/{id}/", (Guid id) => mAPI.GetMovieById(id));
 app.MapGet("movies/title/{title}/", (string title) => mAPI.GetMoviesByTitle(title));
 app.MapGet("movies/director/{director}/", (string director) => mAPI.GetMoviesByDirector(director));

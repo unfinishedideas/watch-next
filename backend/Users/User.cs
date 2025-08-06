@@ -2,43 +2,43 @@
 {
 	public record User
 	{
-		required public Guid Id { get; set; }
-		required public string Username { get; set; } = "";
-		required public string Email { get; set; } = "";
-		required public string Password_Hash { get; set; } = "";
-		required public bool Deleted { get; set; } = false;
-		required public DateTime Created_At { get; set; }
+		required public Guid id { get; set; }
+		required public string username { get; set; } = "";
+		required public string email { get; set; } = "";
+		required public string password_hash { get; set; } = "";
+		required public bool deleted { get; set; } = false;
+		required public DateTime created_at { get; set; }
 
 		// Lowercase string fields before updating / creating users
 		public void LowercaseFields()
 		{
-			Username = Username.ToLower();
-			Email = Email.ToLower();
+			username = username.ToLower();
+			email = email.ToLower();
 		}
 	}
 
 	public record UserRegister
 	{
-		required public string Username { get; set; } = "";
-		required public string Email { get; set; } = "";
+		required public string username { get; set; } = "";
+		required public string email { get; set; } = "";
 		required public string Password { get; set; } = "";
 
 		// Lowercase string fields before creating users
 		public void LowercaseFields()
 		{
-			Username = Username.ToLower();
-			Email = Email.ToLower();
+			username = username.ToLower();
+			email = email.ToLower();
 			Password = Password.ToLower();
 		}
 	}
 
 	public record UserFrontend
 	{
-		required public Guid Id { get; set; }
-		required public string Username { get; set; } = "";
-		required public string Email { get; set; } = "";
-		required public bool Deleted { get; set; } = false;
-		public DateTime Created_At { get; set; }
+		required public Guid id { get; set; }
+		required public string username { get; set; } = "";
+		required public string email { get; set; } = "";
+		required public bool deleted { get; set; } = false;
+		public DateTime created_at { get; set; }
 	}
 
 	public class LoginUserRequest

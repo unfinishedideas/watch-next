@@ -2,28 +2,28 @@
 {
 	public sealed class Movie
 	{
-		required public Guid Id{ get; set; }
-		required public DateTime Created_At { get; set; }
-		required public string Title { get; set; }
-		required public DateTime Release_Date { get; set; }
-		required public string Director { get; set; }
-		required public string Genre { get; set; }
+		required public Guid id{ get; set; }
+		required public DateTime created_at { get; set; }
+		required public string title { get; set; }
+		required public DateTime release_date { get; set; }
+		required public string director { get; set; }
+		required public string genre { get; set; }
 		// TODO: Reintroduce these
 		//required public string imdb_id { get; set; }
 	}
 	public sealed class MovieRegister
 	{
-		required public string Title { get; set; }
-		required public DateTime Release_Date { get; set; }
-		required public string Director { get; set; }
-		required public string Genre { get; set; }
+		required public string title { get; set; }
+		required public DateTime release_date { get; set; }
+		required public string director { get; set; }
+		required public string genre { get; set; }
 	}
 	public class UpdateMovieRequest()
 	{
-		required public Guid Id { get; set; }
-		public string? Title { get; set; }
-		public DateTime? Release_Date { get; set; }
-		public string? Director { get; set; }
-		public string? Genre { get; set; }
+		required public Guid id { get; set; }
+		public string? title { get; set; }
+		public DateTime? release_date { get; set; }
+		public string? director { get; set; }
+		public string? genre { get; set; }
 	}
 }

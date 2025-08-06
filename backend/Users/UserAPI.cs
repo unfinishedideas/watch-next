@@ -18,32 +18,32 @@ namespace WatchNext.Users
 
 			// Check to see if user is already in the DB
 			var existingUser = await conn.QueryFirstOrDefaultAsync<User>(
-				"SELECT * FROM users WHERE email = @email", new { user.Email });
+				"SELECT * FROM users WHERE email = @email", new { user.email });
 
 			if (existingUser != null)
-				return Results.BadRequest("Email already registered.");
+				return Results.BadRequest("email already registered.");
 
 			existingUser = await conn.QueryFirstOrDefaultAsync<User>(
-				"SELECT * FROM users WHERE username = @username", new { user.Username });
+				"SELECT * FROM users WHERE username = @username", new { user.username });
 
 			if (existingUser != null)
-				return Results.BadRequest("Username already registered.");
+				return Results.BadRequest("username already registered.");
 
 			var res = await conn.QueryFirstOrDefaultAsync<User>(
 				@"INSERT INTO users (username, email, password_hash)
-				  VALUES (@Username, @Email, @PasswordHash)
+				  VALUES (@username, @email, @PasswordHash)
 				  RETURNING id, username, email, created_at, deleted;",
-				new { user.Username, user.Email, PasswordHash = passwordHash });
+				new { user.username, user.email, PasswordHash = passwordHash });
 
 			if (res == null) return Results.BadRequest("User creation failed.");
 
 			UserFrontend newUser = new UserFrontend
 			{
-				Id = res.Id,
-				Username = res.Username,
-				Email = res.Email,
-				Deleted = res.Deleted,
-				Created_At = res.Created_At,
+				id = res.id,
+				username = res.username,
+				email = res.email,
+				deleted = res.deleted,
+				created_at = res.created_at,
 			};
 
 			return Results.Ok(newUser);
@@ -68,11 +68,11 @@ namespace WatchNext.Users
 					return Results.NotFound("User not found");
 				}
 			}
-			if (user.Deleted == true)
+			if (user.deleted == true)
 			{
 				return Results.BadRequest("Cannot log in, User is deleted");
 			}
-			bool isValid = pHasher.Verify(req.password, user.Password_Hash);
+			bool isValid = pHasher.Verify(req.password, user.password_hash);
 
 			// TODO: return JWT Token 
 			return isValid ? Results.Ok(user) : Results.Unauthorized();
@@ -97,11 +97,11 @@ namespace WatchNext.Users
 					return Results.NotFound("User not found");
 				}
 			}
-			if (user.Deleted == true)
+			if (user.deleted == true)
 			{
 				return Results.BadRequest("User is already deleted");
 			}
-			bool isValid = pHasher.Verify(req.password, user.Password_Hash);
+			bool isValid = pHasher.Verify(req.password, user.password_hash);
 			if (!isValid)
 			{
 				return Results.Unauthorized();
@@ -110,7 +110,7 @@ namespace WatchNext.Users
 			var res = await conn.QueryAsync(
 				@"UPDATE users SET deleted = true WHERE id = @id
 				RETURNING id, username, email, created_at, deleted;",
-				new { id = user.Id }
+				new { id = user.id }
 			);
 			return Results.Ok(res);
 		}
@@ -194,7 +194,7 @@ namespace WatchNext.Users
 				return Results.NotFound("User not found.");
 
 			// verify the user has the correct password
-			bool isValid = pHasher.Verify(req.password, existingUser.Password_Hash);
+			bool isValid = pHasher.Verify(req.password, existingUser.password_hash);
 			if (!isValid)
 			{
 				return Results.Unauthorized();
@@ -205,11 +205,11 @@ namespace WatchNext.Users
 			if (req.new_password != null)
 				newPassword = pHasher.Hash(req.new_password);
 			else
-				newPassword = existingUser.Password_Hash;
+				newPassword = existingUser.password_hash;
 
-			bool newDeleted = req.deleted ?? existingUser.Deleted;
-			string newUsername = req.username ?? existingUser.Username;
-			string newEmail = req.email ?? existingUser.Email;
+			bool newDeleted = req.deleted ?? existingUser.deleted;
+			string newUsername = req.username ?? existingUser.username;
+			string newEmail = req.email ?? existingUser.email;
 
 			var res = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
 				@"UPDATE users SET username = @newUsername, email = @newEmail, password_hash = @newPassword, deleted = @newDeleted WHERE id = @id

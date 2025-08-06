@@ -14,16 +14,16 @@ namespace WatchNext.MovieLists
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
-			if (!EnsureMinimumLength(req.List_Title, 1))
+			if (!EnsureMinimumLength(req.list_title, 1))
 			{
 				return Results.BadRequest("List title must not be empty");
 			}
 
 			var res = await conn.QueryFirstOrDefaultAsync<MovieList>(
 				@"INSERT INTO movie_lists (list_title, is_private)
-				VALUES (@List_Title, @Is_Private)
+				VALUES (@list_title, @is_private)
 				RETURNING *;",
-				new { req.List_Title, req.Is_Private }
+				new { req.list_title, req.is_private }
 			);
 
 			if (res == null)
@@ -31,86 +31,6 @@ namespace WatchNext.MovieLists
 				return Results.BadRequest("Movie List creation failed.");
 			}
 			return Results.Ok(new { res });
-		}
-
-		public async Task<IResult> AddUserToMovieList(UpdateUserMovieListRequest req)
-		{
-			using var conn = new NpgsqlConnection(ConnStr);
-			await conn.OpenAsync();
-
-			bool isValid = await IsUserAndListValid(req);
-			if (!isValid)
-			{
-				return Results.NotFound();
-			}
-
-			// Check to see if user is already associated with movie list
-			var res1 = await conn.QueryFirstOrDefaultAsync(
-				"SELECT * FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id",
-				new { req.User_Id, req.List_Id }
-			);
-			if (res1 != null)
-			{
-				return Results.Conflict("User already associated with movie list");
-			}
-
-			var res2 = await conn.QueryFirstOrDefaultAsync(
-				@"INSERT INTO user_movie_lists (user_id, list_id) VALUES (@user_id, @list_id)",
-				new { req.User_Id, req.List_Id }
-			);
-			return Results.Ok(res2);
-		}
-
-		public async Task<IResult> RemoveUserFromMovieList(UpdateUserMovieListRequest req)
-		{
-			using var conn = new NpgsqlConnection(ConnStr);
-			await conn.OpenAsync();
-
-			var res = await conn.QueryFirstOrDefaultAsync(
-				"DELETE FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id;",
-				new { req.User_Id, req.List_Id }
-			);
-			return Results.Ok(res);
-		}
-
-		public async Task<IResult> AddMovieToMovieList(UpdateMoviesMovieListRequest req)
-		{
-			using var conn = new NpgsqlConnection(ConnStr);
-			await conn.OpenAsync();
-
-			bool isValid = await IsMovieAndListValid(req);
-			if (!isValid)
-			{
-				return Results.NotFound();
-			}
-
-			// Check to see if movie is already associated with movie list
-			var res1 = await conn.QueryFirstOrDefaultAsync(
-				"SELECT * FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id",
-				new { req.Movie_Id, req.List_Id }
-			);
-			if (res1 != null)
-			{
-				return Results.Conflict("Movie already associated with movie list");
-			}
-
-			var res2 = await conn.QueryFirstOrDefaultAsync(
-				@"INSERT INTO movie_list_movies (movie_id, list_id) VALUES (@movie_id, @list_id)",
-				new { req.Movie_Id, req.List_Id }
-			);
-			return Results.Ok(res2);
-		}
-
-		public async Task<IResult> RemoveMovieFromMovieList(UpdateMoviesMovieListRequest req)
-		{
-			using var conn = new NpgsqlConnection(ConnStr);
-			await conn.OpenAsync();
-
-			var res = await conn.QueryFirstOrDefaultAsync(
-				"DELETE FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id;",
-				new { req.Movie_Id, req.List_Id }
-			);
-			return Results.Ok(res);
 		}
 
 		public async Task<IResult> GetAllMovieLists()
@@ -190,22 +110,102 @@ namespace WatchNext.MovieLists
 			await conn.OpenAsync();
 
 			var existingMovieList = await conn.QueryFirstOrDefaultAsync<MovieList>(
-				"SELECT * FROM movie_lists WHERE id = @id", new { req.Id });
+				"SELECT * FROM movie_lists WHERE id = @id", new { req.id });
 			if (existingMovieList == null)
 			{
 				return Results.NotFound("Movie List not found");
 			}
 
-			string newListTitle = req.List_Title ?? existingMovieList.List_Title;
-			bool newIsPrivate = req.Is_Private ?? existingMovieList.Is_Private;
+			string newListTitle = req.list_title ?? existingMovieList.list_title;
+			bool newIsPrivate = req.is_private ?? existingMovieList.is_private;
 
 			// Update MovieList
 			var res = await conn.QueryFirstOrDefaultAsync<MovieList>(
 				@"UPDATE movie_lists SET list_title = @newListTitle, is_private = @newIsPrivate
 				WHERE id = @id
 				RETURNING *;",
-			new { newListTitle, newIsPrivate, req.Id });
+			new { newListTitle, newIsPrivate, req.id });
 
+			return Results.Ok(res);
+		}
+
+		public async Task<IResult> AddUserToMovieList(UpdateUserMovieListRequest req)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			bool isValid = await IsUserAndListValid(req);
+			if (!isValid)
+			{
+				return Results.NotFound();
+			}
+
+			// Check to see if user is already associated with movie list
+			var res1 = await conn.QueryFirstOrDefaultAsync(
+				"SELECT * FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id",
+				new { req.user_id, req.list_id }
+			);
+			if (res1 != null)
+			{
+				return Results.Conflict("User already associated with movie list");
+			}
+
+			var res2 = await conn.QueryFirstOrDefaultAsync(
+				@"INSERT INTO user_movie_lists (user_id, list_id) VALUES (@user_id, @list_id)",
+				new { req.user_id, req.list_id }
+			);
+			return Results.Ok(res2);
+		}
+
+		public async Task<IResult> RemoveUserFromMovieList(UpdateUserMovieListRequest req)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryFirstOrDefaultAsync(
+				"DELETE FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id;",
+				new { req.user_id, req.list_id }
+			);
+			return Results.Ok(res);
+		}
+
+		public async Task<IResult> AddMovieToMovieList(UpdateMoviesMovieListRequest req)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			bool isValid = await IsMovieAndListValid(req);
+			if (!isValid)
+			{
+				return Results.NotFound();
+			}
+
+			// Check to see if movie is already associated with movie list
+			var res1 = await conn.QueryFirstOrDefaultAsync(
+				"SELECT * FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id",
+				new { req.movie_id, req.list_id }
+			);
+			if (res1 != null)
+			{
+				return Results.Conflict("Movie already associated with movie list");
+			}
+
+			var res2 = await conn.QueryFirstOrDefaultAsync(
+				@"INSERT INTO movie_list_movies (movie_id, list_id) VALUES (@movie_id, @list_id)",
+				new { req.movie_id, req.list_id }
+			);
+			return Results.Ok(res2);
+		}
+
+		public async Task<IResult> RemoveMovieFromMovieList(UpdateMoviesMovieListRequest req)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryFirstOrDefaultAsync(
+				"DELETE FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id;",
+				new { req.movie_id, req.list_id }
+			);
 			return Results.Ok(res);
 		}
 
@@ -242,10 +242,10 @@ namespace WatchNext.MovieLists
 			await conn.OpenAsync();
 
 			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
-				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.List_Id }
+				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.list_id }
 			);
 			var existingUser = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
-				"SELECT * FROM users WHERE id=@user_id", new { req.User_Id }
+				"SELECT * FROM users WHERE id=@user_id", new { req.user_id }
 			);
 			if (existingUser == null || existingList == null)
 			{
@@ -260,10 +260,10 @@ namespace WatchNext.MovieLists
 			await conn.OpenAsync();
 		
 			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
-				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.List_Id }
+				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.list_id }
 			);
 			var existingMovie = await conn.QueryFirstOrDefaultAsync<Movie>(
-				"SELECT * FROM movies WHERE id=@movie_id", new { req.Movie_Id }
+				"SELECT * FROM movies WHERE id=@movie_id", new { req.movie_id }
 			);
 			if (existingMovie == null || existingList == null)
 			{

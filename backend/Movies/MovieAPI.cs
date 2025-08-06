@@ -16,16 +16,16 @@ namespace WatchNext.Movies
 			// Determine if the movie is already in the db
 			var existingMovie = await conn.QueryFirstOrDefaultAsync<Movie>(
 				@"SELECT * FROM movies WHERE title=@title;"
-			, new { newMovie.Title });
+			, new { newMovie.title });
 
 			if (existingMovie != null)
 			{
-				bool sameTitle = newMovie.Title == existingMovie.Title;
-				bool sameRelease = newMovie.Release_Date == existingMovie.Release_Date;
-				bool sameDirector = newMovie.Director == existingMovie.Director;
-				//bool sameGenre = newMovie.Genre == existingMovie.Genre;
+				bool sametitle = newMovie.title == existingMovie.title;
+				bool sameRelease = newMovie.release_date == existingMovie.release_date;
+				bool samedirector = newMovie.director == existingMovie.director;
+				//bool samegenre = newMovie.genre == existingMovie.genre;
 				
-				if (sameTitle && sameRelease && sameDirector)
+				if (sametitle && sameRelease && samedirector)
 				{
 					return Results.Conflict("Movie already in database");
 				}
@@ -34,10 +34,19 @@ namespace WatchNext.Movies
 				@"INSERT INTO movies (title, release_date, director, genre)
 				  VALUES (@title, @release_date, @director, @genre)
 				  RETURNING *;"
-				, new { newMovie.Title, newMovie.Release_Date, newMovie.Director, newMovie.Genre });
+				, new { newMovie.title, newMovie.release_date, newMovie.director, newMovie.genre });
 
 			if (res == null) return Results.BadRequest("Movie creation failed");
 
+			return Results.Ok(res);
+		}
+
+		public async Task<IResult> GetAllMovies()
+		{
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryAsync<Movie>("SELECT * FROM movies;");
 			return Results.Ok(res);
 		}
 
@@ -117,7 +126,7 @@ namespace WatchNext.Movies
 			await conn.OpenAsync();
 
 			var existingMovie = await conn.QueryFirstOrDefaultAsync<Movie>(
-				"SELECT * FROM movies WHERE id=@id", new {req.Id});
+				"SELECT * FROM movies WHERE id=@id", new {req.id});
 
 			if (existingMovie == null)
 			{
@@ -125,15 +134,15 @@ namespace WatchNext.Movies
 			}
 
 			// Update movie info
-			string newTitle = req.Title ?? existingMovie.Title;
-			string newDirector = req.Director ?? existingMovie.Director;
-			string newGenre = req.Genre ?? existingMovie.Genre;
-			DateTime newRelease = req.Release_Date ?? existingMovie.Release_Date;
+			string newtitle = req.title ?? existingMovie.title;
+			string newdirector = req.director ?? existingMovie.director;
+			string newgenre = req.genre ?? existingMovie.genre;
+			DateTime newRelease = req.release_date ?? existingMovie.release_date;
 
 			var res = await conn.QueryFirstOrDefaultAsync<Movie>(
-				@"UPDATE movies SET title=@newTitle, director=@newDirector, genre=@newGenre, release_date=@newRelease 
+				@"UPDATE movies SET title=@newtitle, director=@newdirector, genre=@newgenre, release_date=@newRelease 
 				WHERE id=@id RETURNING *;",
-				new {newTitle, newDirector, newGenre, newRelease, req.Id}
+				new {newtitle, newdirector, newgenre, newRelease, req.id}
 			);
 
 			return Results.Ok(res);

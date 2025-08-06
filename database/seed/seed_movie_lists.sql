@@ -33,5 +33,6 @@ INSERT INTO movie_lists(list_title)
 VALUES
 ('Timmy and Jannys Crappy List'),
 ('David Lynch Is Not Playing Around'),
-('David Lynch Is Not Playing Around');
+('Peter and Sams Watch List'),
+('The Arnoldverse');
 
