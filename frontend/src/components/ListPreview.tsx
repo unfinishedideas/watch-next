@@ -3,6 +3,7 @@ import List from "../classes/List.ts";
 import { NavLink } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { GetMovieListMovies, GetMovieListUsers } from "../api/ListApi.ts";
+import User from '../classes/User.ts'
 
 interface ListPreviewProps {
   listData: List;
@@ -43,7 +44,7 @@ const ListPreview: React.FC<ListPreviewProps> = ({
     );
   } else {
     const manyUsers: boolean = listUsers.data.length > 20;
-    let previewUsers: Array<object> = listUsers.data;
+    let previewUsers: Array<User> = listUsers.data;
     if (manyUsers) {
       previewUsers = previewUsers.slice(20);
     }
@@ -56,7 +57,7 @@ const ListPreview: React.FC<ListPreviewProps> = ({
           {previewUsers.map((user, index) => (
             <div className="list-preview-user-container" key={index}>
               {index % 4 === 0 && index !== 0 && <br />}
-              <NavLink className="list-preview-username" to={`user/${user.id}`}>
+              <NavLink className="list-preview-username" to={`user/${user.username}`}>
                 {user.username}&nbsp;&nbsp;&nbsp;
               </NavLink>
             </div>

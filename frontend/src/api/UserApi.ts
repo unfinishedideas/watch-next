@@ -96,7 +96,7 @@ export async function LoginUser<T>(nameInput: string, pass: string): Promise<T> 
     return await res.json() as T;
 }
 
-export async function GetUserLists<T>(user_id: string)
+export async function GetUserLists<T>(user_id: string):Promise<T>
 {
     const res = await fetch(`${base_url}/users/${user_id}/movie-lists`);
     if (!res.ok) {

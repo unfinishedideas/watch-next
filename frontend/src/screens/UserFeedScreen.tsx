@@ -12,7 +12,7 @@ const UserFeedScreen: React.FC = () => {
   // using context user object. Conditionally render title based on if looking at own feed
 
   const { isPending, error, data } = useQuery({
-    queryKey: ["user_id"],
+    queryKey: [`user_id_${user.id}`],
     queryFn: () => GetUserLists(user.id),
   });
 
