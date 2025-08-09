@@ -14,16 +14,12 @@ const ListPreview: React.FC<ListPreviewProps> = ({
   listData,
   prevId,
 }: ListPreviewProps) => {
-  const listMovies = useQuery({
-    queryKey: [`list_id_movies_${prevId}`],
-    queryFn: () => GetMovieListMovies(listData.id),
-  });
   const listUsers = useQuery({
     queryKey: [`list_id_users_${prevId}`],
     queryFn: () => GetMovieListUsers(listData.id),
   });
 
-  if (listMovies.isPending || listUsers.isPending) {
+  if (listUsers.isPending) {
     return (
       <div className="list-preview-container">
         <NavLink className="list-preview-title" to={`list/${listData.id}`}>
@@ -33,7 +29,7 @@ const ListPreview: React.FC<ListPreviewProps> = ({
       </div>
     );
   }
-  if (listMovies.error || listUsers.error) {
+  if (listUsers.error) {
     return (
       <div className="list-preview-container">
         <NavLink className="list-preview-title" to={`list/${listData.id}`}>
@@ -43,6 +39,7 @@ const ListPreview: React.FC<ListPreviewProps> = ({
       </div>
     );
   } else {
+    //TODO: Display deleted users differently (or not at all)
     const manyUsers: boolean = listUsers.data.length > 20;
     let previewUsers: Array<User> = listUsers.data;
     if (manyUsers) {

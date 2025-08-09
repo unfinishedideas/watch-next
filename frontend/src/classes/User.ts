@@ -4,13 +4,15 @@ export default class User
     username: string;
     email: string;
     deleted: boolean; 
+    created_at: date;
 
-    constructor(id:string="", username:string="", email:string="", deleted:boolean=false) 
+    constructor(id:string="", username:string="", email:string="", deleted:boolean=false, created_at:Date) 
     {
         this.id = id;
         this.username = username;
         this.email = email;
         this.deleted = deleted; 
+        this.created_at = created_at;
     }
 }
 
