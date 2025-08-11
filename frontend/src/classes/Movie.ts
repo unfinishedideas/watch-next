@@ -21,8 +21,7 @@ export default class Movie
         //this.rating = rating;
         //this.imdb_tag = imdb_tag;
         this.genre = genre;
-        this.release_date = release_date;
+        this.release_date = new Date(release_date);
         this.created_at = created_at;
     }
 }
-

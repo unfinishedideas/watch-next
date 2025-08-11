@@ -8,6 +8,7 @@ import Header from "./components/Header.tsx";
 import HomeScreen from "./screens/HomeScreen.tsx";
 import LoginScreen from "./screens/LoginScreen.tsx";
 import SignUpScreen from "./screens/SignUpScreen.tsx";
+import ListScreen from "./screens/ListScreen.tsx";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="home" element={<HomeScreen />} />
           <Route path="login" element={<LoginScreen />} />
           <Route path="signup" element={<SignUpScreen />} />
+          <Route path="list/:id" element={<ListScreen />}/>
         </Routes>
       </div>
     </QueryClientProvider>

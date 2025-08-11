@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS movie_lists (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    list_title VARCHAR(50) NOT NULL,
+    title VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_private BOOLEAN DEFAULT FALSE
 );

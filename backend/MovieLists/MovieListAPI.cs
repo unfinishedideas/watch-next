@@ -14,7 +14,7 @@ namespace WatchNext.MovieLists
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
-			if (!EnsureMinimumLength(req.list_title, 1))
+			if (!EnsureMinimumLength(req.title, 1))
 			{
 				return Results.BadRequest("List title must not be empty");
 			}
@@ -23,7 +23,7 @@ namespace WatchNext.MovieLists
 				@"INSERT INTO movie_lists (list_title, is_private)
 				VALUES (@list_title, @is_private)
 				RETURNING *;",
-				new { req.list_title, req.is_private }
+				new { req.title, req.is_private }
 			);
 
 			if (res == null)
@@ -116,7 +116,7 @@ namespace WatchNext.MovieLists
 				return Results.NotFound("Movie List not found");
 			}
 
-			string newListTitle = req.list_title ?? existingMovieList.list_title;
+			string newListTitle = req.title ?? existingMovieList.title;
 			bool newIsPrivate = req.is_private ?? existingMovieList.is_private;
 
 			// Update MovieList

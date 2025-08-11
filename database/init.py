@@ -26,7 +26,8 @@ def main():
         run_sql_file("./seed/seed_users.sql", conn)
         run_sql_file("./seed/seed_movies.sql", conn)
         run_sql_file("./seed/seed_movie_lists.sql", conn)
-        run_sql_file("seed.sql", conn)
+        run_sql_file("./seed/seed_user_movie_lists.sql", conn)
+        run_sql_file("./seed/seed_movie_list_movies.sql", conn)
 
     print("Database initialized successfully.")
     conn.close()

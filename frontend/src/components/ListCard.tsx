@@ -100,7 +100,7 @@ const ListCard : React.FC<ListCardProps> = ({listData} : ListCardProps) =>
     */
     return(
         <div className="list-card-container">
-            <Button btnText={listData.list_Title}/>
+            <Button btnText={listData.title}/>
         </div>
     )
 }

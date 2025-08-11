@@ -23,3 +23,11 @@ SELECT
   DATE '1950-01-01' + floor(random() * (DATE '2025-12-31' - DATE '1950-01-01'))::int AS release_date
 
 FROM generate_series(1, 20), arrays arr;
+
+-- custom movies --
+INSERT INTO movies (title, director, genre, release_date)
+VALUES
+('One Flew Over the Coocoos Nest', 'Milos Forman', 'Drama', '1975-11-19'),
+('Army of Darkness','Sam Raimi','Action Comedy','1993-02-19'),
+('The Rescuers Down Under','Mike Gabriel / Hendel Butoy','Animated Adventure','1990-11-16'),
+('Alien','Ridley Scott','Sci Fi Horror','1979-06-22');

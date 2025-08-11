@@ -22,14 +22,14 @@ numbered AS (
         ORDER BY random()
         LIMIT 10
 )
-INSERT INTO movie_lists (list_title, is_private)
+INSERT INTO movie_lists (title, is_private)
 SELECT
-    genre || ' - ' || label AS list_title,
+    genre || ' - ' || label AS title,
     (random() < 0.5)::boolean
 FROM numbered;
 
 -- Custom Lists --
-INSERT INTO movie_lists(list_title)
+INSERT INTO movie_lists(title)
 VALUES
 ('Timmy and Jannys Crappy List'),
 ('David Lynch Is Not Playing Around'),
