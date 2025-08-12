@@ -98,7 +98,8 @@ namespace WatchNext.MovieLists
 				FROM movies m
 				JOIN movie_list_movies mlm ON m.id = mlm.movie_id
 				JOIN movie_lists ml ON mlm.list_id = ml.id
-				WHERE ml.id = @list_id;",
+				WHERE ml.id = @list_id
+				ORDER BY movie_order;",
 			new { list_id });
 
 			return Results.Ok(res);
@@ -221,16 +222,41 @@ namespace WatchNext.MovieLists
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
-			// Get old movie
-			var old_movie = await conn.QueryFirstOrDefaultAsync<MovieListMovieReorder>(@"SELECT * FROM movie_list_movies WHERE movie_id=@mov_id AND list_id=@list_id", new { mov_id, list_id });
-			if (old_movie == null)
+			// Get target movie
+			var target_movie = await conn.QueryFirstOrDefaultAsync<MovieListMovieReorder>(@"SELECT * FROM movie_list_movies WHERE movie_id=@mov_id AND list_id=@list_id", new { mov_id, list_id });
+			if (target_movie == null)
 			{
 				return Results.NotFound("Movie not found associated with this list");
 			}
-			int old_spot = old_movie.movie_order;
+			int old_spot = target_movie.movie_order;
 			if (new_spot == old_spot)
 			{
 				return Results.BadRequest("New ranking must differ from original");
+			}
+
+			// Check to see if it is an easy swap first
+			if (Math.Abs(new_spot - old_spot) == 1)
+			{
+				var movie_to_swap = await conn.QueryFirstOrDefaultAsync<MovieListMovieReorder>(@"SELECT * FROM movie_list_movies WHERE list_id=@list_id AND movie_order=@new_spot;", new { list_id, new_spot });
+				if (movie_to_swap == null)
+				{
+					return Results.BadRequest("No movie to swap with");
+				}
+				// Set the target spot
+				var res1 = await conn.QueryFirstOrDefaultAsync<MovieListMovieReorder>(
+					@"UPDATE movie_list_movies 
+					SET movie_order = @new_spot	
+					WHERE list_id=@list_id AND movie_id=@mov_id;",
+					new { new_spot, list_id, mov_id }
+				);
+				// Set the old movie spot
+				var res2 = await conn.QueryFirstOrDefaultAsync<MovieListMovieReorder>(
+					@"UPDATE movie_list_movies 
+					SET movie_order = @old_spot	
+					WHERE list_id=@list_id AND movie_id=@movie_id;",
+					new { old_spot, list_id, movie_to_swap.movie_id }
+				);
+				return Results.Ok();
 			}
 
 			// Get all movie ids and their ranks
@@ -248,15 +274,21 @@ namespace WatchNext.MovieLists
 				// decrement everthing between new_spot and old_spot
 				foreach (MovieListMovieReorder movie in all_movies)
 				{
-					if (movie.movie_id == old_movie.movie_id)
+					if (movie.movie_id == target_movie.movie_id)
 					{
 						movie.movie_order = new_spot;
-						continue;
 					}
 					else if (movie.movie_order <= new_spot && movie.movie_order > old_spot)
 					{
 						movie.movie_order--;
 					}
+					await conn.QueryAsync(
+						@"UPDATE movie_list_movies
+						SET movie_order = @movie_order
+						WHERE list_id=@list_id AND movie_id=@movie_id;
+						",
+						new { movie.movie_order, list_id, movie.movie_id }
+					);
 				}
 			}
 			else
@@ -264,20 +296,23 @@ namespace WatchNext.MovieLists
 				// increment everything between new_spot and old_spot
 				foreach (MovieListMovieReorder movie in all_movies)
 				{
-					if (movie.movie_id == old_movie.movie_id)
+					if (movie.movie_id == target_movie.movie_id)
 					{
 						movie.movie_order = new_spot;
-						continue;
 					}
 					else if (movie.movie_order >= new_spot && movie.movie_order < old_spot)
 					{
 						movie.movie_order++;
 					}
+					await conn.QueryAsync(
+						@"UPDATE movie_list_movies
+						SET movie_order = @movie_order
+						WHERE list_id=@list_id AND movie_id=@movie_id;
+						",
+						new { movie.movie_order, list_id, movie.movie_id }
+					);
 				}
 			}
-			// Update changes for all movie_list_movies in db
-			// TODO: this :)
-
 			return Results.Ok();
 		}
 
@@ -344,6 +379,7 @@ namespace WatchNext.MovieLists
 			return true;
 		}
 
+		// TODO: Move this to a helper function file
 		private static bool EnsureMinimumLength(string toCheck, int length)
 		{
 			return toCheck.Length >= length;
