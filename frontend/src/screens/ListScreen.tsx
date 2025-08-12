@@ -36,6 +36,7 @@ const ListScreen: React.FC = () =>
         </div>
     )
   } else {
+    const fetchedMovies :Movie[] = listMovies.data.sort((a, b) => a.movie_order - b.movie_order);
     return(
         <div className="screen-container">
             <h2 className="screen-title">{listData.title}</h2>
@@ -47,12 +48,12 @@ const ListScreen: React.FC = () =>
                   </NavLink>
                 </div>
             ))}
-            <h3>Movies</h3>
-            {listMovies.data.map((movie: Movie, index: number) => 
+            <h3 className="screen-subtitle">Movies</h3>
+            {fetchedMovies.map((movie: Movie, index: number) => 
             {
                 const release_string = new Date(movie.release_date).getFullYear();
                 return(    
-                    <MovieCard data={movie}/>
+                    <MovieCard data={movie} key={index}/>
                 )
             }
             )}

@@ -9,9 +9,10 @@ export default class Movie
     //imdb_tag: string;
     release_date: Date;
     created_at: Date;
+    movie_order: number;
 
     constructor(id: string="", title:string = "", year:number = 0, 
-                director:string = "", genre:string = "", release_date:Date, created_at:Date)
+                director:string = "", genre:string = "", release_date:Date, created_at:Date, movie_order:number)
                //rating:number = 0.0, imdb_tag: string = ""
     {
         this.id = id;
@@ -23,5 +24,6 @@ export default class Movie
         this.genre = genre;
         this.release_date = new Date(release_date);
         this.created_at = created_at;
+        this.movie_order = movie_order;
     }
 }

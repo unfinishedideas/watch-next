@@ -8,6 +8,10 @@
     margin: 0;
 }
 
+.screen-subtitle {
+    font-size: 24px;
+}
+
 .screen-link {
     font-size: 24px;
 }

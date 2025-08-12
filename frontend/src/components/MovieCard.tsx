@@ -7,30 +7,33 @@ import { useState } from "react";
 interface MovieCardProps {
   data: Movie;
   index: number;
-  handleRemoveMovie: AsyncApiFunc;
 }
 const MovieCard: React.FC<MovieCardProps> = ({
   data,
   index,
-  handleRemoveMovie,
 }: MovieCardProps) => {
-    const release_string = new Date(data.release_date).getFullYear();
+  const release_string = new Date(data.release_date).getFullYear();
   return (
     <div className={"movie-card-default"}>
-      <h3 className="movie-title-text">
-        {data.title}
-      </h3>
-
-      <p className="info-small">Released: {release_string}</p>
-      <p className="info-small">Genre: {data.genre}</p>
-      <p className="info-small">Director: {data.director}</p>
-
-      {/* <button type="button" onClick={() => handleRemoveMovie(data.movie_id)}>
-        Remove Movie
-      </button> */}
+      <div className={"movie-card-poster"}>
+        <img src={Logo} className="movie-poster-preview" />
+      </div>
+      <div className={"movie-card-info-panel"}>
+        <h3 className="movie-title-text">{data.title}</h3>
+        <p className="info-small">Released: {release_string}</p>
+        <p className="info-small">Genre: {data.genre}</p>
+        <p className="info-small">Director: {data.director}</p>
+        {/* <p className="info-small">Rank: {data.movie_order}</p> */}
+      </div>
     </div>
   );
 };
+
+export default MovieCard;
+
+//<button type="button" onClick={() => removeMovie(data)}>Remove Movie</button>
+//<img src={Logo} className="movie-poster-preview" />
+//<p className="info-small">Rating: {data.rating}</p>
 
 /*
 // DRAG AND DROP VERSION USING MOUSE EVENTS, CUMBERSOME.
@@ -117,8 +120,3 @@ const MovieCard: React.FC<MovieCardProps> = ({
   );
 };
 */
-
-export default MovieCard;
-//<button type="button" onClick={() => removeMovie(data)}>Remove Movie</button>
-//<img src={Logo} className="movie-poster-preview" />
-//<p className="info-small">Rating: {data.rating}</p>

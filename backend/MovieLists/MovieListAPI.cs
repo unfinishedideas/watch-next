@@ -242,20 +242,19 @@ namespace WatchNext.MovieLists
 				{
 					return Results.BadRequest("No movie to swap with");
 				}
-				// Set the target spot
 				var res1 = await conn.QueryFirstOrDefaultAsync<MovieListMovieReorder>(
 					@"UPDATE movie_list_movies 
 					SET movie_order = @new_spot	
 					WHERE list_id=@list_id AND movie_id=@mov_id;",
 					new { new_spot, list_id, mov_id }
 				);
-				// Set the old movie spot
 				var res2 = await conn.QueryFirstOrDefaultAsync<MovieListMovieReorder>(
 					@"UPDATE movie_list_movies 
 					SET movie_order = @old_spot	
 					WHERE list_id=@list_id AND movie_id=@movie_id;",
 					new { old_spot, list_id, movie_to_swap.movie_id }
 				);
+				// TODO: Add error handling if this fails instead of just returning Results.Ok() (do this for every call in the api)
 				return Results.Ok();
 			}
 
@@ -285,8 +284,7 @@ namespace WatchNext.MovieLists
 					await conn.QueryAsync(
 						@"UPDATE movie_list_movies
 						SET movie_order = @movie_order
-						WHERE list_id=@list_id AND movie_id=@movie_id;
-						",
+						WHERE list_id=@list_id AND movie_id=@movie_id;",
 						new { movie.movie_order, list_id, movie.movie_id }
 					);
 				}
@@ -307,8 +305,7 @@ namespace WatchNext.MovieLists
 					await conn.QueryAsync(
 						@"UPDATE movie_list_movies
 						SET movie_order = @movie_order
-						WHERE list_id=@list_id AND movie_id=@movie_id;
-						",
+						WHERE list_id=@list_id AND movie_id=@movie_id;",
 						new { movie.movie_order, list_id, movie.movie_id }
 					);
 				}

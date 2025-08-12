@@ -1,10 +1,22 @@
 .movie-card-default {
-  #background-color: red;
-  --movie-card-width: 320px;
+  --movie-card-width: 700px;
+  display: flex;
+  flex-direction: row;
+  background-color: rgb(93, 93, 93);
   padding: 1rem;
   width: var(--movie-card-width);
-  /* border: 2px solid yellow; */
   margin: 8px;
+  border-radius: 14px;
+}
+
+.movie-card-info-panel {
+  min-width: 500px;
+  padding-left: 20px;
+}
+
+.movie-poster-preview {
+  --max-width: var(--movie-card-width);
+  max-width: 200px; 
 }
 
 /*
@@ -49,9 +61,7 @@
   margin-top: 0;
 }
 
-.movie-poster-preview {
-  max-width: var(--movie-card-width);
-}
+
 
 .info-small {
   margin: 0;
