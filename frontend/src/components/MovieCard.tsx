@@ -16,7 +16,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
 }: MovieCardProps) => {
     const release_string = new Date(data.release_date).getFullYear();
   return (
-    <div className={movie-card-default}>
+    <div className={"movie-card-default"}>
       <h3 className="movie-title-text">
         {data.title}
       </h3>
@@ -25,9 +25,9 @@ const MovieCard: React.FC<MovieCardProps> = ({
       <p className="info-small">Genre: {data.genre}</p>
       <p className="info-small">Director: {data.director}</p>
 
-      <button type="button" onClick={() => handleRemoveMovie(data.movie_id)}>
+      {/* <button type="button" onClick={() => handleRemoveMovie(data.movie_id)}>
         Remove Movie
-      </button>
+      </button> */}
     </div>
   );
 };

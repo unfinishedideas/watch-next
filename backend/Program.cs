@@ -63,6 +63,7 @@ app.MapPost("movie-lists/add-user/", (UpdateUserMovieListRequest req) => mlAPI.A
 app.MapPost("movie-lists/remove-user/", (UpdateUserMovieListRequest req) => mlAPI.RemoveUserFromMovieList(req));
 app.MapPost("movie-lists/add-movie/", (UpdateMoviesMovieListRequest req) => mlAPI.AddMovieToMovieList(req));
 app.MapPost("movie-lists/remove-movie/", (UpdateMoviesMovieListRequest req) => mlAPI.RemoveMovieFromMovieList(req));
+app.MapPut("movie-lists/{list_id}/reorder-movie/{mov_id}", (Guid list_id, Guid mov_id, int new_spot) => mlAPI.ReorderMovie(list_id, mov_id, new_spot));
 app.MapDelete("movie-lists/{id}", (Guid id) => mlAPI.DeleteMovieList(id));
 
 // Movies

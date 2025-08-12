@@ -93,8 +93,8 @@ namespace WatchNext.MovieLists
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
-			var res = await conn.QueryAsync<Movie>(
-				@"SELECT m.*
+			var res = await conn.QueryAsync<MovieListMovie>(
+				@"SELECT m.*, movie_order
 				FROM movies m
 				JOIN movie_list_movies mlm ON m.id = mlm.movie_id
 				JOIN movie_lists ml ON mlm.list_id = ml.id
@@ -194,6 +194,7 @@ namespace WatchNext.MovieLists
 				@"INSERT INTO movie_list_movies (movie_id, list_id) VALUES (@movie_id, @list_id)",
 				new { req.movie_id, req.list_id }
 			);
+			// TODO: Reorder movie_order for every movie
 			return Results.Ok(res2);
 		}
 
@@ -206,7 +207,60 @@ namespace WatchNext.MovieLists
 				"DELETE FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id;",
 				new { req.movie_id, req.list_id }
 			);
+			// TODO: Reorder movie_order for every movie
 			return Results.Ok(res);
+		}
+
+		public async Task<IResult> ReorderMovie(Guid list_id, Guid mov_id, int new_spot)
+		{
+			if (new_spot < 0)
+			{
+				return Results.BadRequest("New ranking must be greater than 0");
+			}
+
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			// Get old movie
+			var old_movie = await conn.QueryFirstOrDefaultAsync<MovieListMovieReorder>(@"SELECT * FROM movie_list_movies WHERE movie_id=@mov_id AND list_id=@list_id", new { mov_id, list_id });
+			if (old_movie == null)
+			{
+				return Results.NotFound("Movie not found associated with list");
+			}
+			int old_spot = old_movie.movie_order;
+			if (new_spot == old_spot)
+			{
+				return Results.BadRequest("New ranking must differ from original");
+			}
+
+			// Get all movie ids and their ranks
+			var all_movies = await conn.QueryAsync<MovieListMovieReorder>(
+				@"SELECT * FROM movie_list_movies WHERE list_id=@list_id ORDER BY movie_order", new { list_id }
+			);
+			// Remove the old one
+
+			// Determine if the new ranking is higher or lower than old ranking
+			if (new_spot > old_spot)
+			{
+				// decrement everthing between new_spot and old_spot
+				for (int i = new_spot; i > old_spot; i--)
+				{
+
+				}
+				// place movie in new spot
+			}
+			else
+			{
+				// increment everything between new_spot and old_spot
+				for (int i = new_spot; i < old_spot; i++)
+				{
+
+				}
+				// place movie in new spot
+			}
+			// Update movie_order for all movie_list_movies
+
+			return Results.Ok(); 
 		}
 
 		public async Task<IResult> DeleteMovieList(Guid list_id)

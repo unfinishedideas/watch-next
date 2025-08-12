@@ -3,7 +3,7 @@
   --movie-card-width: 320px;
   padding: 1rem;
   width: var(--movie-card-width);
-  border: 2px solid yellow;
+  /* border: 2px solid yellow; */
   margin: 8px;
 }
 

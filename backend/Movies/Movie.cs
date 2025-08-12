@@ -11,6 +11,24 @@
 		// TODO: Reintroduce these
 		//required public string imdb_id { get; set; }
 	}
+	public sealed class MovieListMovie
+	{
+		required public Guid id{ get; set; }
+		required public DateTime created_at { get; set; }
+		required public string title { get; set; }
+		required public DateTime release_date { get; set; }
+		required public string director { get; set; }
+		required public string genre { get; set; }
+		required public int movie_order { get; set; }	// this is so users can order their lists
+		// TODO: Reintroduce these
+		//required public string imdb_id { get; set; }
+	}
+	public sealed class MovieListMovieReorder
+	{
+		required public Guid movie_id { get; set; }
+		required public Guid list_id { get; set; }
+		required public int movie_order { get; set; }
+	}
 	public sealed class MovieRegister
 	{
 		required public string title { get; set; }

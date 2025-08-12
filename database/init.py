@@ -17,16 +17,23 @@ def main():
     print("Connecting to database...")
     conn = psycopg2.connect(DATABASE_URL)
     
+    if os.path.exists("./seed/init_seed.sql"):
+        print("Erasing previous database...")
+        run_sql_file("./seed/init_seed.sql", conn)
+
     print("Running schema.sql...")
     run_sql_file("schema.sql", conn)
 
-    # Optional: seed data
-    if os.path.exists("seed.sql"):
-        print("Running seed.sql...")
+    if os.path.exists("./seed/init_seed.sql"):
+        print("Running users seed...")
         run_sql_file("./seed/seed_users.sql", conn)
+        print("Running movies seed...")
         run_sql_file("./seed/seed_movies.sql", conn)
+        print("Running movie_lists seed...")
         run_sql_file("./seed/seed_movie_lists.sql", conn)
+        print("Running user_movie_lists seed...")
         run_sql_file("./seed/seed_user_movie_lists.sql", conn)
+        print("Running movie_list_movies seed...")
         run_sql_file("./seed/seed_movie_list_movies.sql", conn)
 
     print("Database initialized successfully.")
