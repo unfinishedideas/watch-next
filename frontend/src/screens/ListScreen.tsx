@@ -1,5 +1,6 @@
 import './Screen.css';
 import Movie from '../classes/movie.ts';
+import MovieCard from '../components/MovieCard.tsx';
 import { useQuery } from '@tanstack/react-query';
 import { NavLink, useLocation } from "react-router";
 import { GetMovieListMovies } from '../api/ListApi.ts';
@@ -16,6 +17,8 @@ const ListScreen: React.FC = () =>
         queryKey: [`list_movies_${listData.id}`],
         queryFn: () => GetMovieListMovies(listData.id),
     });
+
+
 
   if (listMovies.isPending) {
     return(
@@ -49,12 +52,7 @@ const ListScreen: React.FC = () =>
             {
                 const release_string = new Date(movie.release_date).getFullYear();
                 return(    
-                <div key={index}>
-                    <h3 className="screen-subheading">{movie.title}</h3>
-                    <p className="info-text">Release: {release_string}</p>
-                    <p className="info-text">Genre: {movie.genre}</p>
-                    <p className="info-text">Director: {movie.director}</p>
-                </div>
+                    <MovieCard data={movie}/>
                 )
             }
             )}
@@ -64,3 +62,21 @@ const ListScreen: React.FC = () =>
 }
 
 export default ListScreen;
+
+/*
+   <div 
+   key={index} 
+   className="movie-card-container" 
+   draggable="true" 
+   onDragStart={handleDragMovieStart} 
+   onDragEnd={handleDragMovieEnd}
+   onDragEnter={handleDragMovieEnter}
+   onDragOver={handleDragMovieOver}
+   onDragLeave={handleDragMovieLeave}
+   >
+   <h3 className="screen-subheading">{movie.title}</h3>
+   <p className="info-text">Release: {release_string}</p>
+   <p className="info-text">Genre: {movie.genre}</p>
+   <p className="info-text">Director: {movie.director}</p>
+   </div>
+*/

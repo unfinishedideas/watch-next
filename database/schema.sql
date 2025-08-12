@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS movies (
 CREATE TABLE IF NOT EXISTS movie_list_movies (
     movie_id UUID NOT NULL,
     list_id UUID NOT NULL,
+    movie_order INT NOT NULL DEFAULT 0,
     PRIMARY KEY (movie_id, list_id),
     FOREIGN KEY (movie_id) REFERENCES movies(id),
     FOREIGN KEY (list_id) REFERENCES movie_lists(id),

@@ -1,4 +1,32 @@
-.movie-card-container {
+.movie-card-default {
+  #background-color: red;
+  --movie-card-width: 320px;
+  padding: 1rem;
+  width: var(--movie-card-width);
+  border: 2px solid yellow;
+  margin: 8px;
+}
+
+/*
+.movie-card-under {
+  #background-color: gray;
+  --movie-card-width: 320px;
+  padding: 1rem;
+  width: var(--movie-card-width);
+  border: 2px solid blue;
+  margin: 8px;
+}
+
+.movie-card-over {
+  #background-color: red;
+  --movie-card-width: 320px;
+  padding: 1rem;
+  width: var(--movie-card-width);
+  border: 2px solid green;
+  margin: 8px;
+}
+
+.movie-card-dragged {
   #background-color: red;
   --movie-card-width: 320px;
   padding: 1rem;
@@ -6,6 +34,16 @@
   border: 2px solid red;
   margin: 8px;
 }
+
+.movie-card-hover {
+  #background-color: red;
+  --movie-card-width: 320px;
+  padding: 1rem;
+  width: var(--movie-card-width);
+  border: 2px solid purple;
+  margin: 8px;
+}
+*/
 
 .movie-title-text {
   margin-top: 0;
