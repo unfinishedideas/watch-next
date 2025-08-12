@@ -241,9 +241,8 @@ namespace WatchNext.MovieLists
 			{
 				new_spot = all_movies.Count();
 			}
-			// Remove the old one
 
-			// Determine if the new ranking is higher or lower than old ranking
+			// Update all movies movie_order in the list
 			if (new_spot > old_spot)
 			{
 				// decrement everthing between new_spot and old_spot
@@ -276,7 +275,8 @@ namespace WatchNext.MovieLists
 					}
 				}
 			}
-			// Update movie_order for all movie_list_movies in db
+			// Update changes for all movie_list_movies in db
+			// TODO: this :)
 
 			return Results.Ok();
 		}
