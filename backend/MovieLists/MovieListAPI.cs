@@ -225,7 +225,7 @@ namespace WatchNext.MovieLists
 			var old_movie = await conn.QueryFirstOrDefaultAsync<MovieListMovieReorder>(@"SELECT * FROM movie_list_movies WHERE movie_id=@mov_id AND list_id=@list_id", new { mov_id, list_id });
 			if (old_movie == null)
 			{
-				return Results.NotFound("Movie not found associated with list");
+				return Results.NotFound("Movie not found associated with this list");
 			}
 			int old_spot = old_movie.movie_order;
 			if (new_spot == old_spot)
@@ -237,30 +237,48 @@ namespace WatchNext.MovieLists
 			var all_movies = await conn.QueryAsync<MovieListMovieReorder>(
 				@"SELECT * FROM movie_list_movies WHERE list_id=@list_id ORDER BY movie_order", new { list_id }
 			);
+			if (new_spot > all_movies.Count())
+			{
+				new_spot = all_movies.Count();
+			}
 			// Remove the old one
 
 			// Determine if the new ranking is higher or lower than old ranking
 			if (new_spot > old_spot)
 			{
 				// decrement everthing between new_spot and old_spot
-				for (int i = new_spot; i > old_spot; i--)
+				foreach (MovieListMovieReorder movie in all_movies)
 				{
-
+					if (movie.movie_id == old_movie.movie_id)
+					{
+						movie.movie_order = new_spot;
+						continue;
+					}
+					else if (movie.movie_order <= new_spot && movie.movie_order > old_spot)
+					{
+						movie.movie_order--;
+					}
 				}
-				// place movie in new spot
 			}
 			else
 			{
 				// increment everything between new_spot and old_spot
-				for (int i = new_spot; i < old_spot; i++)
+				foreach (MovieListMovieReorder movie in all_movies)
 				{
-
+					if (movie.movie_id == old_movie.movie_id)
+					{
+						movie.movie_order = new_spot;
+						continue;
+					}
+					else if (movie.movie_order >= new_spot && movie.movie_order < old_spot)
+					{
+						movie.movie_order++;
+					}
 				}
-				// place movie in new spot
 			}
-			// Update movie_order for all movie_list_movies
+			// Update movie_order for all movie_list_movies in db
 
-			return Results.Ok(); 
+			return Results.Ok();
 		}
 
 		public async Task<IResult> DeleteMovieList(Guid list_id)
@@ -269,7 +287,7 @@ namespace WatchNext.MovieLists
 			await conn.OpenAsync();
 
 			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
-				"SELECT * FROM movies WHERE id=@list_id", new {list_id});
+				"SELECT * FROM movies WHERE id=@list_id", new { list_id });
 
 			if (existingList == null)
 			{
@@ -312,7 +330,7 @@ namespace WatchNext.MovieLists
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
-		
+
 			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
 				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.list_id }
 			);
