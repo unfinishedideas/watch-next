@@ -130,12 +130,12 @@ namespace WatchNext.MovieLists
 			return Results.Ok(res);
 		}
 
-		public async Task<IResult> AddUserToMovieList(UpdateUserMovieListRequest req)
+		public async Task<IResult> AddUserToMovieList(Guid list_id, Guid user_id)
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
-			bool isValid = await IsUserAndListValid(req);
+			bool isValid = await IsUserAndListValid(user_id, list_id);
 			if (!isValid)
 			{
 				return Results.NotFound();
@@ -144,7 +144,7 @@ namespace WatchNext.MovieLists
 			// Check to see if user is already associated with movie list
 			var res1 = await conn.QueryFirstOrDefaultAsync(
 				"SELECT * FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id",
-				new { req.user_id, req.list_id }
+				new { user_id, list_id }
 			);
 			if (res1 != null)
 			{
@@ -153,29 +153,29 @@ namespace WatchNext.MovieLists
 
 			var res2 = await conn.QueryFirstOrDefaultAsync(
 				@"INSERT INTO user_movie_lists (user_id, list_id) VALUES (@user_id, @list_id)",
-				new { req.user_id, req.list_id }
+				new { user_id, list_id }
 			);
 			return Results.Ok(res2);
 		}
 
-		public async Task<IResult> RemoveUserFromMovieList(UpdateUserMovieListRequest req)
+		public async Task<IResult> RemoveUserFromMovieList(Guid list_id, Guid user_id)
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
 			var res = await conn.QueryFirstOrDefaultAsync(
 				"DELETE FROM user_movie_lists WHERE user_id=@user_id AND list_id=@list_id;",
-				new { req.user_id, req.list_id }
+				new { user_id, list_id }
 			);
 			return Results.Ok(res);
 		}
 
-		public async Task<IResult> AddMovieToMovieList(UpdateMoviesMovieListRequest req)
+		public async Task<IResult> AddMovieToMovieList(Guid list_id, Guid movie_id)
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
-			bool isValid = await IsMovieAndListValid(req);
+			bool isValid = await IsMovieAndListValid(movie_id, list_id);
 			if (!isValid)
 			{
 				return Results.NotFound();
@@ -184,7 +184,7 @@ namespace WatchNext.MovieLists
 			// Check to see if movie is already associated with movie list
 			var res1 = await conn.QueryFirstOrDefaultAsync(
 				"SELECT * FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id",
-				new { req.movie_id, req.list_id }
+				new { movie_id, list_id }
 			);
 			if (res1 != null)
 			{
@@ -192,7 +192,7 @@ namespace WatchNext.MovieLists
 			}
 			// Get the number of movies to place the new one at the end
 			var all_movies = await conn.QueryAsync<MovieListMovieReorder>(
-				@"SELECT * FROM movie_list_movies WHERE list_id=@list_id ORDER BY movie_order", new { req.list_id }
+				@"SELECT * FROM movie_list_movies WHERE list_id=@list_id ORDER BY movie_order", new { list_id }
 			);
 			int new_movie_order = 0;
 			if (all_movies != null)
@@ -202,20 +202,20 @@ namespace WatchNext.MovieLists
 
 			var res2 = await conn.QueryFirstOrDefaultAsync(
 				@"INSERT INTO movie_list_movies (movie_id, list_id, movie_order) VALUES (@movie_id, @list_id, @new_movie_order)",
-				new { req.movie_id, req.list_id, new_movie_order }
+				new { movie_id, list_id, new_movie_order }
 			);
 
 			return Results.Ok(res2);
 		}
 
-		public async Task<IResult> RemoveMovieFromMovieList(UpdateMoviesMovieListRequest req)
+		public async Task<IResult> RemoveMovieFromMovieList(Guid list_id, Guid movie_id)
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 			// Get the movie's movie_order in order to fix list order after removal
 			var movie = await conn.QueryFirstOrDefaultAsync<MovieListMovie>(
 				@"SELECT * FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id;",
-				new { req.movie_id, req.list_id }
+				new { movie_id, list_id }
 			);
 			if (movie == null)
 			{
@@ -225,11 +225,11 @@ namespace WatchNext.MovieLists
 			// Delete movie
 			var res = await conn.QueryFirstOrDefaultAsync(
 				"DELETE FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id;",
-				new { req.movie_id, req.list_id }
+				new { movie_id, list_id }
 			);
 			// Re-order movies in list
 			var all_movies = await conn.QueryAsync<MovieListMovieReorder>(
-				@"SELECT * FROM movie_list_movies WHERE list_id=@list_id ORDER BY movie_order", new { req.list_id }
+				@"SELECT * FROM movie_list_movies WHERE list_id=@list_id ORDER BY movie_order", new { list_id }
 			);
 			if (all_movies == null)
 			{
@@ -244,7 +244,7 @@ namespace WatchNext.MovieLists
 						@"UPDATE movie_list_movies
 						SET movie_order = @movie_order
 						WHERE list_id=@list_id AND movie_id=@movie_id;",
-						new { mov.movie_order, req.list_id, mov.movie_id }
+						new { mov.movie_order, list_id, mov.movie_id }
 					);
 				}
 			}
@@ -380,16 +380,16 @@ namespace WatchNext.MovieLists
 		}
 
 		// TODO: Make this more explicit than a bool so user knows what went wrong
-		private async Task<bool> IsUserAndListValid(UpdateUserMovieListRequest req)
+		private async Task<bool> IsUserAndListValid(Guid user_id, Guid list_id)
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
 			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
-				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.list_id }
+				"SELECT * FROM movie_lists WHERE id=@list_id", new { list_id }
 			);
 			var existingUser = await conn.QueryFirstOrDefaultAsync<UserFrontend>(
-				"SELECT * FROM users WHERE id=@user_id", new { req.user_id }
+				"SELECT * FROM users WHERE id=@user_id", new { user_id }
 			);
 			if (existingUser == null || existingList == null)
 			{
@@ -398,16 +398,16 @@ namespace WatchNext.MovieLists
 			return true;
 		}
 
-		private async Task<bool> IsMovieAndListValid(UpdateMoviesMovieListRequest req)
+		private async Task<bool> IsMovieAndListValid(Guid movie_id, Guid list_id)
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
 			var existingList = await conn.QueryFirstOrDefaultAsync<MovieList>(
-				"SELECT * FROM movie_lists WHERE id=@list_id", new { req.list_id }
+				"SELECT * FROM movie_lists WHERE id=@list_id", new { list_id }
 			);
 			var existingMovie = await conn.QueryFirstOrDefaultAsync<Movie>(
-				"SELECT * FROM movies WHERE id=@movie_id", new { req.movie_id }
+				"SELECT * FROM movies WHERE id=@movie_id", new { movie_id }
 			);
 			if (existingMovie == null || existingList == null)
 			{

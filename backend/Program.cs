@@ -58,12 +58,11 @@ app.MapGet("movie-lists/title/{listTitle}", (string listTitle) => mlAPI.GetMovie
 app.MapGet("movie-lists/{id}/users/", (Guid id) => mlAPI.GetMovieListUsers(id));
 app.MapGet("movie-lists/{id}/movies/", (Guid id) => mlAPI.GetMovieListMovies(id));
 app.MapPut("movie-lists/", (UpdateMovieListRequest req) => mlAPI.UpdateMovieList(req));
-// TODO: Remove request classes and just use movie-lists/{id}/action/{id}/ ?
-app.MapPost("movie-lists/add-user/", (UpdateUserMovieListRequest req) => mlAPI.AddUserToMovieList(req));
-app.MapPost("movie-lists/remove-user/", (UpdateUserMovieListRequest req) => mlAPI.RemoveUserFromMovieList(req));
-app.MapPost("movie-lists/add-movie/", (UpdateMoviesMovieListRequest req) => mlAPI.AddMovieToMovieList(req));
-app.MapPost("movie-lists/remove-movie/", (UpdateMoviesMovieListRequest req) => mlAPI.RemoveMovieFromMovieList(req));
-app.MapPut("movie-lists/{list_id}/reorder-movie/{mov_id}", (Guid list_id, Guid mov_id, int new_spot) => mlAPI.ReorderMovie(list_id, mov_id, new_spot));
+app.MapPost("movie-lists/{id}/user/{user_id}", (Guid id, Guid user_id) => mlAPI.AddUserToMovieList(id, user_id));
+app.MapDelete("movie-lists/{id}/user/{user_id}", (Guid id, Guid user_id) => mlAPI.RemoveUserFromMovieList(id, user_id));
+app.MapPost("movie-lists/{id}/movie/{movie_id}", (Guid id, Guid movie_id) => mlAPI.AddMovieToMovieList(id, movie_id));
+app.MapDelete("movie-lists/{id}/movie/{movie_id}", (Guid id, Guid movie_id) => mlAPI.RemoveMovieFromMovieList(id, movie_id));
+app.MapPut("movie-lists/{id}/movie/{mov_id}", (Guid id, Guid mov_id, int new_spot) => mlAPI.ReorderMovie(id, mov_id, new_spot));
 app.MapDelete("movie-lists/{id}", (Guid id) => mlAPI.DeleteMovieList(id));
 
 // Movies
