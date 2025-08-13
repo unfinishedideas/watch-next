@@ -63,7 +63,8 @@ app.MapPost("watch-lists/{id}/user/{user_id}", (Guid id, Guid user_id) => wAPI.A
 app.MapDelete("watch-lists/{id}/user/{user_id}", (Guid id, Guid user_id) => wAPI.RemoveUserFromWatchList(id, user_id));
 app.MapPost("watch-lists/{id}/movie/{movie_id}", (Guid id, Guid movie_id) => wAPI.AddMovieToWatchList(id, movie_id));
 app.MapDelete("watch-lists/{id}/movie/{movie_id}", (Guid id, Guid movie_id) => wAPI.RemoveMovieFromWatchList(id, movie_id));
-app.MapPut("watch-lists/{id}/movie/{mov_id}", (Guid id, Guid mov_id, int new_spot) => wAPI.ReorderMovie(id, mov_id, new_spot));
+app.MapPut("watch-lists/{id}/movie/{mov_id}", (Guid id, Guid mov_id, int new_spot) => wAPI.ReorderWatchListMovie(id, mov_id, new_spot));
+app.MapPut("watch-lists/movie/update", (WatchListMovieUpdate req) => wAPI.UpdateWatchListMovie(req));
 app.MapDelete("watch-lists/{id}", (Guid id) => wAPI.DeleteWatchList(id));
 
 // Movies

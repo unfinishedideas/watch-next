@@ -15,13 +15,15 @@
 	public sealed class WatchListMovie : Movie
 	{
 		required public int movie_order { get; set; }
+		required public bool watched { get; set; }
 	}
 	// Used when reordering movies in the database
-	public sealed class WatchListMovieReorder
+	public sealed class WatchListMovieUpdate
 	{
 		required public Guid movie_id { get; set; }
 		required public Guid list_id { get; set; }
-		required public int movie_order { get; set; }
+		public int movie_order { get; set; }
+		public bool watched { get; set; }
 	}
 	public sealed class MovieRegister
 	{

@@ -95,7 +95,7 @@ namespace WatchNext.WatchLists
 			await conn.OpenAsync();
 
 			var res = await conn.QueryAsync<WatchListMovie>(
-				@"SELECT m.*, movie_order
+				@"SELECT m.*, movie_order, watched
 				FROM movies m
 				JOIN watch_list_movies mlm ON m.id = mlm.movie_id
 				JOIN watch_lists ml ON mlm.list_id = ml.id
@@ -192,7 +192,7 @@ namespace WatchNext.WatchLists
 				return Results.Conflict("Movie already associated with movie list");
 			}
 			// Get the number of movies to place the new one at the end
-			var all_movies = await conn.QueryAsync<WatchListMovieReorder>(
+			var all_movies = await conn.QueryAsync<WatchListMovieUpdate>(
 				@"SELECT * FROM watch_list_movies WHERE list_id=@list_id ORDER BY movie_order", new { list_id }
 			);
 			int new_movie_order = 0;
@@ -229,14 +229,14 @@ namespace WatchNext.WatchLists
 				new { movie_id, list_id }
 			);
 			// Re-order movies in list
-			var all_movies = await conn.QueryAsync<WatchListMovieReorder>(
+			var all_movies = await conn.QueryAsync<WatchListMovieUpdate>(
 				@"SELECT * FROM watch_list_movies WHERE list_id=@list_id ORDER BY movie_order", new { list_id }
 			);
 			if (all_movies == null)
 			{
 				return Results.Ok();
 			}
-			foreach(WatchListMovieReorder mov in all_movies)
+			foreach(WatchListMovieUpdate mov in all_movies)
 			{
 				if (mov.movie_order > old_spot)
 				{
@@ -253,7 +253,7 @@ namespace WatchNext.WatchLists
 			return Results.Ok(res);
 		}
 
-		public async Task<IResult> ReorderMovie(Guid list_id, Guid mov_id, int new_spot)
+		public async Task<IResult> ReorderWatchListMovie(Guid list_id, Guid mov_id, int new_spot)
 		{
 			if (new_spot < 0)
 			{
@@ -264,7 +264,7 @@ namespace WatchNext.WatchLists
 			await conn.OpenAsync();
 
 			// Get target movie
-			var target_movie = await conn.QueryFirstOrDefaultAsync<WatchListMovieReorder>(@"SELECT * FROM watch_list_movies WHERE movie_id=@mov_id AND list_id=@list_id", new { mov_id, list_id });
+			var target_movie = await conn.QueryFirstOrDefaultAsync<WatchListMovieUpdate>(@"SELECT * FROM watch_list_movies WHERE movie_id=@mov_id AND list_id=@list_id", new { mov_id, list_id });
 			if (target_movie == null)
 			{
 				return Results.NotFound("Movie not found associated with this list");
@@ -278,18 +278,18 @@ namespace WatchNext.WatchLists
 			// Check to see if it is an easy swap first
 			if (Math.Abs(new_spot - old_spot) == 1)
 			{
-				var movie_to_swap = await conn.QueryFirstOrDefaultAsync<WatchListMovieReorder>(@"SELECT * FROM watch_list_movies WHERE list_id=@list_id AND movie_order=@new_spot;", new { list_id, new_spot });
+				var movie_to_swap = await conn.QueryFirstOrDefaultAsync<WatchListMovieUpdate>(@"SELECT * FROM watch_list_movies WHERE list_id=@list_id AND movie_order=@new_spot;", new { list_id, new_spot });
 				if (movie_to_swap == null)
 				{
 					return Results.BadRequest("No movie to swap with");
 				}
-				var res1 = await conn.QueryFirstOrDefaultAsync<WatchListMovieReorder>(
+				var res1 = await conn.QueryFirstOrDefaultAsync<WatchListMovieUpdate>(
 					@"UPDATE watch_list_movies 
 					SET movie_order = @new_spot	
 					WHERE list_id=@list_id AND movie_id=@mov_id;",
 					new { new_spot, list_id, mov_id }
 				);
-				var res2 = await conn.QueryFirstOrDefaultAsync<WatchListMovieReorder>(
+				var res2 = await conn.QueryFirstOrDefaultAsync<WatchListMovieUpdate>(
 					@"UPDATE watch_list_movies 
 					SET movie_order = @old_spot	
 					WHERE list_id=@list_id AND movie_id=@movie_id;",
@@ -300,7 +300,7 @@ namespace WatchNext.WatchLists
 			}
 
 			// Get all movie ids and their ranks
-			var all_movies = await conn.QueryAsync<WatchListMovieReorder>(
+			var all_movies = await conn.QueryAsync<WatchListMovieUpdate>(
 				@"SELECT * FROM watch_list_movies WHERE list_id=@list_id ORDER BY movie_order", new { list_id }
 			);
 			if (new_spot > all_movies.Count())
@@ -312,7 +312,7 @@ namespace WatchNext.WatchLists
 			if (new_spot > old_spot)
 			{
 				// decrement everthing between new_spot and old_spot
-				foreach (WatchListMovieReorder movie in all_movies)
+				foreach (WatchListMovieUpdate movie in all_movies)
 				{
 					if (movie.movie_id == target_movie.movie_id)
 					{
@@ -333,7 +333,7 @@ namespace WatchNext.WatchLists
 			else
 			{
 				// increment everything between new_spot and old_spot
-				foreach (WatchListMovieReorder movie in all_movies)
+				foreach (WatchListMovieUpdate movie in all_movies)
 				{
 					if (movie.movie_id == target_movie.movie_id)
 					{
@@ -350,6 +350,24 @@ namespace WatchNext.WatchLists
 						new { movie.movie_order, list_id, movie.movie_id }
 					);
 				}
+			}
+			return Results.Ok();
+		}
+
+		public async Task<IResult> UpdateWatchListMovie(WatchListMovieUpdate req)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var res = await conn.QueryFirstOrDefaultAsync<WatchListMovie>(
+				@"UPDATE watch_list_movies
+				SET watched=@watched
+				WHERE list_id=@list_id AND movie_id=@movie_id
+				RETURNING *;",
+				new { req.list_id, req.movie_id, req.watched});
+			if (res == null)
+			{
+				return Results.NotFound("Unable to update movie, movie or list not found");	
 			}
 			return Results.Ok();
 		}
