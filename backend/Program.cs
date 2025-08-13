@@ -36,6 +36,7 @@ if (app.Environment.IsDevelopment())
 }
 
 PasswordHasher pHasher = new PasswordHasher();
+// TODO: Make these static so we don't need instances!
 UserAPI uAPI = new() { ConnStr = connString };
 MovieAPI mAPI = new() { connStr = connString };
 MovieListAPI mlAPI = new() { ConnStr = connString };

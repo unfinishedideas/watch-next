@@ -55,7 +55,8 @@ const UserSignupForm: React.FC = () => {
         res.id,
         res.username,
         res.email,
-        res.deleted
+        res.deleted,
+        res.created_at
       );
       if (loggedInUser instanceof User) {
         setUser(loggedInUser);

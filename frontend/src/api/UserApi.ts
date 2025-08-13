@@ -58,10 +58,10 @@ export async function RegisterUser<T>(newUser: UserRegister): Promise<T> {
     if (!res.ok) {
         if(res.status === 400) {
             const text = await res.text();
-            if (text.includes("Email already registered")) {
+            if (text.includes("email already registered.")) {
                 throw new Error("email already registered");
             }
-            else if (text.includes("Username already registered")) {
+            else if (text.includes("username already registered.")) {
                 throw new Error("username already registered");
             }
         }
