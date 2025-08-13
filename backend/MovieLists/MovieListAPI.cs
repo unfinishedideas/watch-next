@@ -190,12 +190,21 @@ namespace WatchNext.MovieLists
 			{
 				return Results.Conflict("Movie already associated with movie list");
 			}
+			// Get the number of movies to place the new one at the end
+			var all_movies = await conn.QueryAsync<MovieListMovieReorder>(
+				@"SELECT * FROM movie_list_movies WHERE list_id=@list_id ORDER BY movie_order", new { req.list_id }
+			);
+			int new_movie_order = 0;
+			if (all_movies != null)
+			{
+				new_movie_order = all_movies.Count() + 1;
+			}
 
 			var res2 = await conn.QueryFirstOrDefaultAsync(
-				@"INSERT INTO movie_list_movies (movie_id, list_id) VALUES (@movie_id, @list_id)",
-				new { req.movie_id, req.list_id }
+				@"INSERT INTO movie_list_movies (movie_id, list_id, movie_order) VALUES (@movie_id, @list_id, @new_movie_order)",
+				new { req.movie_id, req.list_id, new_movie_order }
 			);
-			// TODO: Reorder movie_order for every movie
+
 			return Results.Ok(res2);
 		}
 
@@ -203,12 +212,43 @@ namespace WatchNext.MovieLists
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
-
+			// Get the movie's movie_order in order to fix list order after removal
+			var movie = await conn.QueryFirstOrDefaultAsync<MovieListMovie>(
+				@"SELECT * FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id;",
+				new { req.movie_id, req.list_id }
+			);
+			if (movie == null)
+			{
+				return Results.NotFound();
+			}
+			int old_spot = movie.movie_order;
+			// Delete movie
 			var res = await conn.QueryFirstOrDefaultAsync(
 				"DELETE FROM movie_list_movies WHERE movie_id=@movie_id AND list_id=@list_id;",
 				new { req.movie_id, req.list_id }
 			);
-			// TODO: Reorder movie_order for every movie
+			// Re-order movies in list
+			var all_movies = await conn.QueryAsync<MovieListMovieReorder>(
+				@"SELECT * FROM movie_list_movies WHERE list_id=@list_id ORDER BY movie_order", new { req.list_id }
+			);
+			if (all_movies == null)
+			{
+				return Results.Ok();
+			}
+			foreach(MovieListMovieReorder mov in all_movies)
+			{
+				if (mov.movie_order > old_spot)
+				{
+					mov.movie_order--;
+					await conn.QueryAsync(
+						@"UPDATE movie_list_movies
+						SET movie_order = @movie_order
+						WHERE list_id=@list_id AND movie_id=@movie_id;",
+						new { mov.movie_order, req.list_id, mov.movie_id }
+					);
+				}
+			}
+
 			return Results.Ok(res);
 		}
 
