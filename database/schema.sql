@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS watch_list_movies (
     movie_id UUID NOT NULL,
     list_id UUID NOT NULL,
     movie_order INT NOT NULL DEFAULT 0,
-    been_watched BOOLEAN NOT NULL DEFAULT FALSE,
+    watched BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (movie_id, list_id),
     FOREIGN KEY (movie_id) REFERENCES movies(id),
     FOREIGN KEY (list_id) REFERENCES watch_lists(id),

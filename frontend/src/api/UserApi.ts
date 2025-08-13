@@ -55,9 +55,9 @@ export async function RegisterUser<T>(newUser: UserRegister): Promise<T> {
         body: JSON.stringify(newUser),
     });
     if (!res.ok) {
-      if (res.status === 400) {
         const text = await res.text();
         const cleanTxt = text.replace(/^"|"$/g, "").trim().toLowerCase();
+      if (res.status === 400) {
         throw new Error(cleanTxt);
       } else {
         HandleError(res);
@@ -74,7 +74,6 @@ export async function LoginUser<T>(nameInput: string, pass: string): Promise<T> 
         body: JSON.stringify({email: nameInput, password: pass}),
     });
     if (!res.ok) {
-        const text = await res.text();
         if (res.status === 401){
             throw new Error("incorrect password");
         }
@@ -85,7 +84,10 @@ export async function LoginUser<T>(nameInput: string, pass: string): Promise<T> 
             throw new Error("user is deleted");
         }
         else {
-            HandleError(res.statusText);
+            const text = await res.text();
+            const cleanTxt = text.replace(/^"|"$/g, "").trim().toLowerCase();
+            HandleError(text);
+            throw new Error(cleanTxt)
         }
     }
     return await res.json() as T;
@@ -99,18 +101,3 @@ export async function GetUserLists<T>(user_id: string):Promise<T>
     }
     return await res.json() as T;
 }
-
-
-/*
-export async function LoginUser<T>(password_attempt: string): Promise<T> {
-    const res = await fetch(`${base_url}/users/${
-
-    // Load hash from your password DB.
-    bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
-        // result == true
-    });
-    bcrypt.compare(someOtherPlaintextPassword, hash, function(err, result) {
-        // result == false
-    });
-    }
-*/
