@@ -77,7 +77,7 @@ export async function RemoveMovieFromList<T>(query: object): Promise<T>{
 
 export async function GetMovieListMovies<T>(id: string): Promise<T>{
     try {
-        const res = await fetch(`${base_url}/movie-lists/${id}/movies`, {
+        const res = await fetch(`${base_url}/watch-lists/${id}/movies`, {
             method: "GET",
         });
         if (!res.ok) {
@@ -92,7 +92,7 @@ export async function GetMovieListMovies<T>(id: string): Promise<T>{
 
 export async function GetMovieListUsers<T>(id: string): Promise<T>{
     try {
-        const res = await fetch(`${base_url}/movie-lists/${id}/users`, {
+        const res = await fetch(`${base_url}/watch-lists/${id}/users`, {
             method: "GET",
         });
         if (!res.ok) {

@@ -93,7 +93,7 @@ export async function LoginUser<T>(nameInput: string, pass: string): Promise<T> 
 
 export async function GetUserLists<T>(user_id: string):Promise<T>
 {
-    const res = await fetch(`${base_url}/users/${user_id}/movie-lists`);
+    const res = await fetch(`${base_url}/users/${user_id}/watch-lists`);
     if (!res.ok) {
         HandleError(res.statusText);
     }
