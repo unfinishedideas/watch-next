@@ -23,18 +23,27 @@ def main():
 
     print("Running schema.sql...")
     run_sql_file("schema.sql", conn)
+    # Seed DB
+    inputCheck = False
+    while (inputCheck == False):
+        print("Seed test data? (y / n)")
+        shouldSeed = input()
+        if (shouldSeed == 'y' or shouldSeed == 'n'):
+            inputCheck = True
+        else:
+            print("Please enter 'y' or 'n'")
 
-    if os.path.exists("./seed/init_seed.sql"):
+    if (shouldSeed == 'y'):
         print("Running users seed...")
         run_sql_file("./seed/seed_users.sql", conn)
         print("Running movies seed...")
         run_sql_file("./seed/seed_movies.sql", conn)
-        print("Running movie_lists seed...")
-        run_sql_file("./seed/seed_movie_lists.sql", conn)
-        print("Running user_movie_lists seed...")
-        run_sql_file("./seed/seed_user_movie_lists.sql", conn)
-        print("Running movie_list_movies seed...")
-        run_sql_file("./seed/seed_movie_list_movies.sql", conn)
+        print("Running watch_lists seed...")
+        run_sql_file("./seed/seed_watch_lists.sql", conn)
+        print("Running user_watch_lists seed...")
+        run_sql_file("./seed/seed_user_watch_lists.sql", conn)
+        print("Running watch_list_movies seed...")
+        run_sql_file("./seed/seed_watch_list_movies.sql", conn)
 
     print("Database initialized successfully.")
     conn.close()

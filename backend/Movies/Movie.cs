@@ -12,12 +12,12 @@
 		//required public string imdb_id { get; set; }
 	}
 	// Public facing movie object so users can order their lists
-	public sealed class MovieListMovie : Movie
+	public sealed class WatchListMovie : Movie
 	{
 		required public int movie_order { get; set; }
 	}
 	// Used when reordering movies in the database
-	public sealed class MovieListMovieReorder
+	public sealed class WatchListMovieReorder
 	{
 		required public Guid movie_id { get; set; }
 		required public Guid list_id { get; set; }

@@ -1,4 +1,4 @@
-using WatchNext.MovieLists;
+using WatchNext.WatchLists;
 using WatchNext.Movies;
 using WatchNext.Users;
 
@@ -39,32 +39,32 @@ PasswordHasher pHasher = new PasswordHasher();
 // TODO: Make these static so we don't need instances!
 UserAPI uAPI = new() { ConnStr = connString };
 MovieAPI mAPI = new() { connStr = connString };
-MovieListAPI mlAPI = new() { ConnStr = connString };
+WatchListAPI wAPI = new() { ConnStr = connString };
 
 // Users
 app.MapPost("users/", (UserRegister user) => uAPI.RegisterUser(user, pHasher));
 app.MapPost("users/login/", (LoginUserRequest req) => uAPI.LoginUser(req, pHasher));
-app.MapPost("users/delete/", (LoginUserRequest req) => uAPI.DeleteUser(req, pHasher));
+app.MapPut("users/delete/", (LoginUserRequest req) => uAPI.DeleteUser(req, pHasher));
 app.MapGet("users/", () => uAPI.GetAllUsers());
 app.MapGet("users/{id}/", (Guid id) => uAPI.GetUserById(id));
 app.MapGet("users/email/{email}/", (string email) => uAPI.GetUserByEmail(email));
-app.MapGet("users/{id}/movie-lists/", (Guid id) => uAPI.GetUserMovieLists(id));
+app.MapGet("users/{id}/watch-lists/", (Guid id) => uAPI.GetUserWatchLists(id));
 app.MapPut("users/", (UpdateUserRequest req) => uAPI.UpdateUser(req, pHasher));
 
 // Movie Lists
-app.MapPost("movie-lists/", (RegisterMovieListRequest req) => mlAPI.CreateMovieList(req));
-app.MapGet("movie-lists/", () => mlAPI.GetAllMovieLists());
-app.MapGet("movie-lists/{id}/", (Guid id) => mlAPI.GetMovieListById(id));
-app.MapGet("movie-lists/title/{listTitle}", (string listTitle) => mlAPI.GetMovieListsByTitle(listTitle));
-app.MapGet("movie-lists/{id}/users/", (Guid id) => mlAPI.GetMovieListUsers(id));
-app.MapGet("movie-lists/{id}/movies/", (Guid id) => mlAPI.GetMovieListMovies(id));
-app.MapPut("movie-lists/", (UpdateMovieListRequest req) => mlAPI.UpdateMovieList(req));
-app.MapPost("movie-lists/{id}/user/{user_id}", (Guid id, Guid user_id) => mlAPI.AddUserToMovieList(id, user_id));
-app.MapDelete("movie-lists/{id}/user/{user_id}", (Guid id, Guid user_id) => mlAPI.RemoveUserFromMovieList(id, user_id));
-app.MapPost("movie-lists/{id}/movie/{movie_id}", (Guid id, Guid movie_id) => mlAPI.AddMovieToMovieList(id, movie_id));
-app.MapDelete("movie-lists/{id}/movie/{movie_id}", (Guid id, Guid movie_id) => mlAPI.RemoveMovieFromMovieList(id, movie_id));
-app.MapPut("movie-lists/{id}/movie/{mov_id}", (Guid id, Guid mov_id, int new_spot) => mlAPI.ReorderMovie(id, mov_id, new_spot));
-app.MapDelete("movie-lists/{id}", (Guid id) => mlAPI.DeleteMovieList(id));
+app.MapPost("watch-lists/", (RegisterWatchListRequest req) => wAPI.CreateWatchList(req));
+app.MapGet("watch-lists/", () => wAPI.GetAllWatchLists());
+app.MapGet("watch-lists/{id}/", (Guid id) => wAPI.GetWatchListById(id));
+app.MapGet("watch-lists/title/{listTitle}", (string listTitle) => wAPI.GetWatchListsByTitle(listTitle));
+app.MapGet("watch-lists/{id}/users/", (Guid id) => wAPI.GetWatchListUsers(id));
+app.MapGet("watch-lists/{id}/movies/", (Guid id) => wAPI.GetWatchListMovies(id));
+app.MapPut("watch-lists/", (UpdateWatchListRequest req) => wAPI.UpdateWatchList(req));
+app.MapPost("watch-lists/{id}/user/{user_id}", (Guid id, Guid user_id) => wAPI.AddUserToWatchList(id, user_id));
+app.MapDelete("watch-lists/{id}/user/{user_id}", (Guid id, Guid user_id) => wAPI.RemoveUserFromWatchList(id, user_id));
+app.MapPost("watch-lists/{id}/movie/{movie_id}", (Guid id, Guid movie_id) => wAPI.AddMovieToWatchList(id, movie_id));
+app.MapDelete("watch-lists/{id}/movie/{movie_id}", (Guid id, Guid movie_id) => wAPI.RemoveMovieFromWatchList(id, movie_id));
+app.MapPut("watch-lists/{id}/movie/{mov_id}", (Guid id, Guid mov_id, int new_spot) => wAPI.ReorderMovie(id, mov_id, new_spot));
+app.MapDelete("watch-lists/{id}", (Guid id) => wAPI.DeleteWatchList(id));
 
 // Movies
 app.MapPost("movies/", (MovieRegister req) => mAPI.CreateMovie(req));

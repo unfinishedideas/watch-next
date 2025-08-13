@@ -1,18 +1,18 @@
-﻿namespace WatchNext.MovieLists
+﻿namespace WatchNext.WatchLists
 {
-	public class MovieList
+	public class WatchList
 	{
 		required public Guid id { get; set; }
 		required public string title { get; set; }
 		required public DateTime created_at { get; set; }
 		required public bool is_private { get; set; }
 	}
-	public class RegisterMovieListRequest()
+	public class RegisterWatchListRequest()
 	{
 		required public string title { get; set; }
 		required public bool is_private { get; set; }
 	}
-	public class UpdateMovieListRequest()
+	public class UpdateWatchListRequest()
 	{
 		public required Guid id { get; set; }
 		public string? title { get; set; }

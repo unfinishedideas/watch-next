@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Npgsql;
-using WatchNext.MovieLists;
+using WatchNext.WatchLists;
 
 namespace WatchNext.Movies
 {
@@ -161,9 +161,9 @@ namespace WatchNext.Movies
 				return Results.NotFound("Movie not found");
 			}
 
-			// Delete from movie_list_movies
+			// Delete from watch_list_movies
 			var res1 = await conn.QueryAsync(
-				"DELETE FROM movie_list_movies WHERE movie_id=@movie_id", new { movie_id });
+				"DELETE FROM watch_list_movies WHERE movie_id=@movie_id", new { movie_id });
 
 			// Delete from movies
 			var res2 = await conn.QueryFirstOrDefaultAsync(

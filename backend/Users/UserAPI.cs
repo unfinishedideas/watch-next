@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Npgsql;
-using WatchNext.MovieLists;
+using WatchNext.WatchLists;
 
 namespace WatchNext.Users
 {
@@ -167,15 +167,15 @@ namespace WatchNext.Users
 			return Results.Ok(new { user });
 		}
 
-		public async Task<IResult> GetUserMovieLists(Guid user_id)
+		public async Task<IResult> GetUserWatchLists(Guid user_id)
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
-			var res = await conn.QueryAsync<MovieList>(
+			var res = await conn.QueryAsync<WatchList>(
 				@"SELECT ml.*
-				FROM movie_lists ml
-				JOIN user_movie_lists uml ON ml.id = uml.list_id
+				FROM watch_lists ml
+				JOIN user_watch_lists uml ON ml.id = uml.list_id
 				JOIN users u on uml.user_id = u.id
 				WHERE u.id = @user_id;
 				",
