@@ -24,7 +24,7 @@ const UserSignupForm: React.FC = () => {
   const [passwordError, setPasswordError] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -32,7 +32,7 @@ const UserSignupForm: React.FC = () => {
     }));
   };
 
-  async function AttemptUserRegistration(event) {
+  async function AttemptUserRegistration(event: Event) {
     event.preventDefault();
     setUsernameError("");
     setEmailError("");
@@ -67,17 +67,17 @@ const UserSignupForm: React.FC = () => {
     } catch (err: unknown) {
       if (err instanceof Error) {
         switch (err.message) {
-          case "email already registered":
+          case "email already registered.":
             setEmailError("Email already registered");
             break;
-          case "username already registered":
+          case "username already registered.":
             setUsernameError("Username already registered");
             break;
           default:
             setErrMsg("Something went wrong, please try again");
         }
       } else {
-        console.error("An unknown error occurred");
+        console.error("UserSignup: An unknown error occurred");
         setErrMsg("Something went wrong, please try again");
       }
     }
@@ -172,7 +172,7 @@ const UserSignupForm: React.FC = () => {
           Sign Up
         </button>
       </form>
-      {errMsg ?? <p className="error-text">{errMsg}</p>}
+      <p className="error-text">{errMsg}</p>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import User, { UserRegister } from '../classes/User.ts';
 function HandleError(err: unknown)
 {
     if (err instanceof Error) {
-        console.log(`GetUser: Error`, err.message);
+        console.error(`GetUser: Error`, err.message);
     } else {
         console.error(`An internal server error occurred: `, err);
     }
@@ -49,24 +49,19 @@ export async function DeleteUser<T>(id: string): Promise<T> {
 }
 
 export async function RegisterUser<T>(newUser: UserRegister): Promise<T> {
-    let req = {newUser}
     const res = await fetch(`${base_url}/users/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newUser),
     });
     if (!res.ok) {
-        if(res.status === 400) {
-            const text = await res.text();
-            if (text.includes("email already registered.")) {
-                throw new Error("email already registered");
-            }
-            else if (text.includes("username already registered.")) {
-                throw new Error("username already registered");
-            }
-        }
-        HandleError(res.statusText);
-        throw new Error("something went wrong");
+      if (res.status === 400) {
+        const text = await res.text();
+        const cleanTxt = text.replace(/^"|"$/g, "").trim().toLowerCase();
+        throw new Error(cleanTxt);
+      } else {
+        HandleError(res);
+      }
     }
     return await res.json() as T;
 }

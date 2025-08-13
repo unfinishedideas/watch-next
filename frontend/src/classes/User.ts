@@ -4,7 +4,7 @@ export default class User
     username: string;
     email: string;
     deleted: boolean; 
-    created_at: date;
+    created_at: Date;
 
     constructor(id:string="", username:string="", email:string="", deleted:boolean=false, created_at:Date) 
     {

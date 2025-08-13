@@ -1,6 +1,6 @@
 import "./MovieCard.css";
 import Movie from "../classes/Movie.ts";
-import Logo from "../assets/test-movie-poster-jaws.jpg";
+import Poster from "../assets/NoPoster.png";
 import { AsyncApiFunc } from "../api/ListApi.ts";
 import { useState } from "react";
 
@@ -16,7 +16,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
   return (
     <div className={"movie-card-default"}>
       <div className={"movie-card-poster"}>
-        <img src={Logo} className="movie-poster-preview" />
+        <img src={Poster} className="movie-poster-preview" />
       </div>
       <div className={"movie-card-info-panel"}>
         <h3 className="movie-title-text">{data.title}</h3>
