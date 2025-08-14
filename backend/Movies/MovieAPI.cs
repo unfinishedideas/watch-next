@@ -120,6 +120,22 @@ namespace WatchNext.Movies
 			return Results.Ok(new { movies });
 		}
 
+		public async Task<IResult> GetMoviesByPartialTitle(string term)
+		{
+			if (string.IsNullOrWhiteSpace(term))
+				return Results.Ok(new List<Movie>());
+
+			using var conn = new NpgsqlConnection(connStr);
+			await conn.OpenAsync();
+
+			term = "%" + term + "%";
+			var res = await conn.QueryAsync<Movie>(
+				@"SELECT * FROM movies WHERE title ILIKE @term;",
+				new { term });
+
+			return Results.Ok(res);
+		}
+
 		public async Task<IResult> UpdateMovie(UpdateMovieRequest req)
 		{
 			using var conn = new NpgsqlConnection(connStr);

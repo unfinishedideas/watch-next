@@ -1,14 +1,18 @@
 import "./Screen.css";
-import Movie from "../classes/movie.ts";
+import Movie from "../classes/Movie.ts";
 import MovieCard from "../components/MovieCard.tsx";
+import AddMovieBox from "../components/AddMovieBox.tsx";
 import { useQuery } from "@tanstack/react-query";
 import { NavLink, useLocation } from "react-router";
 import { GetMovieListMovies } from "../api/ListApi.ts";
+import { useUser } from "../hooks/UserHooks.ts";
 
 const ListScreen: React.FC = () => {
   const location: Location<any> = useLocation();
   const listData: List[] = location.state?.listData;
   const users: User[] = location.state?.users;
+  const { user, setUser } = useUser();
+  let ownedList: Boolean = false;
 
   const listMovies = useQuery({
     queryKey: [`list_movies_${listData.id}`],
@@ -34,21 +38,41 @@ const ListScreen: React.FC = () => {
     const fetchedMovies: Movie[] = listMovies.data.sort(
       (a, b) => a.movie_order - b.movie_order
     );
+    let usersToList = users;
+    if (user !== undefined) {
+      for (let i = 0; i < users.length; i++) {
+        if (users[i].id === user.id) {
+          ownedList = true;
+          usersToList = usersToList.filter((usr) => usr.id !== user.id);
+          break;
+        }
+      }
+    }
     return (
       <div className="screen-container">
         <h2 className="screen-title">{listData.title}</h2>
         <p>Created By:</p>
         <div className="user-card-container">
-          {users.map((user: User, index: number) => (
-            <div className="list-user-container" key={index}>
-              {index % 4 === 0 && index !== 0 && <br />}
+          {ownedList ? (
+            <div className="home-user-container">
               <NavLink to={`user/${user.username}`}>
                 {user.username}&nbsp;&nbsp;&nbsp;
+              </NavLink>
+            </div>
+          ) : (
+            <div />
+          )}
+          {usersToList.map((usr: User, index: number) => (
+            <div className="list-user-container" key={index}>
+              {index % 4 === 0 && index !== 0 && <br />}
+              <NavLink to={`user/${usr.username}`}>
+                {usr.username}&nbsp;&nbsp;&nbsp;
               </NavLink>
             </div>
           ))}
         </div>
         <h3 className="screen-subtitle">Movies</h3>
+        {ownedList ? <AddMovieBox /> : <div />}
         {fetchedMovies.map((movie: Movie, index: number) => {
           return <MovieCard data={movie} key={index} />;
         })}

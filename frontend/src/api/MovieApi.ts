@@ -26,6 +26,14 @@ export async function GetMovie<T>(id: string): Promise<T> {
     return await res.json() as T;
 }
 
+export async function GetMoviesByTitle<T>(title: string): Promise<T> {
+    const res = await fetch(`${base_url}/movies/title/${title}`);
+    if (!res.ok) {
+        HandleError(res.statusText);
+    }
+    return await res.json() as T;
+}
+
 export async function UpdateMovie<T>(update: Movie): Promise<T> {
     const res = await fetch(`${base_url}/movies/`, {
         method: 'PUT',

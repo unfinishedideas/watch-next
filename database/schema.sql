@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS watch_list_movies, watch_lists, movies, user_watch_lists, users, user_friends;
 DROP TYPE IF EXISTS friend_status;
+DROP INDEX IF EXISTS unique_friend_pair;
 
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
