@@ -1,13 +1,16 @@
 import { useUser } from "../hooks/UserHooks.ts";
+import { useNavigate } from "react-router";
 
 const Header: React.FC = () => {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
+  const navigate = useNavigate();
+
   return (
     <div className="navbar bg-base-300 shadow-sm">
       <div className="navbar-start" />
       <div className="navbar-center">
         {/* TODO: Make this not an animated button but a logo */}
-        <a className="btn btn-ghost text-2xl">Watch Next!</a>
+        <a className="btn btn-ghost text-2xl" onClick={() => navigate('/')}>Watch Next!</a>
       </div>
       <div className="navbar-end">
         {user ? (
@@ -30,7 +33,12 @@ const Header: React.FC = () => {
               <li>
                 <a>Profile</a>
               </li>
-              <li>
+              <li
+                onClick={() => {
+                  setUser(undefined);
+                  navigate("/");
+                }}
+              >
                 <a>Logout</a>
               </li>
             </ul>
@@ -50,8 +58,11 @@ const Header: React.FC = () => {
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
-              <li>
+              <li onClick={() => navigate("/login")}>
                 <a>Login</a>
+              </li>
+              <li onClick={() => navigate("/")}>
+                <a>Register</a>
               </li>
             </ul>
           </div>
