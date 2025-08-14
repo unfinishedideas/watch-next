@@ -2,15 +2,17 @@
 
 ## Technology
 
-PostgreSQL
+- PostgreSQL
+- Python
+- psycopg2
 
 ## Setup
 
-- Install PostgreSQL
-- Install Python
-- Setup your own `.env` file based on `example.env`
-- Run `python init.py` from this folder
-- Follow the prompts and profit!
+- Install postgreSQL on server
+- Install python (I use chocolatey on windows) and install psycopg2 with `pip install psycopg2`
+- Start the postgres server
+- Create new `.env` file based on `example.env`
+- Run `python ./database/init.py` to setup a database and follow prompts
 
 ## ERD Diagram
 

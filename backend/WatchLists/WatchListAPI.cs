@@ -28,7 +28,7 @@ namespace WatchNext.WatchLists
 
 			if (res == null)
 			{
-				return Results.BadRequest("Movie List creation failed.");
+				return Results.BadRequest("Watch List creation failed.");
 			}
 			return Results.Ok(new { res });
 		}
@@ -142,14 +142,14 @@ namespace WatchNext.WatchLists
 				return Results.NotFound();
 			}
 
-			// Check to see if user is already associated with movie list
+			// Check to see if user is already associated with watch list
 			var res1 = await conn.QueryFirstOrDefaultAsync(
 				"SELECT * FROM user_watch_lists WHERE user_id=@user_id AND list_id=@list_id",
 				new { user_id, list_id }
 			);
 			if (res1 != null)
 			{
-				return Results.Conflict("User already associated with movie list");
+				return Results.Conflict("User already associated with watch list");
 			}
 
 			var res2 = await conn.QueryFirstOrDefaultAsync(
@@ -182,14 +182,14 @@ namespace WatchNext.WatchLists
 				return Results.NotFound();
 			}
 
-			// Check to see if movie is already associated with movie list
+			// Check to see if movie is already associated with watch list
 			var res1 = await conn.QueryFirstOrDefaultAsync(
 				"SELECT * FROM watch_list_movies WHERE movie_id=@movie_id AND list_id=@list_id",
 				new { movie_id, list_id }
 			);
 			if (res1 != null)
 			{
-				return Results.Conflict("Movie already associated with movie list");
+				return Results.Conflict("Movie already associated with watch list");
 			}
 			// Get the number of movies to place the new one at the end
 			var all_movies = await conn.QueryAsync<WatchListMovieUpdate>(

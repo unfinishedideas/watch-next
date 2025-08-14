@@ -51,7 +51,7 @@ app.MapGet("users/email/{email}/", (string email) => uAPI.GetUserByEmail(email))
 app.MapGet("users/{id}/watch-lists/", (Guid id) => uAPI.GetUserWatchLists(id));
 app.MapPut("users/", (UpdateUserRequest req) => uAPI.UpdateUser(req, pHasher));
 
-// Movie Lists
+// Watch Lists
 app.MapPost("watch-lists/", (RegisterWatchListRequest req) => wAPI.CreateWatchList(req));
 app.MapGet("watch-lists/", () => wAPI.GetAllWatchLists());
 app.MapGet("watch-lists/{id}/", (Guid id) => wAPI.GetWatchListById(id));

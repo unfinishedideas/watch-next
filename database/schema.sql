@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS watch_list_movies, watch_lists, movies, user_watch_lists, users, user_friends;
+DROP TABLE IF EXISTS watch_list_movies, watch_lists, movies, user_watch_lists, users, user_friends CASCADE;
 DROP TYPE IF EXISTS friend_status;
 DROP INDEX IF EXISTS unique_friend_pair;
 

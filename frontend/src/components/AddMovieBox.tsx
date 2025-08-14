@@ -1,8 +1,12 @@
 import { useState } from "react";
 import SearchBar from "./SearchBar.tsx";
-import { GetMoviesByTitle } from "../api/MovieApi.ts";
+import { GetMoviesByPartialTitle } from "../api/MovieApi.ts";
 
-const AddMovieBox: React.FC = () => {
+interface AddMovieBoxProps {
+    onAdd: (mov_id: string) => void;
+}
+
+const AddMovieBox: React.FC = ({onAdd}:AddMovieBoxProps) => {
   enum BoxState {
     searching,
     waiting,
@@ -12,21 +16,26 @@ const AddMovieBox: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   async function SearchForMovie(value: string) {
-    value = value.trim()
+    value = value.trim();
     if (value === "") {
-        setOptions([]);
-        return;
+      setOptions([]);
+      return;
     }
     setLoading(true);
     try {
-        let res = await GetMoviesByTitle(value);
-        setOptions(res);
-        console.log(res);           // TODO: Remove this
-    } catch(err: unknown) {
-        console.log(err);
+      let res = await GetMoviesByPartialTitle(value);
+      setOptions(res);
+      console.log(res); // TODO: Remove this
+    } catch (err: unknown) {
+      console.log(err);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
+  }
+
+  function AddMovie(value: string)
+  {
+    console.log(value)
   }
 
   if (boxState === BoxState.waiting) {
@@ -45,20 +54,19 @@ const AddMovieBox: React.FC = () => {
   } else if (boxState === BoxState.searching) {
     return (
       <div>
-        <SearchBar onSearch={SearchForMovie} />
-        <button className="add-movie-btn">Add Movie</button>
-        {loading ? (
-          <div>
+        <SearchBar onSearch={SearchForMovie} title={"Search for Movie"} />
+        <div>
+          <select onChange={AddMovie}>
             <option value="">--Please choose an option--</option>
             {options.map((option) => (
               <option key={option.id} value={option.id}>
                 {option.title}
               </option>
             ))}
-          </div>
-        ) : (
-          <div />
-        )}
+          </select>
+          <br/>
+          <button className="add-movie-btn">Add Movie</button>
+        </div>
       </div>
     );
   }

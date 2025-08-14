@@ -130,7 +130,7 @@ namespace WatchNext.Movies
 
 			term = "%" + term + "%";
 			var res = await conn.QueryAsync<Movie>(
-				@"SELECT * FROM movies WHERE title ILIKE @term;",
+				@"SELECT * FROM movies WHERE title ILIKE @term LIMIT 10;",
 				new { term });
 
 			return Results.Ok(res);
