@@ -1,6 +1,6 @@
 # Watch Next!
 
--- This is currently under construction! --
+-- This is currently a prototyper under construction! --
 
 ## Concept
 
@@ -22,11 +22,12 @@ They can leave reviews, comments and share lists publicly or privately.
 - build and run the backend with `dotnet run`
 
 ## Setup database (Database)
+
 - Install postgreSQL on server
 - Create new `.env` file based on `example.env`
-- Run `python ./database/init.py` to setup a database with some preconfigured users
+- Run `python ./database/init.py` to setup a database and follow prompts
 
-## Technology
+## Technologies
 
 - React + Vite
 - Typescript + SWC
