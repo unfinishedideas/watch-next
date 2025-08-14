@@ -1,6 +1,6 @@
 # Watch Next!
 
--- This is currently a prototyper under construction! --
+-- This is currently a prototype under construction! --
 
 ## Concept
 
