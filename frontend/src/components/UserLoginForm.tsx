@@ -12,7 +12,7 @@ interface LoginFormData {
 
 const UserLoginForm: React.FC = () => {
   const navigate = useNavigate();
-  const { user, setUser } = useUser();
+  const { setUser } = useUser();
   const [nameError, setNameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [errMsg, setErrMsg] = useState("");
@@ -40,8 +40,7 @@ const UserLoginForm: React.FC = () => {
       );
       const loggedInUser: User = new User(res);
       setUser(loggedInUser);
-      console.log(user)
-      await navigate("/");
+      await navigate("/welcome");
     } catch (err: unknown) {
       if (err instanceof Error) {
         if (err.message === "user not found") {
@@ -62,40 +61,47 @@ const UserLoginForm: React.FC = () => {
   }
 
   return (
-    <div>
-      <form onSubmit={AttemptLogin}>
-        <label className="label">Username or Email</label>
-        <input
-          type="text"
-          className="input input-md"
-          placeholder="Username or Email"
-          id="nameInput"
-          name="nameInput"
-          value={formData.nameInput}
-          onChange={handleChange}
-          required
-        />
-        <FormErrorText message={nameError} />
+    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
+          Sign in to your account
+        </h2>
+      </div>
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form className="" onSubmit={AttemptLogin}>
+          <label className="label w-full">Username or Email</label>
+          <input
+            type="text"
+            className="input input-md w-full"
+            placeholder="Username or Email"
+            id="nameInput"
+            name="nameInput"
+            value={formData.nameInput}
+            onChange={handleChange}
+            required
+          />
+          <FormErrorText message={nameError} />
 
-        <label className="label">Password</label>
-        <input
-          type="password"
-          className="input input-md"
-          placeholder="Password"
-          id="passwordInput"
-          name="passwordInput"
-          value={formData.passwordInput}
-          onChange={handleChange}
-          required
-        />
-        <FormErrorText message={passwordError} />
-        <br />
-        <FormErrorText message={errMsg} />
-        <br />
-        <button className="btn btn-primary" type="submit">
-          Submit
-        </button>
-      </form>
+          <label className="label w-full">Password</label>
+          <input
+            type="password"
+            className="input input-md w-full"
+            placeholder="Password"
+            id="passwordInput"
+            name="passwordInput"
+            value={formData.passwordInput}
+            onChange={handleChange}
+            required
+          />
+          <FormErrorText message={passwordError} />
+          <br />
+          <FormErrorText message={errMsg} />
+          <br />
+          <button className="w-full btn btn-primary" type="submit">
+            Submit
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
