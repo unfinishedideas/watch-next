@@ -1,8 +1,8 @@
-//import { useUser } from "../hooks/UserHooks.ts";
+import { useUser } from "../hooks/UserHooks.ts";
 import { useState } from "react";
-//import { useNavigate } from "react-router";
-//import { LoginUser } from "../api/UserApi.ts";
-//import User from "../classes/User.ts";
+import { useNavigate } from "react-router";
+import { LoginUser } from "../api/UserApi.ts";
+import User, { type UserData } from "../classes/User.ts";
 import FormErrorText from "./FormErrorText.tsx";
 
 interface LoginFormData {
@@ -11,8 +11,8 @@ interface LoginFormData {
 }
 
 const UserLoginForm: React.FC = () => {
-  //const navigate = useNavigate();
-  //const { user, setUser } = useUser();
+  const navigate = useNavigate();
+  const { user, setUser } = useUser();
   const [nameError, setNameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [errMsg, setErrMsg] = useState("");
@@ -32,26 +32,28 @@ const UserLoginForm: React.FC = () => {
     event.preventDefault();
     setNameError("");
     setPasswordError("");
-    setErrMsg("Here's a random error why not!");
-    setNameError("Username not found");
-    setPasswordError("Password incorrect");
+    setErrMsg("");
     try {
-      let res: object = await LoginUser(formData.nameInput, formData.password);
-      const loggedInUser: User = new User(
-        res.id,
-        res.username,
-        res.email,
-        res.deleted
+      const res: UserData = await LoginUser(
+        formData.nameInput,
+        formData.passwordInput
       );
+      const loggedInUser: User = new User(res);
       setUser(loggedInUser);
+      console.log(user)
       await navigate("/");
-    } catch (err: Error) {
-      if (err.message === "user not found") {
-        setNameError("User not found");
-      } else if (err.message === "incorrect password") {
-        setPasswordError("Incorrect password");
-      } else if (err.message === "user is deleted") {
-        setErrMsg("Cannot log in, user is deleted");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        if (err.message === "user not found") {
+          setNameError("User not found");
+        } else if (err.message === "incorrect password") {
+          setPasswordError("Incorrect password");
+        } else if (err.message === "user is deleted") {
+          setErrMsg("Cannot log in, user is deleted");
+        } else {
+          console.log(err);
+          setErrMsg("Something went wrong, please try again.");
+        }
       } else {
         console.log(err);
         setErrMsg("Something went wrong, please try again.");
@@ -87,9 +89,9 @@ const UserLoginForm: React.FC = () => {
           required
         />
         <FormErrorText message={passwordError} />
-        <br/>
+        <br />
         <FormErrorText message={errMsg} />
-        <br/>
+        <br />
         <button className="btn btn-primary" type="submit">
           Submit
         </button>
