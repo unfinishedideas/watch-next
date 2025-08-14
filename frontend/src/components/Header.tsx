@@ -10,7 +10,9 @@ const Header: React.FC = () => {
       <div className="navbar-start" />
       <div className="navbar-center">
         {/* TODO: Make this not an animated button but a logo */}
-        <a className="btn btn-ghost text-2xl" onClick={() => navigate('/')}>Watch Next!</a>
+        <a className="btn btn-ghost text-3xl" onClick={() => navigate("/")}>
+          Watch Next!
+        </a>
       </div>
       <div className="navbar-end">
         {user ? (
@@ -61,7 +63,7 @@ const Header: React.FC = () => {
               <li onClick={() => navigate("/login")}>
                 <a>Login</a>
               </li>
-              <li onClick={() => navigate("/")}>
+              <li onClick={() => navigate("/register")}>
                 <a>Register</a>
               </li>
             </ul>
