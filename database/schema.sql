@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TYPE friend_status AS ENUM('pending', 'accepted', 'rejected');
+
 CREATE TABLE IF NOT EXISTS user_friends (
     user1_id UUID NOT NULL,
     user2_id UUID NOT NULL,
@@ -19,6 +20,13 @@ CREATE TABLE IF NOT EXISTS user_friends (
     FOREIGN KEY (user1_id) REFERENCES users(id),
     FOREIGN KEY (user2_id) REFERENCES users(id),
     CHECK (user1_id <> user2_id)
+);
+
+-- Forces user friendships to not duplicate
+CREATE UNIQUE INDEX IF NOT EXISTS unique_friend_pair
+ON user_friends (
+    LEAST(user1_id, user2_id),
+    GREATEST(user1_id, user2_id)
 );
 
 CREATE TABLE IF NOT EXISTS watch_lists (
