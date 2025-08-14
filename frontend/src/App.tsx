@@ -1,6 +1,9 @@
 import "./App.css";
-import Header from "./components/Header.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Routes, Route } from 'react-router';
+
+import HomeScreen from './screens/HomeScreen.tsx';
+import UserLoginScreen from './screens/UserLoginScreen.tsx';
 
 const queryClient = new QueryClient();
 
@@ -9,7 +12,10 @@ function App() {
     <>
       <div>
         <QueryClientProvider client={queryClient}>
-          <Header />
+          <Routes>
+            <Route path='/' element={<HomeScreen/>}/>
+            <Route path='/login' element={<UserLoginScreen/>}/>
+          </Routes>
         </QueryClientProvider>
       </div>
     </>
