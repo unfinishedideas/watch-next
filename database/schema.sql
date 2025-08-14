@@ -1,4 +1,5 @@
-DROP TABLE IF EXISTS watch_list_movies, watch_lists, movies, user_watch_lists, users;
+DROP TABLE IF EXISTS watch_list_movies, watch_lists, movies, user_watch_lists, users, user_friends;
+DROP TYPE IF EXISTS friend_status;
 
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -7,6 +8,17 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted BOOLEAN DEFAULT FALSE
+);
+
+CREATE TYPE friend_status AS ENUM('pending', 'accepted', 'rejected');
+CREATE TABLE IF NOT EXISTS user_friends (
+    user1_id UUID NOT NULL,
+    user2_id UUID NOT NULL,
+    status friend_status DEFAULT 'pending',
+    PRIMARY KEY (user1_id, user2_id),
+    FOREIGN KEY (user1_id) REFERENCES users(id),
+    FOREIGN KEY (user2_id) REFERENCES users(id),
+    CHECK (user1_id <> user2_id)
 );
 
 CREATE TABLE IF NOT EXISTS watch_lists (

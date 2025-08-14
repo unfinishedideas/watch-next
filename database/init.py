@@ -36,6 +36,8 @@ def main():
     if (shouldSeed == 'y'):
         print("Running users seed...")
         run_sql_file("./seed/seed_users.sql", conn)
+        print("Running user_friends seed...")
+        run_sql_file("./seed/seed_user_friends.sql", conn)
         print("Running movies seed...")
         run_sql_file("./seed/seed_movies.sql", conn)
         print("Running watch_lists seed...")
