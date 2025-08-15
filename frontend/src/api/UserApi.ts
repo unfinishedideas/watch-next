@@ -1,6 +1,11 @@
 import { type UserData } from "../classes/User.ts";
+import { type WatchListData } from "../classes/WatchList.ts";
 
 const base_url: string = import.meta.env.VITE_API_BASE_URL;
+
+function HandleError(err: unknown) {
+  console.error(err);
+}
 
 export async function LoginUser(
   nameInput: string,
@@ -47,7 +52,7 @@ export async function RegisterUser(
     if (res.status === 400) {
       throw new Error(cleanTxt);
     } else {
-      console.error(res);
+      HandleError(res);
     }
   }
   const data = await res.json();
@@ -55,4 +60,25 @@ export async function RegisterUser(
     ...data,
     created_at: new Date(data.created_at),
   };
+}
+
+export async function GetUserLists(user_id: string): Promise<WatchListData[]> {
+  const res = await fetch(`${base_url}/users/${user_id}/watch-lists`);
+  if (!res.ok) {
+    if (res.status === 404) {
+      throw new Error("GetUserLists: User not found");
+    } else {
+      HandleError(res);
+    }
+  }
+  const rawData: any[] = await res.json();
+
+  return rawData.map(
+    (item): WatchListData => ({
+      id: String(item.id),
+      title: String(item.title),
+      created_at: new Date(item.created_at),
+      is_private: Boolean(item.is_private),
+    })
+  );
 }

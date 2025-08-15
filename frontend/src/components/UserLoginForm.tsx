@@ -68,7 +68,7 @@ const UserLoginForm: React.FC = () => {
         </h2>
       </div>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="" onSubmit={AttemptLogin}>
+        <form className="mb-4" onSubmit={AttemptLogin}>
           <label className="label w-full">Username or Email</label>
           <input
             type="text"
@@ -101,6 +101,7 @@ const UserLoginForm: React.FC = () => {
             Submit
           </button>
         </form>
+        <a className="link link-primary" onClick={() => navigate("/register")}>Haven't signed up yet? Register.</a>
       </div>
     </div>
   );
