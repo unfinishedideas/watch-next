@@ -9,6 +9,12 @@ const LogoutScreen: React.FC = () => {
       </h2>
       <div className="flex flex-col">
         <a
+          onClick={() => navigate("/")}
+          className="btn btn-xs btn-primary sm:btn-md md:btn-md lg:btn-lg xl:btn-lg lg:mx-20 mb-3"
+        >
+          Home
+        </a>
+        <a
           onClick={() => navigate("/login")}
           className="btn btn-xs btn-primary sm:btn-md md:btn-md lg:btn-lg xl:btn-lg lg:mx-20 mb-3"
         >

@@ -43,7 +43,9 @@ const Header: React.FC = () => {
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-300 rounded-box z-1 mt-4 w-52 p-2 shadow"
             >
-              <li>
+              <li
+                onClick={() => navigate('/welcome')}
+              >
                 <a>Profile</a>
               </li>
 
