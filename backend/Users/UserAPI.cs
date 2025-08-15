@@ -184,8 +184,6 @@ namespace WatchNext.Users
 				",
 			new { user_id });
 
-
-
 			return Results.Ok(res);
 		}
 

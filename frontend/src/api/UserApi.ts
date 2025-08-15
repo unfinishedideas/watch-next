@@ -1,7 +1,26 @@
 import { type UserData } from "../classes/User.ts";
 import { type WatchListData } from "../classes/WatchList.ts";
+import { z } from "zod";
 
 const base_url: string = import.meta.env.VITE_API_BASE_URL;
+
+// ZOD types for safety
+const WatchListDataRawSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  created_at: z.iso.datetime({ offset: true }).or(z.iso.datetime()),
+  is_private: z.boolean(),
+});
+const WatchListDataArraySchema = z.array(WatchListDataRawSchema);
+
+const UserDataRawSchema = z.object({
+  id: z.string(),
+  username: z.string(),
+  email: z.email(),
+  deleted: z.boolean(),
+  created_at: z.iso.datetime(), // Expecting an ISO date string
+});
+//const UserDataArraySchema = z.array(UserDataRawSchema);
 
 function HandleError(err: unknown) {
   console.error(err);
@@ -29,10 +48,10 @@ export async function LoginUser(
       throw new Error(cleanTxt);
     }
   }
-  const data = await res.json();
+  const rawData = UserDataRawSchema.parse(await res.json());
   return {
-    ...data,
-    created_at: new Date(data.created_at),
+    ...rawData,
+    created_at: new Date(rawData.created_at),
   };
 }
 
@@ -55,10 +74,10 @@ export async function RegisterUser(
       HandleError(res);
     }
   }
-  const data = await res.json();
+  const rawData = UserDataRawSchema.parse(await res.json());
   return {
-    ...data,
-    created_at: new Date(data.created_at),
+    ...rawData,
+    created_at: new Date(rawData.created_at),
   };
 }
 
@@ -71,14 +90,11 @@ export async function GetUserLists(user_id: string): Promise<WatchListData[]> {
       HandleError(res);
     }
   }
-  const rawData: any[] = await res.json();
-
-  return rawData.map(
-    (item): WatchListData => ({
-      id: String(item.id),
-      title: String(item.title),
-      created_at: new Date(item.created_at),
-      is_private: Boolean(item.is_private),
-    })
-  );
+  const rawData = WatchListDataArraySchema.parse(await res.json());
+  return rawData.map((item) => ({
+    id: item.id,
+    title: item.title,
+    created_at: new Date(item.created_at),
+    is_private: item.is_private,
+  }));
 }

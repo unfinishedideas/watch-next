@@ -28,7 +28,6 @@ const WelcomeScreen: React.FC = () => {
     }
     else {
       console.log(data)
-      statusText = "Loaded"
     }
     return (
       <div>

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     deleted BOOLEAN DEFAULT FALSE
 );
 
@@ -33,7 +33,7 @@ ON user_friends (
 CREATE TABLE IF NOT EXISTS watch_lists (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     is_private BOOLEAN DEFAULT FALSE
 );
 
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS user_watch_lists (
     PRIMARY KEY (user_id, list_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (list_id) REFERENCES watch_lists(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS movies (
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS movies (
     release_date DATE NOT NULL,
     director VARCHAR(50) NOT NULL,
     genre VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS watch_list_movies (
@@ -63,5 +63,5 @@ CREATE TABLE IF NOT EXISTS watch_list_movies (
     PRIMARY KEY (movie_id, list_id),
     FOREIGN KEY (movie_id) REFERENCES movies(id),
     FOREIGN KEY (list_id) REFERENCES watch_lists(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );

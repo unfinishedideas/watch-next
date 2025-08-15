@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+//import { useQuery } from "@tanstack/react-query";
 import WatchList from "../classes/WatchList.ts";
 
 interface WatchListPreviewCarouselProps {
-  listsData: WatchList[];
+  listsData: WatchList[] | undefined;
 }
 
 const WatchListPreviewCarousel: React.FC<WatchListPreviewCarouselProps> = ({
