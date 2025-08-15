@@ -1,25 +1,24 @@
-//import "./Form.css";
-//import { useUser } from "../hooks/UserHooks.ts";
+import { useUser } from "../hooks/UserHooks.ts";
 import { useState } from "react";
-//import { useNavigate } from "react-router";
-//import { RegisterUser } from "../api/UserApi.ts";
-//import User, { UserRegister } from "../classes/User.ts";
-//import FormErrorMessage from "./FormErrorMessage.tsx";
+import { useNavigate } from "react-router";
+import { RegisterUser } from "../api/UserApi.ts";
+import User from "../classes/User.ts";
+import FormErrorText from "./FormErrorText.tsx";
 
 interface SignupFormData {
-    emailInput: string;
-    usernameInput: string;
-    passwordInput: string;
+  emailInput: string;
+  usernameInput: string;
+  passwordInput: string;
 }
 
 const UserSignupForm: React.FC = () => {
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
   const whitespaceRegex = /\s/;
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   // TODO: Create regex for passwords and usernames to prevent bad characters
   // TODO: Change to an onSubmit form with event.preventDefault() to prevent wiping the data each attempt
 
-  //const { user, setUser } = useUser();
+  const { setUser } = useUser();
   const [emailError, setEmailError] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -38,11 +37,8 @@ const UserSignupForm: React.FC = () => {
     }));
   };
 
-  async function AttemptUserRegistration() {
-    //event.preventDefault();
-    console.log(formData.emailInput)
-    console.log(formData.usernameInput)
-    console.log(formData.passwordInput)
+  async function AttemptUserRegistration(event: React.SyntheticEvent) {
+    event.preventDefault();
     setUsernameError("");
     setEmailError("");
     setPasswordError("");
@@ -53,27 +49,15 @@ const UserSignupForm: React.FC = () => {
     if (!emailValid || !usernameValid || !passwordValid) {
       return;
     }
-    /*
     try {
-      const newUser: UserRegister = new UserRegister(
-        formData.usernameInput,
+      const res: User = await RegisterUser(
         formData.emailInput,
-        formData.passwordInput
+        formData.passwordInput,
+        formData.usernameInput
       );
-      const res: object = await RegisterUser(newUser);
-      const loggedInUser: User = new User(
-        res.id,
-        res.username,
-        res.email,
-        res.deleted,
-        res.created_at
-      );
-      if (loggedInUser instanceof User) {
-        setUser(loggedInUser);
-        await navigate("/");
-      } else {
-        setErrMsg("Try logging in");
-      }
+      const loggedInUser: User = new User(res);
+      setUser(loggedInUser);
+      await navigate("/welcome");
     } catch (err: unknown) {
       if (err instanceof Error) {
         switch (err.message) {
@@ -91,7 +75,6 @@ const UserSignupForm: React.FC = () => {
         setErrMsg("Something went wrong, please try again");
       }
     }
-    */
   }
 
   function CheckEmailValidity(email: string): boolean {
@@ -119,13 +102,18 @@ const UserSignupForm: React.FC = () => {
   }
 
   return (
-    <div>
-      <h2>Sign Up</h2>
-      <form onSubmit={AttemptUserRegistration}>
-        <label className="floating-label">
+    <div className="flex min-h-full flex-col justify-center px-6 py-10 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <h2 className="text-center text-2xl/9 font-bold tracking-tight text-white">
+          Sign up for movie night!
+        </h2>
+      </div>
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form className="" onSubmit={AttemptUserRegistration}>
+          <label className="label w-full">Email</label>
           <input
             type="text"
-            className="input input-md"
+            className="input input-md w-full"
             placeholder="Email"
             id="emailInput"
             name="emailInput"
@@ -133,16 +121,12 @@ const UserSignupForm: React.FC = () => {
             onChange={handleChange}
             required
           />
-          <span>Email</span>
-        </label>
-        <br />
-        <p className="text-sm error-content">{emailError}</p>
-        <p className="text-sm error-content">Just testing this DELETE ME!</p>
+          <FormErrorText message={emailError} />
 
-        <label className="floating-label">
+          <label className="label w-full mt-1">Password</label>
           <input
             type="password"
-            className="input input-md"
+            className="input input-md w-full"
             placeholder="Password"
             id="passwordInput"
             name="passwordInput"
@@ -150,18 +134,16 @@ const UserSignupForm: React.FC = () => {
             onChange={handleChange}
             required
           />
-          <span>Password</span>
-        </label>
-        <p className="text-sm error-content">{passwordError}</p>
-        <p className="text-sm">
-          Password should be at least 15 characters OR at least 8 characters
-          including a number and a lowercase letter.
-        </p>
+          <FormErrorText message={passwordError} />
+          <p className="text-sm mb-2">
+            Password should be at least 15 characters OR at least 8 characters
+            including a number and a lowercase letter.
+          </p>
 
-        <label className="floating-label">
+          <label className="label w-full mt-1">Username</label>
           <input
             type="text"
-            className="input input-md"
+            className="input input-md w-full"
             placeholder="Username"
             id="usernameInput"
             name="usernameInput"
@@ -169,19 +151,21 @@ const UserSignupForm: React.FC = () => {
             onChange={handleChange}
             required
           />
-          <span>Username</span>
-        </label>
-        <p className="text-sm error-content">{usernameError}</p>
-        <p className="text-sm">
-          Username may only contain alphanumeric characters or single hyphens,
-          and cannot begin or end with a hyphen.
-        </p>
+          <FormErrorText message={usernameError} />
+          <p className="text-sm">
+            Username may only contain alphanumeric characters or single hyphens,
+            and cannot begin or end with a hyphen.
+          </p>
 
-        <button type="submit">
-          Sign Up
-        </button>
-      </form>
-      <p className="text-sm error-content">{errMsg}</p>
+          <br />
+
+          <FormErrorText message={errMsg} />
+          <br />
+          <button className="w-full btn btn-primary" type="submit">
+            Submit
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

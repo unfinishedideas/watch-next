@@ -6,7 +6,7 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="navbar bg-base-300 shadow-sm">
+    <div className="navbar bg-base-300 shadow-sm mb-10">
       <div className="navbar-start" />
       <div className="navbar-center">
         {/* TODO: Make this not an animated button but a logo */}
@@ -38,7 +38,7 @@ const Header: React.FC = () => {
               <li
                 onClick={() => {
                   setUser(undefined);
-                  navigate("/");
+                  navigate("/logout");
                 }}
               >
                 <a>Logout</a>
