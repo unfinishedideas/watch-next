@@ -15,26 +15,38 @@ const Header: React.FC = () => {
         </a>
       </div>
       <div className="navbar-end">
-        {user ? (
-          <div className="dropdown dropdown-end">
+        <div className="dropdown dropdown-end">
+          <div tabIndex={0} role="button" className="flex flex-row items-end">
+            {user ? (
+              <p className="mr-5">{user.username}</p>
+            ) : (
+              <p className="mr-5">Sign In</p>
+            )}
+
             <div
               tabIndex={0}
-              role="button"
               className="btn btn-ghost btn-circle avatar avatar-online avatar-placeholder"
             >
               <div className="bg-neutral text-neutral-content w-16 rounded-full">
-                <span className="text-xl">
-                  {user.username[0].toUpperCase()}
-                </span>
+                {user ? (
+                  <span className="text-xl">
+                    {user.username[0].toUpperCase()}
+                  </span>
+                ) : (
+                  <span className="text-xl">_</span>
+                )}
               </div>
             </div>
+          </div>
+          {user ? (
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+              className="menu menu-sm dropdown-content bg-base-300 rounded-box z-1 mt-4 w-52 p-2 shadow"
             >
               <li>
                 <a>Profile</a>
               </li>
+
               <li
                 onClick={() => {
                   setUser(undefined);
@@ -44,18 +56,7 @@ const Header: React.FC = () => {
                 <a>Logout</a>
               </li>
             </ul>
-          </div>
-        ) : (
-          <div className="dropdown dropdown-end">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle avatar avatar-placeholder"
-            >
-              <div className="bg-neutral text-neutral-content w-16 rounded-full">
-                <span className="text-xl">_</span>
-              </div>
-            </div>
+          ) : (
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
@@ -67,8 +68,8 @@ const Header: React.FC = () => {
                 <a>Register</a>
               </li>
             </ul>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

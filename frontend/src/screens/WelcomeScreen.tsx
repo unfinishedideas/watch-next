@@ -20,6 +20,7 @@ const WelcomeScreen: React.FC = () => {
   });
   if (user) {
     let statusText = "";
+    let noLists = false;
     if (isPending) {
       statusText = "Loading your watch lists!";
     }
@@ -27,7 +28,11 @@ const WelcomeScreen: React.FC = () => {
       statusText = "Failed to load watch lists!";
     }
     else {
-      console.log(data)
+      statusText = ""
+      if (data.length === 0)
+      {
+        noLists = true;
+      }
     }
     return (
       <div>
@@ -54,7 +59,21 @@ const WelcomeScreen: React.FC = () => {
         <div className="mb-8">
           <h2 className="text-2xl tracking-wide mb-2">Your Watch Lists</h2>
           <p>{statusText}</p>
-          <WatchListPreviewCarousel listsData={data}/>
+          {
+            noLists ? (
+              <div>
+                <p>You currently have no watch lists.</p>
+                <a className="link link-primary">Let's create one and get watching!</a>
+              </div>
+            ): (
+              <div>
+                <WatchListPreviewCarousel listsData={data}/>
+                <a className="link link-primary">Create new list?</a>
+              </div>
+
+            )
+          }
+
         </div>
       </div>
     );
