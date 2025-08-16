@@ -2,7 +2,7 @@ import UserSignupForm from "../components/UserSignupForm.tsx";
 
 const UserSignupScreen: React.FC = () => {
   return (
-    <div>
+    <div className="">
       <UserSignupForm />
     </div>
   );

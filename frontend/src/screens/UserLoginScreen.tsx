@@ -2,7 +2,7 @@ import UserLoginForm from "../components/UserLoginForm.tsx";
 
 const HomeScreen: React.FC = () => {
   return (
-    <div>
+    <div className="">
       <UserLoginForm />
     </div>
   );

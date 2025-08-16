@@ -20,7 +20,7 @@ const Header: React.FC = () => {
             {user ? (
               <p className="mr-5">{user.username}</p>
             ) : (
-              <p className="mr-5">Sign In</p>
+              <p className="mr-5">Log In / Register</p>                
             )}
 
             <div

@@ -32,7 +32,7 @@ ON user_friends (
 
 CREATE TABLE IF NOT EXISTS watch_lists (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title VARCHAR(50) NOT NULL,
+    title VARCHAR(255) NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     is_private BOOLEAN DEFAULT FALSE
 );

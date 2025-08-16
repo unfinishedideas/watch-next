@@ -35,7 +35,7 @@ const WelcomeScreen: React.FC = () => {
       }
     }
     return (
-      <div>
+      <div className="">
         <h1
           className="
           mb-8 
@@ -48,7 +48,7 @@ const WelcomeScreen: React.FC = () => {
           lg:text-6xl 
           dark:text-white"
         >
-          Welcome to movie night, {user.username}
+          Welcome, {user.username}
         </h1>
         <div className="mb-8">
           <h2 className="text-2xl tracking-wide mb-2">

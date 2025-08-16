@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 const LogoutScreen: React.FC = () => {
   const navigate = useNavigate();
   return (
-    <div>
+    <div className="">
       <h2 className="text-center text-2xl/9 font-bold tracking-tight text-white mb-10">
         You have been logged out
       </h2>

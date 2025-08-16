@@ -34,6 +34,11 @@ VALUES
 ('Timmy and Jannys Crappy List'),
 ('David Lynch Is Not Playing Around'),
 ('Peter and Sams Watch List'),
+('Netflix and Bill'),
+('Horror Movies Featuring Alien Ice Cream'),
+('Oscar Bait'),
+('Mockumentary Films About Portland Oregon'),
+('Movies Where The Heroes Find Atlantis and Regret It Immediately'),
 ('The Arnoldverse'),
 ('The Arnoldverse'),
 ('The Arnoldverse');

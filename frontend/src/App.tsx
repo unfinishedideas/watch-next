@@ -15,7 +15,7 @@ function App() {
   return (
     <>
       <Header/>
-      <div className="sm:mx-5 md:mx-20 lg:mx-50 flex justify-center">
+      <div className="sm:mx-5 md:mx-20 lg:mx-100 flex justify-center items-center">
         <QueryClientProvider client={queryClient}>
           <Routes>
             <Route path="/" element={<HomeScreen />} />

@@ -1,4 +1,3 @@
-//import { useQuery } from "@tanstack/react-query";
 import WatchList from "../classes/WatchList.ts";
 import WatchListPreview from "./WatchListPreview.tsx";
 
@@ -10,19 +9,15 @@ const WatchListPreviewCarousel: React.FC<WatchListPreviewCarouselProps> = ({
   listsData,
 }: WatchListPreviewCarouselProps) => {
   if (!listsData) {
-    return (
-      <div>
-        <p>Unable to load Watch List Preview!</p>
-      </div>
-    );
+    return <p>Unable to load Watch List Preview Carousel!</p>;
   } else {
     const listsCount = listsData.length;
     if (listsCount === 0) {
-      return <div />;
+      return <div className="mb-5" />;
     } else if (listsCount === 1) {
       return (
-        <div>
-          <p>{listsData[0].title}</p>
+        <div className="mb-5">
+          <WatchListPreview listData={listsData[0]} />
         </div>
       );
     } else {
@@ -34,12 +29,14 @@ const WatchListPreviewCarousel: React.FC<WatchListPreviewCarouselProps> = ({
           if (i + (1 % 4) === 0) {
             j++;
           }
-          listsPages[j][i] = <WatchListPreview listData={listsData[i]} />;
+          //listsPages[j][i] = <WatchListPreview listData={listsData[i]} />;
+          console.log(listsData[i])
         }
-        return <div />;
+        console.log(listsPages)
+        return <div className="flex flex-row mb-5" />;
       } else {
         return (
-          <div className="flex flex-row">
+          <div className="flex flex-row mb-5">
             {listsData.map((list: WatchList, index: number) => (
               <WatchListPreview listData={list} key={index} />
             ))}
