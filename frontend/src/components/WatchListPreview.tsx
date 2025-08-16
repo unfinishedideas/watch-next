@@ -17,7 +17,8 @@ const WatchListPreview: React.FC<WatchListPreviewProps> = ({
   } else {
     return (
       <div className="relative w-56 flex-col mr-2 p-2 bg-secondary">
-        <img src={NoPoster} />
+        {/* TODO: CENTER THIS CONTENT! */}
+        <img className="flex justify-center" src={NoPoster} />
         <a className="link">{listData.title}</a>
       </div>
     );
