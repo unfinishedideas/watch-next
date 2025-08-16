@@ -67,7 +67,7 @@ const WelcomeScreen: React.FC = () => {
               </div>
             ): (
               <div>
-                <WatchListPreviewCarousel listsData={data}/>
+                <WatchListPreviewCarousel listsData={data} rowLength={4}/>
                 <a className="link link-primary">Create new list?</a>
               </div>
 

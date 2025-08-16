@@ -1,13 +1,23 @@
 import WatchList from "../classes/WatchList.ts";
 import WatchListPreview from "./WatchListPreview.tsx";
+import WatchListPreviewCarouselPage from "./WatchListPreviewCarouselPage.tsx";
 
 interface WatchListPreviewCarouselProps {
   listsData: WatchList[] | undefined;
+  rowLength: number;
 }
 
 const WatchListPreviewCarousel: React.FC<WatchListPreviewCarouselProps> = ({
   listsData,
+  rowLength,
 }: WatchListPreviewCarouselProps) => {
+  // Set a default for rowLength in case someone forgets to pass it in
+  if (!rowLength) {
+    console.warn(
+      "WatchListPreviewCarousel: rowLength property not set - defaulting to 4"
+    );
+    rowLength = 4;
+  }
   if (!listsData) {
     return <p>Unable to load Watch List Preview Carousel!</p>;
   } else {
@@ -23,17 +33,34 @@ const WatchListPreviewCarousel: React.FC<WatchListPreviewCarouselProps> = ({
     } else {
       const renderCarousel = listsData.length > 4;
       if (renderCarousel) {
-        const listsPages: React.ReactNode[][] = [];
+        const listsPageData: WatchList[][] = [];
+        const totalNum = listsData.length;
+
+        // Populate arrays of watch-lists to put into the carousel
+        let populatingArrays: boolean = true;
+        let i = 0;
         let j = 0;
-        for (let i = 0; i < listsData.length; i++) {
-          if (i + (1 % 4) === 0) {
-            j++;
+        while (populatingArrays) {
+          let sizeOfArr = rowLength;
+          if (i + sizeOfArr > totalNum) {
+            sizeOfArr = Math.abs(i - totalNum);
+            populatingArrays = false;
           }
-          //listsPages[j][i] = <WatchListPreview listData={listsData[i]} />;
-          console.log(listsData[i])
+          const tempArray: WatchList[] = [];
+          for (let k = 0; k < sizeOfArr; k++) {
+            tempArray.push(listsData[i + k]);
+          }
+          listsPageData[j] = tempArray;
+          j++;
+          i += 4;
         }
-        console.log(listsPages)
-        return <div className="flex flex-row mb-5" />;
+        return (
+          <div>
+            {listsPageData.map((lists: WatchList[], index: number) => (
+              <WatchListPreviewCarouselPage listsData={lists} key={index} />
+            ))}
+          </div>
+        );
       } else {
         return (
           <div className="flex flex-row mb-5">
