@@ -2,8 +2,8 @@ import WatchList from "../classes/WatchList";
 import NoPoster from "../assets/NoPoster.png";
 
 interface WatchListPreviewProps {
-  listData: WatchList | undefined,
-  rowLength: number | undefined,
+  listData: WatchList | undefined;
+  rowLength: number | undefined;
 }
 
 const WatchListPreview: React.FC<WatchListPreviewProps> = ({
@@ -18,9 +18,14 @@ const WatchListPreview: React.FC<WatchListPreviewProps> = ({
     );
   } else {
     return (
-      <div className={`relative w-1/${rowLength} flex-col mr-2 p-2 bg-secondary`}>
+      <div className={`relative w-1/${rowLength} flex-col min-w-0 line-clamp-2`}>
         <img className="flex justify-center mx-auto" src={NoPoster} />
-        <a className="link block whitespace-normal break-words">{listData.title}</a>
+        <a
+          href={`/lists/${listData.id}`}
+          className="link block whitespace-normal break-all text-ellipsis overflow-hidden text-center line-clamp-2 min-w-0"
+        >
+          {listData.title}
+        </a>
       </div>
     );
   }

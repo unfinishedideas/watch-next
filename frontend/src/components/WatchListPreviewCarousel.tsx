@@ -52,13 +52,13 @@ const WatchListPreviewCarousel: React.FC<WatchListPreviewCarouselProps> = ({
           }
           listsPageData[j] = tempArray;
           j++;
-          i += 4;
+          i += rowLength;
         }
         const maxSlideNumber = listsPageData.length;
         return (
           <div className="carousel w-full">
             {listsPageData.map((lists: WatchList[], index: number) => (
-              <WatchListPreviewCarouselPage listsData={lists} slideNumber={index+1} maxSlide={maxSlideNumber} key={index} rowLength={rowLength} />
+              <WatchListPreviewCarouselPage listsData={lists} slideNum={index+1} maxSlide={maxSlideNumber} key={index} rowLength={rowLength} />
             ))}
           </div>
         );

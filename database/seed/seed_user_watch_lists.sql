@@ -226,7 +226,7 @@ SELECT
     u.id,
     ml.id
 FROM users u
-JOIN watch_lists ml ON ml.title = ''
+JOIN watch_lists ml ON ml.title = 'ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo'
 WHERE u.email = 'david@lynch.com'
     AND NOT EXISTS (
         SELECT 1
@@ -234,28 +234,3 @@ WHERE u.email = 'david@lynch.com'
         WHERE uml.user_id = u.id AND uml.list_id = ml.id
 );
 
-INSERT INTO user_watch_lists (user_id, list_id)
-SELECT
-    u.id,
-    ml.id
-FROM users u
-JOIN watch_lists ml ON ml.title = ''
-WHERE u.email = 'david@lynch.com'
-    AND NOT EXISTS (
-        SELECT 1
-        FROM user_watch_lists uml
-        WHERE uml.user_id = u.id AND uml.list_id = ml.id
-);
-
-INSERT INTO user_watch_lists (user_id, list_id)
-SELECT
-    u.id,
-    ml.id
-FROM users u
-JOIN watch_lists ml ON ml.title = ''
-WHERE u.email = 'david@lynch.com'
-    AND NOT EXISTS (
-        SELECT 1
-        FROM user_watch_lists uml
-        WHERE uml.user_id = u.id AND uml.list_id = ml.id
-);
