@@ -10,19 +10,29 @@ const WatchListPreview: React.FC<WatchListPreviewProps> = ({
   listData,
   rowLength,
 }: WatchListPreviewProps) => {
+  const divClass = `relative w-1/${rowLength} flex-col mr-2 min-w-0 line-clamp-2`;
   if (!listData) {
     return (
-      <div>
-        <p>Unable to load list preview!</p>
+      <div className={divClass}>
+        <img className="flex justify-center mx-auto" src={NoPoster} />
+        <p>Create more!</p>
       </div>
     );
   } else {
     return (
-      <div className={`relative w-1/${rowLength} flex-col min-w-0 line-clamp-2`}>
+      <div className={divClass}>
         <img className="flex justify-center mx-auto" src={NoPoster} />
         <a
           href={`/lists/${listData.id}`}
-          className="link block whitespace-normal break-all text-ellipsis overflow-hidden text-center line-clamp-2 min-w-0"
+          className="
+          link 
+          block 
+          whitespace-normal 
+          break-keep 
+          text-ellipsis 
+          overflow-hidden 
+          text-center
+          "
         >
           {listData.title}
         </a>

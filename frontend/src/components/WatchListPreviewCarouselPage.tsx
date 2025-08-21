@@ -20,10 +20,17 @@ const WatchListPreviewCarouselPage: React.FC<
     return <div />;
   } else {
     let renderButtons = true;
+    const emptyCards: undefined[] = [];
     const prevSlideNum = slideNum - 1;
     const nextSlideNum = slideNum + 1;
+    const emptyCardsNum = rowLength - listsData.length;
     if (prevSlideNum === 0 && nextSlideNum > maxSlide) {
       renderButtons = false
+    }
+    if (emptyCardsNum > 0) {
+      for (let i = 0; i < emptyCardsNum; ++i) {
+        emptyCards.push(undefined)        
+      }
     }
     return (
       <div
@@ -32,6 +39,9 @@ const WatchListPreviewCarouselPage: React.FC<
       >
         {listsData.map((list: WatchList, index: number) => (
           <WatchListPreview listData={list} key={index} rowLength={rowLength} />
+        ))}
+        {emptyCards.map((item: undefined, index: number) => (
+          <WatchListPreview listData={item} key={index} rowLength={rowLength} />
         ))}
         {renderButtons ? (
           <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
