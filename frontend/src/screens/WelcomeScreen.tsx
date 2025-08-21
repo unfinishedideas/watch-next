@@ -35,7 +35,7 @@ const WelcomeScreen: React.FC = () => {
       }
     }
     return (
-      <div className="">
+      <div className="w-full">
         <h1
           className="
           mb-8 
@@ -56,7 +56,7 @@ const WelcomeScreen: React.FC = () => {
           </h2>
           <p>~~ COMING SOON ~~</p>
         </div>
-        <div className="mb-8">
+        <div className="mb-8 w-auto">
           <h2 className="text-2xl tracking-wide mb-2">Your Watch Lists</h2>
           <p>{statusText}</p>
           {
@@ -66,7 +66,7 @@ const WelcomeScreen: React.FC = () => {
                 <a className="link link-primary">Let's create one and get watching!</a>
               </div>
             ): (
-              <div>
+              <div className="w-4/5">
                 <WatchListPreviewCarousel listsData={data} rowLength={4}/>
                 <a className="link link-primary">Create new list?</a>
               </div>

@@ -27,7 +27,7 @@ const WatchListPreviewCarousel: React.FC<WatchListPreviewCarouselProps> = ({
     } else if (listsCount === 1) {
       return (
         <div className="mb-5">
-          <WatchListPreview listData={listsData[0]} />
+          <WatchListPreview listData={listsData[0]} rowLength={rowLength} />
         </div>
       );
     } else {
@@ -58,7 +58,7 @@ const WatchListPreviewCarousel: React.FC<WatchListPreviewCarouselProps> = ({
         return (
           <div className="carousel w-full">
             {listsPageData.map((lists: WatchList[], index: number) => (
-              <WatchListPreviewCarouselPage listsData={lists} slideNumber={index+1} maxSlide={maxSlideNumber} key={index} />
+              <WatchListPreviewCarouselPage listsData={lists} slideNumber={index+1} maxSlide={maxSlideNumber} key={index} rowLength={rowLength} />
             ))}
           </div>
         );
@@ -66,7 +66,7 @@ const WatchListPreviewCarousel: React.FC<WatchListPreviewCarouselProps> = ({
         return (
           <div className="flex flex-row mb-5">
             {listsData.map((list: WatchList, index: number) => (
-              <WatchListPreview listData={list} key={index} />
+              <WatchListPreview listData={list} key={index} rowLength={rowLength} />
             ))}
           </div>
         );

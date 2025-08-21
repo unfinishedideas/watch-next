@@ -2,11 +2,13 @@ import WatchList from "../classes/WatchList";
 import NoPoster from "../assets/NoPoster.png";
 
 interface WatchListPreviewProps {
-  listData: WatchList | undefined;
+  listData: WatchList | undefined,
+  rowLength: number | undefined,
 }
 
 const WatchListPreview: React.FC<WatchListPreviewProps> = ({
   listData,
+  rowLength,
 }: WatchListPreviewProps) => {
   if (!listData) {
     return (
@@ -16,10 +18,9 @@ const WatchListPreview: React.FC<WatchListPreviewProps> = ({
     );
   } else {
     return (
-      <div className="relative w-56 flex-col mr-2 p-2 bg-secondary">
-        {/* TODO: CENTER THIS CONTENT! */}
-        <img className="flex justify-center" src={NoPoster} />
-        <a className="link">{listData.title}</a>
+      <div className={`relative w-1/${rowLength} flex-col mr-2 p-2 bg-secondary`}>
+        <img className="flex justify-center mx-auto" src={NoPoster} />
+        <a className="link block whitespace-normal break-words">{listData.title}</a>
       </div>
     );
   }
