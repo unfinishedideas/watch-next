@@ -34,7 +34,7 @@ const WelcomeScreen: React.FC = () => {
         noLists = true;
       }
     }
-    return (
+    return(
       <div className="w-full">
         <h1
           className="
@@ -66,8 +66,9 @@ const WelcomeScreen: React.FC = () => {
                 <a className="link link-primary">Let's create one and get watching!</a>
               </div>
             ): (
-              <div className="w-4/5">
+              <div className="w-full">
                 <WatchListPreviewCarousel listsData={data} rowLength={5}/>
+                <br/>
                 <a className="link link-primary">Create new list?</a>
               </div>
 
