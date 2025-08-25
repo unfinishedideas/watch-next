@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS watch_list_medias, watch_lists, movies, user_watch_lists, users, user_friends CASCADE;
+DROP TABLE IF EXISTS watch_list_medias, watch_lists, medias, user_watch_lists, users, user_friends CASCADE;
 DROP TYPE IF EXISTS friend_status;
 DROP INDEX IF EXISTS unique_friend_pair;
 
@@ -56,13 +56,13 @@ CREATE TABLE IF NOT EXISTS medias (
     -- add TYPE? Like tv show, movie, short etc?
 );
 
-CREATE TABLE IF NOT EXISTS watch_list_media (
+CREATE TABLE IF NOT EXISTS watch_list_medias (
     media_id UUID NOT NULL,
     list_id UUID NOT NULL,
     media_order INT NOT NULL DEFAULT 0,
     watched BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (media_id, list_id),
-    FOREIGN KEY (media_id) REFERENCES movies(id),
+    FOREIGN KEY (media_id) REFERENCES medias(id),
     FOREIGN KEY (list_id) REFERENCES watch_lists(id),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );

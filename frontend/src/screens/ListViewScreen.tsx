@@ -1,33 +1,22 @@
 // import { useNavigate } from "react-router";
-import { useLocation } from "react-router";
 import { useParams } from "react-router";
-import { GetListById } from "../api/ListAPI";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { GetListById, GetListMediasById } from "../api/ListAPI";
+import { useQueries } from "@tanstack/react-query";
 
 const ListViewScreen: React.FC = () => {
+  // TODO: Use listData sent by route if available, useLocation()
   const { listId } = useParams();
-  //   const navigate = useNavigate();
-  const location = useLocation();
-//   let navData = location.state;
-//   const { isPending, error, data } = useQuery({
-//     queryKey: [`list_view`, listId],
-//     queryFn: () => GetListById(listId!),
-//     enabled: !!listId && navData === null,
-//   });
+  let statusText = "";
+  const screenData = useQueries({
+    queries: [
+        {queryKey: [`list_data`, listId], queryFn: () => GetListById(listId!), staleTime: Infinity},
+        {queryKey: [`list_movies`, listId], queryFn: () => GetListMediasById(listId!), staleTime: Infinity},
+    ]
+  })
 
-//   let statusText = "";
-//   if (isPending) {
-//     console.log('loading list view') // TODO: ERASE
-//     statusText = "Loading list view...";
-//   } else if (error) {
-//     console.log('failed to load list view') // TODO: ERASE
-//     statusText = "Failed to load list view!";
-//   } else {
-//     statusText = "";
-//   }
   return (
     <div>
-      <p>{data?.title}</p>
+      {/* <p>{screenData?.title}</p> */}
       <p>List View Screen: {listId}</p>
       <p>{statusText}</p>
     </div>

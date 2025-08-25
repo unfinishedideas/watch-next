@@ -1,25 +1,6 @@
-import { HandleError, base_url } from "./CommonAPI";
-import { type UserData } from "../classes/User.ts";
+import { HandleError, base_url, WatchListDataRawSchema, MediaDataArraySchema } from "./CommonAPI";
+import type { MediaData } from "../classes/Media.ts";
 import { type WatchListData } from "../classes/WatchList.ts";
-import { z } from "zod";
-
-// ZOD types for safety
-const WatchListDataRawSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  created_at: z.iso.datetime({ offset: true }).or(z.iso.datetime()),
-  is_private: z.boolean(),
-});
-// const WatchListDataArraySchema = z.array(WatchListDataRawSchema);
-
-// const UserDataRawSchema = z.object({
-//   id: z.string(),
-//   username: z.string(),
-//   email: z.email(),
-//   deleted: z.boolean(),
-//   created_at: z.iso.datetime(), // Expecting an ISO date string
-// });
-//const UserDataArraySchema = z.array(UserDataRawSchema);
 
 export async function GetListById(id: string): Promise<WatchListData> {
   const res = await fetch(`${base_url}/watch-lists/${id}`, {
@@ -30,9 +11,30 @@ export async function GetListById(id: string): Promise<WatchListData> {
       throw new Error("List not found");
     }
     else {
-        HandleError(res)
+        HandleError(res);
     }
   }
   const rawData = WatchListDataRawSchema.parse(await res.json());
   return {...rawData, created_at: new Date(rawData.created_at)};
+}
+
+export async function GetListMediasById(id: string): Promise<MediaData[]> {
+    const res = await fetch(`${base_url}/watch-lists/${id}/medias`);
+    if (!res.ok) {
+        if (res.status === 404) {
+            throw new Error("GetListMediasById: List not found")
+        }
+        else {
+            HandleError(res);
+        }
+    }
+    const rawData = MediaDataArraySchema.parse(await res.json());
+    return rawData.map((item) => ({
+        id: item.id,
+        title: item.title,
+        release_date: new Date(item.release_date),
+        director: item.director,
+        genre: item.genre,
+        created_at: new Date(item.created_at),
+    }));    
 }
