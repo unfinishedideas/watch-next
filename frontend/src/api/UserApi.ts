@@ -1,8 +1,7 @@
+import { HandleError, base_url } from "./CommonAPI.ts";
 import { type UserData } from "../classes/User.ts";
 import { type WatchListData } from "../classes/WatchList.ts";
 import { z } from "zod";
-
-const base_url: string = import.meta.env.VITE_API_BASE_URL;
 
 // ZOD types for safety
 const WatchListDataRawSchema = z.object({
@@ -22,9 +21,7 @@ const UserDataRawSchema = z.object({
 });
 //const UserDataArraySchema = z.array(UserDataRawSchema);
 
-function HandleError(err: unknown) {
-  console.error(err);
-}
+
 
 export async function LoginUser(
   nameInput: string,

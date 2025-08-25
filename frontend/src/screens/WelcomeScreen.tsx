@@ -57,7 +57,7 @@ const WelcomeScreen: React.FC = () => {
           <p>~~ COMING SOON ~~</p>
         </div>
         <div className="mb-8 w-auto">
-          <h2 className="text-2xl tracking-wide mb-2">Your Watch Lists</h2>
+          <h2 className="text-2xl tracking-wide mb-6">Your Watch Lists</h2>
           <p>{statusText}</p>
           {
             noLists ? (
