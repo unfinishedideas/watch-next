@@ -1,4 +1,4 @@
-import { HandleError, base_url, UserDataRawSchema, WatchListDataArraySchema } from "./CommonAPI.ts";
+import { HandleError, base_url, UserDataSchema, WatchListDataArraySchema } from "./CommonAPI.ts";
 import { type UserData } from "../classes/User.ts";
 import { type WatchListData } from "../classes/WatchList.ts";
 
@@ -24,11 +24,7 @@ export async function LoginUser(
       throw new Error(cleanTxt);
     }
   }
-  const rawData = UserDataRawSchema.parse(await res.json());
-  return {
-    ...rawData,
-    created_at: new Date(rawData.created_at),
-  };
+  return UserDataSchema.parse(await res.json());
 }
 
 export async function RegisterUser(
@@ -50,11 +46,7 @@ export async function RegisterUser(
       HandleError(res);
     }
   }
-  const rawData = UserDataRawSchema.parse(await res.json());
-  return {
-    ...rawData,
-    created_at: new Date(rawData.created_at),
-  };
+  return UserDataSchema.parse(await res.json());
 }
 
 export async function GetUserLists(user_id: string): Promise<WatchListData[]> {
@@ -66,11 +58,5 @@ export async function GetUserLists(user_id: string): Promise<WatchListData[]> {
       HandleError(res);
     }
   }
-  const rawData = WatchListDataArraySchema.parse(await res.json());
-  return rawData.map((item) => ({
-    id: item.id,
-    title: item.title,
-    created_at: new Date(item.created_at),
-    is_private: item.is_private,
-  }));
+  return WatchListDataArraySchema.parse(await res.json());
 }

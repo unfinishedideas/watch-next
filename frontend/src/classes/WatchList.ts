@@ -1,3 +1,6 @@
+import Media from "./Media";
+import User from "./User";
+
 export default class WatchList {
   id: string;
   title: string;
@@ -22,4 +25,10 @@ export interface WatchListData {
   title: string;
   created_at: Date;
   is_private: boolean;
+}
+
+export interface WatchListContent {
+  watchList: WatchListData;
+  medias: Media[];
+  users: User[];
 }
