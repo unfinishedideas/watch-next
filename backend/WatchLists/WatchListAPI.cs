@@ -58,6 +58,39 @@ namespace WatchNext.WatchLists
 			return Results.Ok(watchList);
 		}
 
+		// TODO: Maybe split up this behavior to other functions?
+		public async Task<IResult> GetWatchListAndContentById(Guid id)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+			
+			var watchList = await conn.QueryFirstOrDefaultAsync<WatchList>(
+				"SELECT * FROM watch_lists WHERE id = @id", new { id });
+			if (watchList == null)
+			{
+				return Results.NotFound("WatchList not found");
+			}
+
+			var medias = await conn.QueryAsync<WatchListMedia>(
+				@"SELECT m.*, media_order, watched
+				FROM medias m
+				JOIN watch_list_medias mlm ON m.id = mlm.media_id
+				JOIN watch_lists ml ON mlm.list_id = ml.id
+				WHERE ml.id = @id
+				ORDER BY media_order;",
+			new { id });
+
+			var users = await conn.QueryAsync<UserFrontend>(
+				@"SELECT u.*
+				FROM users u
+				JOIN user_watch_lists uml ON u.id = uml.user_id
+				JOIN watch_lists ml ON uml.list_id = ml.id
+				WHERE ml.id = @id",
+			new { id });
+
+			return Results.Ok(new {watchList, medias, users});
+		}
+
 		public async Task<IResult> GetWatchListsByTitle(string listTitle)
 		{
 			using var conn = new NpgsqlConnection(ConnStr);

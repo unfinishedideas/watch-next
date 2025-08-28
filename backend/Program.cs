@@ -55,6 +55,7 @@ app.MapPut("users/", (UpdateUserRequest req) => uAPI.UpdateUser(req, pHasher));
 app.MapPost("watch-lists/", (RegisterWatchListRequest req) => wAPI.CreateWatchList(req));
 app.MapGet("watch-lists/", () => wAPI.GetAllWatchLists());
 app.MapGet("watch-lists/{id}/", (Guid id) => wAPI.GetWatchListById(id));
+app.MapGet("watch-lists/{id}/all", (Guid id) => wAPI.GetWatchListAndContentById(id));
 app.MapGet("watch-lists/title/{listTitle}", (string listTitle) => wAPI.GetWatchListsByTitle(listTitle));
 app.MapGet("watch-lists/{id}/users/", (Guid id) => wAPI.GetWatchListUsers(id));
 app.MapGet("watch-lists/{id}/medias/", (Guid id) => wAPI.GetWatchListMedias(id));
