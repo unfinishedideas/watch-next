@@ -9,8 +9,8 @@ WITH
       ARRAY['Action','Sci-Fi','Drama','Thriller','Romance','Adventure','Cyberpunk','Mystery','Horror','Historical','Fantasy','Comedy','Crime','Documentary','Animation'] AS genres
   )
 
--- Generate and insert 20 random movies
-INSERT INTO movies (title, director, genre, release_date)
+-- Generate and insert 20 random medias
+INSERT INTO medias (title, director, genre, release_date)
 SELECT
   initcap(arr.titles1[ceil(random() * array_length(arr.titles1, 1))::int]) || ' ' ||
   initcap(arr.titles2[ceil(random() * array_length(arr.titles2, 1))::int]) AS title,
@@ -24,8 +24,8 @@ SELECT
 
 FROM generate_series(1, 20), arrays arr;
 
--- custom movies --
-INSERT INTO movies (title, director, genre, release_date)
+-- custom medias --
+INSERT INTO medias (title, director, genre, release_date)
 VALUES
 ('One Flew Over the Coocoos Nest', 'Milos Forman', 'Drama', '1975-11-19'),
 ('Army of Darkness','Sam Raimi','Action Comedy','1993-02-19'),

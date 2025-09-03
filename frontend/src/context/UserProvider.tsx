@@ -1,5 +1,5 @@
-import { ReactNode, useState } from "react";
-import User, { UserContextType } from "../classes/User.ts";
+import { type ReactNode, useState } from "react";
+import User, { type UserContextType } from "../classes/User.ts";
 import UserContext from "./UserContext.ts";
 
 interface UserProviderProps {

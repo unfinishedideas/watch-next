@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS watch_list_movies, watch_lists, movies, user_watch_lists, users, user_friends CASCADE;
+DROP TABLE IF EXISTS watch_list_medias, watch_lists, medias, user_watch_lists, users, user_friends CASCADE;
 DROP TYPE IF EXISTS friend_status;
 DROP INDEX IF EXISTS unique_friend_pair;
 
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     deleted BOOLEAN DEFAULT FALSE
 );
 
@@ -32,8 +32,8 @@ ON user_friends (
 
 CREATE TABLE IF NOT EXISTS watch_lists (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    title VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     is_private BOOLEAN DEFAULT FALSE
 );
 
@@ -43,25 +43,26 @@ CREATE TABLE IF NOT EXISTS user_watch_lists (
     PRIMARY KEY (user_id, list_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (list_id) REFERENCES watch_lists(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS movies (
+CREATE TABLE IF NOT EXISTS medias (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(50) NOT NULL,
     release_date DATE NOT NULL,
     director VARCHAR(50) NOT NULL,
     genre VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    -- add TYPE? Like tv show, movie, short etc?
 );
 
-CREATE TABLE IF NOT EXISTS watch_list_movies (
-    movie_id UUID NOT NULL,
+CREATE TABLE IF NOT EXISTS watch_list_medias (
+    media_id UUID NOT NULL,
     list_id UUID NOT NULL,
-    movie_order INT NOT NULL DEFAULT 0,
+    media_order INT NOT NULL DEFAULT 0,
     watched BOOLEAN NOT NULL DEFAULT FALSE,
-    PRIMARY KEY (movie_id, list_id),
-    FOREIGN KEY (movie_id) REFERENCES movies(id),
+    PRIMARY KEY (media_id, list_id),
+    FOREIGN KEY (media_id) REFERENCES medias(id),
     FOREIGN KEY (list_id) REFERENCES watch_lists(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );

@@ -44,19 +44,6 @@ SELECT
     ml.id
 FROM users u
 JOIN watch_lists ml ON ml.title = 'Timmy and Jannys Crappy List'
-WHERE u.email = 'david@lynch.com'
-    AND NOT EXISTS (
-        SELECT 1
-        FROM user_watch_lists uml
-        WHERE uml.user_id = u.id AND uml.list_id = ml.id
-);
-
-INSERT INTO user_watch_lists (user_id, list_id)
-SELECT
-    u.id,
-    ml.id
-FROM users u
-JOIN watch_lists ml ON ml.title = 'Timmy and Jannys Crappy List'
 WHERE u.email = 'tim@tim.com'
     AND NOT EXISTS (
         SELECT 1
@@ -141,3 +128,109 @@ WHERE u.email = 'stanley@kubrick.com'
         FROM user_watch_lists uml
         WHERE uml.user_id = u.id AND uml.list_id = ml.id
 );
+
+-- Give David Lynch a lot of lists
+INSERT INTO user_watch_lists (user_id, list_id)
+SELECT
+    u.id,
+    ml.id
+FROM users u
+JOIN watch_lists ml ON ml.title = 'Timmy and Jannys Crappy List'
+WHERE u.email = 'david@lynch.com'
+    AND NOT EXISTS (
+        SELECT 1
+        FROM user_watch_lists uml
+        WHERE uml.user_id = u.id AND uml.list_id = ml.id
+);
+
+INSERT INTO user_watch_lists (user_id, list_id)
+SELECT
+    u.id,
+    ml.id
+FROM users u
+JOIN watch_lists ml ON ml.title = 'Peter and Sams Watch List'
+WHERE u.email = 'david@lynch.com'
+    AND NOT EXISTS (
+        SELECT 1
+        FROM user_watch_lists uml
+        WHERE uml.user_id = u.id AND uml.list_id = ml.id
+);
+
+INSERT INTO user_watch_lists (user_id, list_id)
+SELECT
+    u.id,
+    ml.id
+FROM users u
+JOIN watch_lists ml ON ml.title = 'Netflix and Bill'
+WHERE u.email = 'david@lynch.com'
+    AND NOT EXISTS (
+        SELECT 1
+        FROM user_watch_lists uml
+        WHERE uml.user_id = u.id AND uml.list_id = ml.id
+);
+
+INSERT INTO user_watch_lists (user_id, list_id)
+SELECT
+    u.id,
+    ml.id
+FROM users u
+JOIN watch_lists ml ON ml.title = 'Horror Movies Featuring Alien Ice Cream'
+WHERE u.email = 'david@lynch.com'
+    AND NOT EXISTS (
+        SELECT 1
+        FROM user_watch_lists uml
+        WHERE uml.user_id = u.id AND uml.list_id = ml.id
+);
+
+INSERT INTO user_watch_lists (user_id, list_id)
+SELECT
+    u.id,
+    ml.id
+FROM users u
+JOIN watch_lists ml ON ml.title = 'Oscar Bait'
+WHERE u.email = 'david@lynch.com'
+    AND NOT EXISTS (
+        SELECT 1
+        FROM user_watch_lists uml
+        WHERE uml.user_id = u.id AND uml.list_id = ml.id
+);
+
+INSERT INTO user_watch_lists (user_id, list_id)
+SELECT
+    u.id,
+    ml.id
+FROM users u
+JOIN watch_lists ml ON ml.title = 'Mockumentary Films About Portland Oregon'
+WHERE u.email = 'david@lynch.com'
+    AND NOT EXISTS (
+        SELECT 1
+        FROM user_watch_lists uml
+        WHERE uml.user_id = u.id AND uml.list_id = ml.id
+);
+
+INSERT INTO user_watch_lists (user_id, list_id)
+SELECT
+    u.id,
+    ml.id
+FROM users u
+JOIN watch_lists ml ON ml.title = 'Movies Where the Heroes Find Atlantis and Regret It Immediately'
+WHERE u.email = 'david@lynch.com'
+    AND NOT EXISTS (
+        SELECT 1
+        FROM user_watch_lists uml
+        WHERE uml.user_id = u.id AND uml.list_id = ml.id
+);
+
+INSERT INTO user_watch_lists (user_id, list_id)
+SELECT
+    u.id,
+    ml.id
+FROM users u
+JOIN watch_lists ml ON ml.title = 'ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo'
+WHERE u.email = 'david@lynch.com'
+    AND NOT EXISTS (
+        SELECT 1
+        FROM user_watch_lists uml
+        WHERE uml.user_id = u.id AND uml.list_id = ml.id
+);
+

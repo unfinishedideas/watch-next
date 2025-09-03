@@ -172,6 +172,9 @@ namespace WatchNext.Users
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
 
+			var user = await conn.QueryFirstOrDefaultAsync<User>(@"SELECT * FROM users WHERE id=@user_id;", new { user_id });
+			if (user == null)
+				return Results.NotFound("User not found");
 			var res = await conn.QueryAsync<WatchList>(
 				@"SELECT ml.*
 				FROM watch_lists ml
