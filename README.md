@@ -35,6 +35,7 @@ They can leave reviews, comments and share lists publicly or privately.
 - React + Vite
 - Typescript + SWC
 - Tailwind.css + DaisyUI
+- Zod for type safety in frontend api
 - ASP.NET Core / C#
 - PostgreSQL
 - Python
