@@ -6,6 +6,10 @@ try
 {
 	var builder = WebApplication.CreateBuilder(args);
 	builder.Services.AddOpenApi();
+	builder.Services.AddHttpClient<TVDBService>(client =>
+	{
+		client.BaseAddress = new Uri("https://api4.thetvdb.com/v4/");
+	});
 
 	// CORS policy for development builds on the same machine
 	const string DevCorsPolicy = "_devCorsPolicy";
@@ -39,12 +43,9 @@ try
 	}
 
 	PasswordHasher pHasher = new PasswordHasher();
-	// TODO: Make these static so we don't need instances!
 	UserAPI uAPI = new() { ConnStr = connString };
 	MediaAPI mAPI = new() { connStr = connString };
 	WatchListAPI wAPI = new() { ConnStr = connString };
-	var TVDBKey = builder.Configuration["TVDB:Key"];
-	TVDBService tvdb = new TVDBService(TVDBKey!);
 
 	// Users
 	app.MapPost("users/", (UserRegister user) => uAPI.RegisterUser(user, pHasher));
@@ -84,6 +85,13 @@ try
 	app.MapGet("medias/partial-title/{term}", (string term) => mAPI.GetMediasByPartialTitle(term));
 	app.MapPut("medias/", (UpdateMediaRequest req) => mAPI.UpdateMedia(req));
 	app.MapDelete("medias/{id}", (Guid id) => mAPI.DeleteMedia(id));
+
+	// TVDB
+	app.MapGet("/tvdb/search/{query}", async (string query, TVDBService tvdb) =>
+	{
+		var result = await tvdb.SearchSeriesAsync(query);
+		return Results.Ok(result);
+	});
 
 	app.Run();
 }
