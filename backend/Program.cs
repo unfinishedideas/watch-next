@@ -21,7 +21,11 @@ if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development
             });
     });
 }
+var TVDBKey = builder.Configuration["TVDB:Key"];
 var app = builder.Build();
+
+TVDBService tvdb = new TVDBService(TVDBKey);
+tvdb.ShoutStuff();
 
 string? connString = builder.Configuration.GetConnectionString("Debug");
 if (connString == null)
