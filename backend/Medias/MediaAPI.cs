@@ -24,7 +24,8 @@ namespace WatchNext.Medias
 			var existingMedia = await conn.QueryFirstOrDefaultAsync<Media>(
 				@"SELECT * FROM medias WHERE title=@title;"
 			, new { newMedia.title });
-
+			
+			// Is this how we want to check for existing media?
 			if (existingMedia != null)
 			{
 				bool sametitle = newMedia.title == existingMedia.title;
@@ -37,11 +38,12 @@ namespace WatchNext.Medias
 					return Results.Conflict("Media already in database");
 				}
 			}
+			// Add to DB
 			var res = await conn.QueryFirstOrDefaultAsync<Media>(
-				@"INSERT INTO medias (title, release_date, director, genre)
-				  VALUES (@title, @release_date, @director, @genre)
+				@"INSERT INTO medias (title, release_date, director, genre, thumbnail)
+				  VALUES (@title, @release_date, @director, @genre, @thumbnail)
 				  RETURNING *;"
-				, new { newMedia.title, newMedia.release_date, newMedia.director, newMedia.genre });
+				, new { newMedia.title, newMedia.release_date, newMedia.director, newMedia.genre, newMedia.thumbnail });
 
 			if (res == null) return Results.BadRequest("Media creation failed");
 
@@ -80,6 +82,7 @@ namespace WatchNext.Medias
 				"SELECT * FROM medias WHERE title=@title", new { title });
 			if (media == null)
 			{
+				// TODO: Query TVDB
 				return Results.NotFound("Media not found");
 			}
 			return Results.Ok(new { media });
@@ -160,12 +163,13 @@ namespace WatchNext.Medias
 			string newtitle = req.title ?? existingMedia.title;
 			string newdirector = req.director ?? existingMedia.director;
 			string newgenre = req.genre ?? existingMedia.genre;
+			string newThumbnail = req.thumbnail ?? existingMedia.thumbnail;
 			DateTime newRelease = req.release_date ?? existingMedia.release_date;
 
 			var res = await conn.QueryFirstOrDefaultAsync<Media>(
-				@"UPDATE medias SET title=@newtitle, director=@newdirector, genre=@newgenre, release_date=@newRelease 
+				@"UPDATE medias SET title=@newtitle, director=@newdirector, genre=@newgenre, release_date=@newRelease, thumbnail=@newThumbnail
 				WHERE id=@id RETURNING *;",
-				new {newtitle, newdirector, newgenre, newRelease, req.id}
+				new {newtitle, newdirector, newgenre, newRelease, newThumbnail, req.id}
 			);
 
 			return Results.Ok(res);

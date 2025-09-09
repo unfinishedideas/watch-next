@@ -1,4 +1,6 @@
-﻿namespace WatchNext.Medias
+﻿using WatchNext.VariousUtilities;
+
+namespace WatchNext.Medias
 {
 	public class TVDBLoginResponse
 	{
@@ -10,6 +12,16 @@
 	{
 		public string Token { get; set; } = string.Empty;
 	}
+
+	public class TVDBMediaResponse
+	{
+		public string name { get; set; } = string.Empty;
+		public string director { get; set; } = string.Empty;
+		public string[] genres { get; set; } = { };
+		public string thumbnail { get; set; } = string.Empty;
+		public DateTime first_air_time { get; set; }
+	}
+
 
 	public class TVDBService
 	{
@@ -86,14 +98,43 @@
 			}
 		}
 
-		public async Task<string> SearchSeriesAsync(string query)
+		// TODO: deal with the ARRAY of objects, maybe only take first? And convert to MediaRegister
+		public async Task<IResult> SearchSeriesByTitleAsync(string query)
 		{
-			await EnsureAuthenticatedAsync();
+			try
+			{
+				await EnsureAuthenticatedAsync();
+				var response = await _httpClient.GetAsync($"search?query={Uri.EscapeDataString(query)}");
+				response.EnsureSuccessStatusCode();
+				string stringRes = await response.Content.ReadAsStringAsync();
 
-			var response = await _httpClient.GetAsync($"search?query={Uri.EscapeDataString(query)}");
-			response.EnsureSuccessStatusCode();
+				MediaRegister res = ConvertResponseForAPI(stringRes);
+				if (res == null)
+				{
+					throw new Exception("Unable to process TVDB response");
+				}
+				return Results.Ok(res);
+			}
+			catch (Exception ex)
+			{
+				return Results.UnprocessableEntity(ex.Message);
+			}
+		}
 
-			return await response.Content.ReadAsStringAsync();
+		public MediaRegister ConvertResponseForAPI(string jsonString)
+		{
+			TVDBMediaResponse firstItem = JsonHelper.DeserializeFirstDataObject<TVDBMediaResponse>(jsonString);
+
+			if (firstItem == null)
+				throw new Exception("ConvertResponseForAPI: Unable to convert jsonString!");
+
+			return new MediaRegister {
+				director = firstItem.director,
+				title = firstItem.name,
+				genre = firstItem.genres[0],
+				release_date = firstItem.first_air_time,
+				thumbnail = firstItem.thumbnail,
+			};
 		}
 	}
 }

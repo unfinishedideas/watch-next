@@ -1,7 +1,8 @@
-using WatchNext.WatchLists;
+using System.Reflection.Metadata.Ecma335;
+using System.Text.Json;
 using WatchNext.Medias;
 using WatchNext.Users;
-using System.Reflection.Metadata.Ecma335;
+using WatchNext.WatchLists;
 
 try
 {
@@ -91,11 +92,12 @@ try
 	app.MapGet("medias/partial-title/{term}", (MediaAPI mAPI, string term) => mAPI.GetMediasByPartialTitle(term));
 	app.MapPut("medias/", (MediaAPI mAPI, UpdateMediaRequest req) => mAPI.UpdateMedia(req));
 	app.MapDelete("medias/{id}", (MediaAPI mAPI, Guid id) => mAPI.DeleteMedia(id));
-
-	// TVDB - to be removed
+	// Medias - TVDB
+	//app.MapGet("medias/imdb/{id}", (MediaAPI mAPI, string imdbId => mAPI.GetMediaByIMDB(id)));
+	// TODO: Remove this, just for testing
 	app.MapGet("/tvdb/search/{query}", async (string query, TVDBService tvdb) =>
 	{
-		var result = await tvdb.SearchSeriesAsync(query);
+		var result = await tvdb.SearchSeriesByTitleAsync(query);
 		return Results.Ok(result);
 	});
 
