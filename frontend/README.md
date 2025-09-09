@@ -1,5 +1,7 @@
 # WatchNext! Frontend
 
+[Back to home](../README.md)
+
 ## Setup and Running (Frontend)
 
 - clone the repo if not already cloned: `git clone git@github.com:unfinishedideas/watch-next.git`

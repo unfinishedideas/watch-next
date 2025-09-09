@@ -1,6 +1,8 @@
 # WatchNext! - Database
 
-## Setup database (Database)
+[Back to home](../README.md)
+
+## Setup and Running (Database)
 
 - install postgreSQL on server
 - install python (I use chocolatey on windows) and install psycopg2 with `pip install psycopg2`

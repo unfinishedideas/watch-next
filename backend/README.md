@@ -1,12 +1,8 @@
 # Watch Next! - Backend Service
 
-## What it is
+[Back to home](../README.md)
 
-This is a basic backend service for the Watch Next! application
-
-## Configuration
-
-### Setup and Running (Backend)
+## Setup and Running (Backend)
 
 - clone the repo if not already cloned: `git clone git@github.com:unfinishedideas/watch-next.git`
 - navigate to the backend directory `./backend` with a shell
