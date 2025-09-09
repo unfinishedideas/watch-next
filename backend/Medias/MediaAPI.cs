@@ -6,7 +6,14 @@ namespace WatchNext.Medias
 {
 	public class MediaAPI
 	{
-		public required string connStr { get; set; }
+		private readonly string connStr;
+		private readonly TVDBService _tvdb;
+
+		public MediaAPI(TVDBService tvdb, string connString)
+		{
+			_tvdb = tvdb;
+			connStr = connString;
+		}
 		
 		public async Task<IResult> CreateMedia(MediaRegister newMedia)
 		{

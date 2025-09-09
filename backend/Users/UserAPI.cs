@@ -6,7 +6,11 @@ namespace WatchNext.Users
 {
 	public class UserAPI
 	{
-		public required string ConnStr { get; set; }
+		public readonly string ConnStr;
+		public UserAPI(string connStr)
+		{
+			ConnStr = connStr;
+		}
 
 		public async Task<IResult> RegisterUser(UserRegister user, PasswordHasher pHasher)
 		{

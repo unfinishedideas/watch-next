@@ -7,7 +7,11 @@ namespace WatchNext.WatchLists
 {
 	public class WatchListAPI
 	{
-		public required string ConnStr { get; set; }
+		public readonly string ConnStr;
+		public WatchListAPI(string connStr)
+		{
+			ConnStr = connStr;
+		}
 
 		public async Task<IResult> CreateWatchList(RegisterWatchListRequest req)
 		{
