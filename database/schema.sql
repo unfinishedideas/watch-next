@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS medias (
     release_date DATE NOT NULL,
     director VARCHAR(50) NOT NULL,
     genre VARCHAR(50) NOT NULL,
+    thumbnail VARCHAR(250),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
     -- add TYPE? Like tv show, movie, short etc?
 );

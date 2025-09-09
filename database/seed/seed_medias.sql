@@ -29,5 +29,8 @@ INSERT INTO medias (title, director, genre, release_date)
 VALUES
 ('One Flew Over the Coocoos Nest', 'Milos Forman', 'Drama', '1975-11-19'),
 ('Army of Darkness','Sam Raimi','Action Comedy','1993-02-19'),
-('The Rescuers Down Under','Mike Gabriel / Hendel Butoy','Animated Adventure','1990-11-16'),
-('Alien','Ridley Scott','Sci Fi Horror','1979-06-22');
+('The Rescuers Down Under','Mike Gabriel / Hendel Butoy','Animated Adventure','1990-11-16');
+
+INSERT INTO medias (title, director, genre, release_date, thumbnail)
+VALUES
+('Alien','Ridley Scott','Sci Fi Horror','1979-06-22', 'https://artworks.thetvdb.com/banners/movies/264/posters/264_t.jpg');
