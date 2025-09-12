@@ -10,7 +10,7 @@
 - create new `appsettings.json` file based on `./backend/example.appsettings.json` in the same location
 - ensure the [database service is setup and working first](../database/README.md)
 - build and run the backend with `dotnet run`
-- I recommend using something an API client like [Bruno](https://www.usebruno.com/) to test the various API endpoints
+- I recommend using an API client like [Bruno](https://www.usebruno.com/) to test the various API endpoints
 
 ### Set TVDB API Key (DEVELOPMENT)
 

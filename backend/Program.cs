@@ -11,6 +11,15 @@ try
 		client.BaseAddress = new Uri("https://api4.thetvdb.com/v4/");
 	});
 
+	// TODO: Support Environ
+	string? tvdbKeyEnvVar = Environment.GetEnvironmentVariable("TVDBKey");
+	var tvdbKey = builder.Configuration["TVDB:Key"];
+
+	if (tvdbKey == null && tvdbKeyEnvVar == null)
+	{
+		throw new Exception("Missing TVDB API key. Please set this as an environment variable (name: TVDBKey) or in user-secrets (name: TVDB:Key)!");
+	}
+
 	// CORS policy for development builds on the same machine
 	const string DevCorsPolicy = "_devCorsPolicy";
 	if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
