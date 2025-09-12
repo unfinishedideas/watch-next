@@ -6,6 +6,7 @@
 
 - install [postgreSQL](https://www.postgresql.org/) on server
 - install [python](https://www.python.org/downloads/) 
+- install required packages either with `pip install -r requirements.txt` or by installing them manually (see below)
     - install [psycopg2](https://pypi.org/project/psycopg2/) with `pip install psycopg2`
     - install [dotenv](https://pypi.org/project/python-dotenv/) with `pip install dotenv`
 - restart the machine or start the [postgres database server manually](https://www.postgresql.org/docs/current/server-start.html)
