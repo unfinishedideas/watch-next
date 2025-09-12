@@ -12,10 +12,11 @@
 - build and run the backend with `dotnet run`
 - I recommend using an API client like [Bruno](https://www.usebruno.com/) to test the various API endpoints
 
-### Set TVDB API Key (DEVELOPMENT)
+### Set TVDB API Key (Required)
 
-In order to access the TVDB Api, you must set the key. In production this is done with Environment Variables
+In order to access the TVDB Api, you must set an api key. In production this is done with an Environment Variable named `TVDBKey`.
 
+- For user-secret (preferred for development builds)
 - Navigate to the root folder for the backend in terminal `cd [project root]/backend`
 - Run the following:
   1. `dotnet user-secrets init`
