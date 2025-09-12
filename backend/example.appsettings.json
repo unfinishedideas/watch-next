@@ -6,8 +6,8 @@
 		}
 	},
 	"ConnectionStrings": {
-		"Default": "Host=localhost;Port=5432;Database=user_auth_db;Username=postgres;Password=yourpassword",
-		"Debug": "Host=localhost;Port=5432;Database=user_auth_db;Username=postgres;Password=12345"
+		"Default": "Host=localhost;Port=5432;Database=DB_NAME_HERE;Username=DB_USERNAME_HERE;Password=PASSWORD_HERE",
+		"Debug": "Host=localhost;Port=5432;Database=DB_NAME_HERE;Username=DB_USERNAME_HERE;Password=PASSWORD_HERE"
 	},
 	"Jwt": {
 		"Key": "your_super_secret_key_here_123!",

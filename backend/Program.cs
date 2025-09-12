@@ -1,5 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
-using System.Text.Json;
 using WatchNext.Medias;
 using WatchNext.Users;
 using WatchNext.WatchLists;

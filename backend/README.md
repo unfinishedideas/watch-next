@@ -6,8 +6,11 @@
 
 - clone the repo if not already cloned: `git clone git@github.com:unfinishedideas/watch-next.git`
 - navigate to the backend directory `./backend` with a shell
-- Create new `appsettings.json` file based on `./backend/example.appsettings.json` in the same location
+- install and configure [C# / ASP.NET](https://dotnet.microsoft.com/en-us/download) (Alternative: Use [Visual Studio](https://visualstudio.microsoft.com/) to install C# dependencies)
+- create new `appsettings.json` file based on `./backend/example.appsettings.json` in the same location
+- ensure the [database service is setup and working first](../database/README.md)
 - build and run the backend with `dotnet run`
+- I recommend using something an API client like [Bruno](https://www.usebruno.com/) to test the various API endpoints
 
 ### Set TVDB API Key (DEVELOPMENT)
 
