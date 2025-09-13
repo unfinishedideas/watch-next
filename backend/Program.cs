@@ -11,9 +11,8 @@ try
 		client.BaseAddress = new Uri("https://api4.thetvdb.com/v4/");
 	});
 
-	// TODO: Support Environ
 	string? tvdbKeyEnvVar = Environment.GetEnvironmentVariable("TVDBKey");
-	var tvdbKey = builder.Configuration["TVDB:Key"];
+	string? tvdbKey = builder.Configuration["TVDB:Key"];
 
 	if (tvdbKey == null && tvdbKeyEnvVar == null)
 	{
@@ -60,6 +59,9 @@ try
 		app.UseCors(DevCorsPolicy);
 		app.MapOpenApi();   // navigate to http://localhost:{port}/openapi/v1.json to see the docs
 	}
+
+	// API
+	app.MapGet("/health", () => { return Results.Ok(); });  // TODO: an actual health check :P
 
 	// Users
 	app.MapPost("users/", (UserAPI uAPI, UserRegister user) => uAPI.RegisterUser(user, pHasher));

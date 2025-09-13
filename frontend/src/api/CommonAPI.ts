@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 export const base_url: string = import.meta.env.VITE_API_BASE_URL;
 
 // Common functions --------------------------------------------------------------
