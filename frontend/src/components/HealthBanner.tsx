@@ -4,16 +4,16 @@ import { useApiHealth } from '../context/APIHealthContext';
 const HealthBanner: React.FC = () => {
   const { status, checkHealth } = useApiHealth();
 
-  if (status === 'checking') {
-    return <div style={{ backgroundColor: 'lightgray' }}>Checking API health...</div>;
-  }
+  // if (status === 'checking') {
+  //   return <div style={{ backgroundColor: 'lightgray' }}>Checking API health...</div>;
+  // }
 
   if (status === 'unhealthy') {
     return (
-      //<div style={{ backgroundColor: 'red', color: 'white', padding: '1em' }}>
-      <div className="bg-error">
+      <div className="bg-error flex flex-row items-center">
         <p>⚠️ API is down. Some features may not work.</p>
-        <button onClick={checkHealth}>Retry</button>
+        {/* TODO: Do we actually want this button? */}
+        <button className="btn py-1 ml-2 my-2" onClick={checkHealth}>Retry</button>
       </div>
     );
   }

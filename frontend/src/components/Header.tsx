@@ -18,7 +18,7 @@ const Header: React.FC = () => {
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="flex flex-row items-end">
             {user ? (
-              <p className="mr-5">{user.username}</p>
+              <p className="btn mr-5">{user.username}</p>
             ) : (
               <p className="mr-5">Log In / Register</p>                
             )}
