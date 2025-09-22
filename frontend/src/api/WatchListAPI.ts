@@ -44,9 +44,9 @@ export async function GetListContentById(
 }
 
 export async function GetListPreviewContentById(
-  id: string
+  id: string, limit: number
 ): Promise<WatchListPreviewContent> {
-  const res = await fetch(`${base_url}/watch-lists/${id}/preview`);
+  const res = await fetch(`${base_url}/watch-lists/${id}/preview?limit=${limit}`);
   if (!res.ok) {
     if (res.status === 404) {
       throw new Error("GetListPreviewContentById: List not found");

@@ -26,8 +26,14 @@ export interface MediaData {
     created_at: Date;
 }
 
-export interface MediaPreviewData {
+export class MediaPreviewData {
     title: string;
     thumbnail: string | null;
     media_order: number;
+
+    constructor(data: {title: string, thumbnail: string, media_order: number}) {
+        this.title = data.title;
+        this.thumbnail = data.thumbnail;
+        this.media_order = data.media_order;
+    }
 }

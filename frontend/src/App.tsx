@@ -22,7 +22,7 @@ function App() {
       <ApiHealthProvider>
         <Header />
         <HealthBanner />
-        <div className="sm:mx-5 md:mx-20 lg:mx-100 mt-10 flex justify-center items-center">
+        <div className="mx-5 md:mx-20 lg:mx-50 xl:mx-50 2xl:mx-100 mt-10 flex justify-center items-center">
           <QueryClientProvider client={queryClient}>
             <Routes>
               <Route path="/" element={<HomeScreen />} />

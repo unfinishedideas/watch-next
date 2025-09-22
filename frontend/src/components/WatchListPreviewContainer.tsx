@@ -8,7 +8,7 @@ interface WatchListPreviewContainerProps {
 const WatchListPreviewContainer: React.FC<WatchListPreviewContainerProps> = ({
   listsData,
 }: WatchListPreviewContainerProps) => {
-  const containerDivClass = ``;
+  const containerDivClass = `grid grid-cols-3`;
   if (!listsData) {
     return (
       <div className={containerDivClass}>
@@ -18,11 +18,13 @@ const WatchListPreviewContainer: React.FC<WatchListPreviewContainerProps> = ({
     );
   } else {
     return (
-      <div className={containerDivClass}>
-        {listsData.map((list) => (
-          <WatchListPreview listData={list} />
-        ))}
+      <div>
         <a className="link link-primary">Create New List</a>
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
+          {listsData.map((list) => (
+            <WatchListPreview listData={list} />
+          ))}
+        </div>
       </div>
     );
   }

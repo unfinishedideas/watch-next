@@ -43,12 +43,12 @@ const WelcomeScreen: React.FC = () => {
         >
           Welcome, {user.username}
         </h1>
-        <div className="mb-8">
+        {/* <div className="mb-8">
           <h2 className="text-2xl tracking-wide mb-2">
             Here's what people have been watching
           </h2>
           <p>~~ COMING SOON ~~</p>
-        </div>
+        </div> */}
         <div className="mb-8 w-auto">
           <h2 className="text-2xl tracking-wide mb-6">Your Watch Lists</h2>
           <p>{statusText}</p>

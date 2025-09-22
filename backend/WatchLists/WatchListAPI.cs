@@ -435,7 +435,7 @@ namespace WatchNext.WatchLists
 			return Results.Ok();
 		}
 
-		public async Task<IResult> GetWatchListPreview(Guid list_id)
+		public async Task<IResult> GetWatchListPreview(Guid list_id, int limit)
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
@@ -454,7 +454,7 @@ namespace WatchNext.WatchLists
 				JOIN watch_lists ml ON mlm.list_id = ml.id
 				WHERE ml.id = @list_id
 				ORDER BY media_order
-				LIMIT 5;", new { list_id }
+				LIMIT @limit;", new { list_id, limit }
 			);
 
 			return Results.Ok(new { watchList, mediaPreviews });
