@@ -89,6 +89,7 @@ try
 	app.MapPut("watch-lists/{id}/medias/{mov_id}", (WatchListAPI wAPI, Guid id, Guid mov_id, int new_spot) => wAPI.ReorderWatchListMedia(id, mov_id, new_spot));
 	app.MapPut("watch-lists/medias/update", (WatchListAPI wAPI, WatchListMediaUpdate req) => wAPI.UpdateWatchListMedia(req));
 	app.MapDelete("watch-lists/{id}", (WatchListAPI wAPI, Guid id) => wAPI.DeleteWatchList(id));
+	app.MapGet("watch-lists/{id}/preview", (WatchListAPI wAPI, Guid id) => wAPI.GetWatchListPreview(id));
 
 	// Medias
 	app.MapPost("medias/", (MediaAPI mAPI, MediaRegister req) => mAPI.CreateMedia(req));

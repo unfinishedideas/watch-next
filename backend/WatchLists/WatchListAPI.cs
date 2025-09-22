@@ -67,7 +67,7 @@ namespace WatchNext.WatchLists
 		{
 			using var conn = new NpgsqlConnection(ConnStr);
 			await conn.OpenAsync();
-			
+
 			var watchList = await conn.QueryFirstOrDefaultAsync<WatchList>(
 				"SELECT * FROM watch_lists WHERE id = @id", new { id });
 			if (watchList == null)
@@ -92,7 +92,7 @@ namespace WatchNext.WatchLists
 				WHERE ml.id = @id",
 			new { id });
 
-			return Results.Ok(new {watchList, medias, users});
+			return Results.Ok(new { watchList, medias, users });
 		}
 
 		public async Task<IResult> GetWatchListsByTitle(string listTitle)
@@ -273,7 +273,7 @@ namespace WatchNext.WatchLists
 			{
 				return Results.Ok();
 			}
-			foreach(WatchListMediaUpdate mov in all_medias)
+			foreach (WatchListMediaUpdate mov in all_medias)
 			{
 				if (mov.media_order > old_spot)
 				{
@@ -401,10 +401,10 @@ namespace WatchNext.WatchLists
 				SET watched=@watched
 				WHERE list_id=@list_id AND media_id=@media_id
 				RETURNING *;",
-				new { req.list_id, req.media_id, req.watched});
+				new { req.list_id, req.media_id, req.watched });
 			if (res == null)
 			{
-				return Results.NotFound("Unable to update media, media or list not found");	
+				return Results.NotFound("Unable to update media, media or list not found");
 			}
 			return Results.Ok();
 		}
@@ -433,6 +433,31 @@ namespace WatchNext.WatchLists
 			);
 
 			return Results.Ok();
+		}
+
+		public async Task<IResult> GetWatchListPreview(Guid list_id)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var watchList = await conn.QueryFirstOrDefaultAsync<WatchList>(
+				"SELECT * FROM watch_lists WHERE id = @list_id", new { list_id });
+			if (watchList == null)
+			{
+				return Results.NotFound("WatchList not found");
+			}
+
+			var thumbnails = await conn.QueryAsync<MediaPreview>(
+				@"SELECT m.thumbnail, mlm.media_order, m.title
+				FROM medias m
+				JOIN watch_list_medias mlm ON m.id = mlm.media_id
+				JOIN watch_lists ml ON mlm.list_id = ml.id
+				WHERE ml.id = @list_id
+				ORDER BY media_order
+				LIMIT 5;", new { list_id }
+			);
+
+			return Results.Ok(new { watchList, thumbnails });
 		}
 
 		// TODO: Make this more explicit than a bool so user knows what went wrong

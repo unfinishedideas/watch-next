@@ -14,6 +14,15 @@
 		// public string type {get; set;}	// tvdb primary_type (movie / tv etc)
 		// public string status {get; set;} // tvdb status (released?)
 	}
+
+	// For display on watchlist preview
+	public sealed class MediaPreview
+	{
+		required public string title { get; set; }
+		required public string thumbnail { get; set; }
+		required public int media_order { get; set; }
+	}
+
 	// Public facing media object so users can order their lists
 	public sealed class WatchListMedia : Media
 	{

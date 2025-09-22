@@ -2,21 +2,21 @@ import WatchList from "../classes/WatchList";
 import NoPoster from "../assets/NoPoster.png";
 import { useNavigate } from "react-router";
 
-interface WatchListPreviewProps {
+interface WatchListPreviewProps{
   listData: WatchList | undefined;
-  rowLength: number;
 }
 
 const WatchListPreview: React.FC<WatchListPreviewProps> = ({
   listData,
-  rowLength,
 }: WatchListPreviewProps) => {
   const navigate = useNavigate();
-  const widthPercentage = (1 / rowLength) * 100;
-  const divClass = `min-w-[${widthPercentage}%] max-w-[${widthPercentage}%]`;
-  const imgClass = `justify-center mx-auto`;
-  const titleDiv = `w-full min-h-20 max-h-20 px-5 overflow-hidden truncate inline-block text-center`;
-  const txtClass = `link min-w-0 break-normal whitespace-normal`;
+  const divClass = ``; 
+  const imgClass = ``;
+  const titleDiv = ``;
+  const txtClass = ``;
+  // const imgClass = `justify-center mx-auto`;
+  // const titleDiv = `w-full min-h-20 max-h-20 px-5 overflow-hidden truncate inline-block text-center`;
+  // const txtClass = `link min-w-0 break-normal whitespace-normal`;
 
   function NavToListView()
   {

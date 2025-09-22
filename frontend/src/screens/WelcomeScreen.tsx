@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { GetUserLists } from "../api/UserApi.ts";
-import WatchListPreviewCarousel from "../components/WatchListPreviewCarousel.tsx";
+import WatchListPreviewContainer from "../components/WatchListPreviewContainer.tsx";
 
 const WelcomeScreen: React.FC = () => {
   const { user } = useUser();
@@ -11,7 +11,7 @@ const WelcomeScreen: React.FC = () => {
   const { isPending, error, data } = useQuery({
     queryKey: [`user_lists`, user?.id],
     queryFn: () => GetUserLists(user!.id),
-    enabled: !!user
+    enabled: !!user,
   });
   useEffect(() => {
     if (!user) {
@@ -20,21 +20,14 @@ const WelcomeScreen: React.FC = () => {
   });
   if (user) {
     let statusText = "";
-    let noLists = false;
     if (isPending) {
       statusText = "Loading your watch lists!";
-    }
-    else if (error) {
+    } else if (error) {
       statusText = "Failed to load watch lists!";
+    } else {
+      statusText = "";
     }
-    else {
-      statusText = ""
-      if (data.length === 0)
-      {
-        noLists = true;
-      }
-    }
-    return(
+    return (
       <div className="w-full">
         <h1
           className="
@@ -59,22 +52,9 @@ const WelcomeScreen: React.FC = () => {
         <div className="mb-8 w-auto">
           <h2 className="text-2xl tracking-wide mb-6">Your Watch Lists</h2>
           <p>{statusText}</p>
-          {
-            noLists ? (
-              <div>
-                <p>You currently have no watch lists.</p>
-                <a className="link link-primary">Let's create one and get watching!</a>
-              </div>
-            ): (
-              <div className="w-full">
-                <WatchListPreviewCarousel listsData={data} rowLength={5}/>
-                <br/>
-                <a className="link link-primary">Create new list?</a>
-              </div>
-
-            )
-          }
-
+            <div className="w-full">
+              <WatchListPreviewContainer listsData={data} />
+            </div>
         </div>
       </div>
     );
