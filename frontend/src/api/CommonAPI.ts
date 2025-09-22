@@ -42,6 +42,15 @@ export const MediaDataSchema = MediaDataRawSchema.transform(media => ({
 
 export const MediaDataArraySchema = z.array(MediaDataSchema);
 
+export const MediaPreviewDataRawSchema = z.object({
+  title: z.string(),
+  thumbnail: z.string().nullable(),
+  media_order: z.number(),
+});
+
+export const MediaPreviewSchema = MediaPreviewDataRawSchema.transform(media => ({...media}))
+export const MediaPreviewArraySchema = z.array(MediaPreviewSchema);
+
 // WatchList ---------------------------------------------------------------------
 export const WatchListDataRawSchema = z.object({
   id: z.string(),
@@ -70,3 +79,8 @@ export const WatchListContentSchema = z.object({
   users: z.array(UserDataSchema),
   medias: z.array(MediaDataSchema),
 });
+
+export const WatchListPreviewSchema = z.object({
+  watchList: WatchListDataSchema,
+  mediaPreviews: z.array(MediaPreviewSchema).nullable(),
+})

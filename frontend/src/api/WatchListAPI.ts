@@ -3,10 +3,12 @@ import {
   base_url,
   WatchListDataSchema,
   WatchListContentSchema,
+  WatchListPreviewSchema,
 } from "./CommonAPI.ts";
 import {
   type WatchListData,
   type WatchListContent,
+  type WatchListPreviewContent,
 } from "../classes/WatchList.ts";
 
 // // Now when you parse:
@@ -33,10 +35,28 @@ export async function GetListContentById(
   const res = await fetch(`${base_url}/watch-lists/${id}/all`);
   if (!res.ok) {
     if (res.status === 404) {
-      throw new Error("GetListMediasById: List not found");
+      throw new Error("GetListContentById: List not found");
     } else {
       HandleError(res);
     }
   }
   return WatchListContentSchema.parse(await res.json());
+}
+
+export async function GetListPreviewContentById(
+  id: string
+): Promise<WatchListPreviewContent> {
+  const res = await fetch(`${base_url}/watch-lists/${id}/preview`);
+  if (!res.ok) {
+    if (res.status === 404) {
+      throw new Error("GetListPreviewContentById: List not found");
+    } else {
+      HandleError(res);
+    }
+  }
+  try {
+    return WatchListPreviewSchema.parse(await res.json());
+  } catch (err) {
+    HandleError(err)
+  }
 }

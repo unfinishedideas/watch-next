@@ -447,7 +447,7 @@ namespace WatchNext.WatchLists
 				return Results.NotFound("WatchList not found");
 			}
 
-			var thumbnails = await conn.QueryAsync<MediaPreview>(
+			var mediaPreviews = await conn.QueryAsync<MediaPreview>(
 				@"SELECT m.thumbnail, mlm.media_order, m.title
 				FROM medias m
 				JOIN watch_list_medias mlm ON m.id = mlm.media_id
@@ -457,7 +457,7 @@ namespace WatchNext.WatchLists
 				LIMIT 5;", new { list_id }
 			);
 
-			return Results.Ok(new { watchList, thumbnails });
+			return Results.Ok(new { watchList, mediaPreviews });
 		}
 
 		// TODO: Make this more explicit than a bool so user knows what went wrong

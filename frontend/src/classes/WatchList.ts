@@ -1,4 +1,4 @@
-import Media from "./Media";
+import Media, { type MediaPreviewData } from "./Media";
 import User from "./User";
 
 export default class WatchList {
@@ -31,4 +31,9 @@ export interface WatchListContent {
   watchList: WatchListData;
   medias: Media[];
   users: User[];
+}
+
+export interface WatchListPreviewContent {
+  watchList: WatchListData;
+  mediaPreviews: MediaPreviewData[]; 
 }

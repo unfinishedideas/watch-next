@@ -25,3 +25,9 @@ export interface MediaData {
     genre: string;
     created_at: Date;
 }
+
+export interface MediaPreviewData {
+    title: string;
+    thumbnail: string;
+    media_order: number;
+}
