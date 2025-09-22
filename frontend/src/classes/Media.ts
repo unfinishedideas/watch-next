@@ -28,6 +28,6 @@ export interface MediaData {
 
 export interface MediaPreviewData {
     title: string;
-    thumbnail: string;
+    thumbnail: string | null;
     media_order: number;
 }

@@ -54,9 +54,5 @@ export async function GetListPreviewContentById(
       HandleError(res);
     }
   }
-  try {
     return WatchListPreviewSchema.parse(await res.json());
-  } catch (err) {
-    HandleError(err)
-  }
 }

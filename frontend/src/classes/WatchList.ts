@@ -35,5 +35,5 @@ export interface WatchListContent {
 
 export interface WatchListPreviewContent {
   watchList: WatchListData;
-  mediaPreviews: MediaPreviewData[]; 
+  mediaPreviews: MediaPreviewData[] | null; 
 }
