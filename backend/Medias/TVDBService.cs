@@ -123,12 +123,15 @@ namespace WatchNext.Medias
 
 		public MediaRegister ConvertResponseForAPI(string jsonString)
 		{
-			TVDBMediaResponse firstItem = JsonHelper.DeserializeFirstDataObject<TVDBMediaResponse>(jsonString);
+			TVDBMediaResponse firstItem = JsonHelper.DeserializeFirstDataObject<TVDBMediaResponse>(jsonString) ?? throw new Exception("ConvertResponseForAPI: string is null");
 
 			if (firstItem == null)
+			{
 				throw new Exception("ConvertResponseForAPI: Unable to convert jsonString!");
+			}
 
-			return new MediaRegister {
+			return new MediaRegister
+			{
 				director = firstItem.director,
 				title = firstItem.name,
 				genre = firstItem.genres[0],
