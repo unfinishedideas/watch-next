@@ -27,6 +27,29 @@ export async function LoginUser(
   return UserDataSchema.parse(await res.json());
 }
 
+export async function GetUserById(
+  id: string | undefined
+): Promise<UserData> {
+  if (id === undefined) {
+    throw new Error("GetUserById: Error - must pass id")
+  }
+  const res = await fetch(`${base_url}/users/${id}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) {
+    if (res.status === 404) {
+      throw new Error("user not found");
+    }
+    else {
+      const text = await res.text();
+      const cleanTxt = text.replace(/^"|"$/g, "").trim().toLowerCase();
+      throw new Error(cleanTxt);
+    }
+  }
+  return UserDataSchema.parse(await res.json());
+}
+
 export async function RegisterUser(
   email: string,
   pass: string,
@@ -49,7 +72,10 @@ export async function RegisterUser(
   return UserDataSchema.parse(await res.json());
 }
 
-export async function GetUserLists(user_id: string): Promise<WatchListData[]> {
+export async function GetUserLists(user_id: string | undefined): Promise<WatchListData[]> {
+  if (user_id === undefined) {
+    throw new Error("GetUserLists: Error - user_id is undefined");
+  }
   const res = await fetch(`${base_url}/users/${user_id}/watch-lists`);
   if (!res.ok) {
     if (res.status === 404) {
@@ -61,8 +87,8 @@ export async function GetUserLists(user_id: string): Promise<WatchListData[]> {
   return WatchListDataArraySchema.parse(await res.json());
 }
 
-export async function GetLimitedUserLists(user_id: string, limit: number): Promise<WatchListData[]> {
-  const res = await fetch(`${base_url}/users/${user_id}/watch-lists?limit=${limit || 1}`);
+export async function GetUserListsPreview(user_id: string, limit?: number): Promise<WatchListData[]> {
+  const res = await fetch(`${base_url}/users/${user_id}/watch-lists/preview?limit=${limit || 3}`);
   if (!res.ok) {
     if (res.status === 404) {
       throw new Error("GetUserLists: User not found");

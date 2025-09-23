@@ -24,7 +24,6 @@ const WatchListPreviewContainer: React.FC<WatchListPreviewContainerProps> = ({
             <WatchListPreview listData={list} />
           ))}
         </div>
-        <a className="link">See all</a>
       </div>
     );
   }

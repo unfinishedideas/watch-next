@@ -56,12 +56,14 @@ export const WatchListDataRawSchema = z.object({
   id: z.string(),
   title: z.string(),
   created_at: z.string(),
+  last_updated: z.string(),
   is_private: z.boolean(),
 });
 
 export const WatchListDataSchema = WatchListDataRawSchema.transform(wl => ({
   ...wl,
   created_at: new Date(wl.created_at),
+  last_updated: new Date(wl.last_updated),
 }));
 
 export const WatchListDataArraySchema = z.array(WatchListDataSchema);

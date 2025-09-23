@@ -2,7 +2,7 @@ import { useUser } from "../hooks/UserHooks.ts";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { GetLimitedUserLists } from "../api/UserApi.ts";
+import { GetUserListsPreview } from "../api/UserApi.ts";
 import WatchListPreviewContainer from "../components/WatchListPreviewContainer.tsx";
 
 const WelcomeScreen: React.FC = () => {
@@ -10,7 +10,7 @@ const WelcomeScreen: React.FC = () => {
   const navigate = useNavigate();
   const { isPending, error, data } = useQuery({
     queryKey: [`user_lists`, user?.id],
-    queryFn: () => GetUserLimitedLists(user!.id),
+    queryFn: () => GetUserListsPreview(user!.id, 3),
     enabled: !!user,
   });
   useEffect(() => {
@@ -42,6 +42,7 @@ const WelcomeScreen: React.FC = () => {
           <div className="w-full">
             <WatchListPreviewContainer listsData={data} />
           </div>
+          <a className="btn btn-primary" onClick={() => navigate(`/profile/${user.id}/lists`)}>See all of your lists</a>
         </div>
       </div>
     );

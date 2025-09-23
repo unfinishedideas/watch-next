@@ -13,6 +13,7 @@ import WelcomeScreen from "./screens/WelcomeScreen.tsx";
 import UserSignupScreen from './screens/UserSignupScreen.tsx';
 import LogoutScreen from "./screens/LogoutScreen.tsx";
 import ListViewScreen from "./screens/ListViewScreen.tsx";
+import UserListsScreen from "./screens/UserListsScreen.tsx";
 
 const queryClient = new QueryClient();
 
@@ -31,7 +32,7 @@ function App() {
               <Route path="/welcome" element={<WelcomeScreen />} />
               <Route path="/logout" element={<LogoutScreen />} />
               {/* <Route path="/profile/:userId" element={<UserProfileScreen/>} */}
-              {/* <Route path="/profile/:userId/lists" element={<UserListsScreen />} */}
+              <Route path="/profile/:userId/lists" element={<UserListsScreen />}/>
               {/* <Route path="/profile/:userId/settings" element={<UserSettingsScreen />} */}
               {/* <Route path="/profile/:userId/friends" element={<UserFriendsScreen />} */}
               <Route path="/lists/:listId" element={<ListViewScreen />} />

@@ -207,6 +207,7 @@ namespace WatchNext.Users
 				JOIN user_watch_lists uml ON ml.id = uml.list_id
 				JOIN users u on uml.user_id = u.id
 				WHERE u.id = @user_id
+				ORDER BY last_updated
 				LIMIT @queryLimit;
 				",
 			new { user_id, queryLimit });
