@@ -59,7 +59,7 @@ const WatchListPreview: React.FC<WatchListPreviewProps> = ({
     }
 
     return (
-      <div className="size-full px-5 overflow-hidden self-center justify-self-center my-10">
+      <div className="size-full overflow-hidden self-center justify-self-center my-10 px-10 content-between">
         <div
           className="border-2 border-black rounded-sm items-center justify-center hover:border-indigo-600"
           onClick={NavToListView}

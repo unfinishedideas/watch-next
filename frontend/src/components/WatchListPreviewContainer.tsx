@@ -19,12 +19,12 @@ const WatchListPreviewContainer: React.FC<WatchListPreviewContainerProps> = ({
   } else {
     return (
       <div>
-        <a className="link link-primary">Create New List</a>
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
           {listsData.map((list) => (
             <WatchListPreview listData={list} />
           ))}
         </div>
+        <a className="link">See all</a>
       </div>
     );
   }

@@ -191,6 +191,29 @@ namespace WatchNext.Users
 			return Results.Ok(res);
 		}
 
+		public async Task<IResult> GetUserWatchListsPreview(Guid user_id, int? limit = 3)
+		{
+			using var conn = new NpgsqlConnection(ConnStr);
+			await conn.OpenAsync();
+
+			var user = await conn.QueryFirstOrDefaultAsync<User>(@"SELECT * FROM users WHERE id=@user_id;", new { user_id });
+			if (user == null)
+				return Results.NotFound("User not found");
+
+			int queryLimit = limit ?? 3;
+			var res = await conn.QueryAsync<WatchList>(
+				@"SELECT ml.*
+				FROM watch_lists ml
+				JOIN user_watch_lists uml ON ml.id = uml.list_id
+				JOIN users u on uml.user_id = u.id
+				WHERE u.id = @user_id
+				LIMIT @queryLimit;
+				",
+			new { user_id, queryLimit });
+
+			return Results.Ok(res);
+		}
+
 		public async Task<IResult> UpdateUser(UpdateUserRequest req, PasswordHasher pHasher)
 		{
 			using var conn = new NpgsqlConnection(ConnStr);

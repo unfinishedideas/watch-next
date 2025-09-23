@@ -71,6 +71,7 @@ try
 	app.MapGet("users/{id}/", (UserAPI uAPI, Guid id) => uAPI.GetUserById(id));
 	app.MapGet("users/email/{email}/", (UserAPI uAPI, string email) => uAPI.GetUserByEmail(email));
 	app.MapGet("users/{id}/watch-lists/", (UserAPI uAPI, Guid id) => uAPI.GetUserWatchLists(id));
+	app.MapGet("users/{id}/watch-lists/preview", (UserAPI uAPI, Guid id, int? limit) => uAPI.GetUserWatchListsPreview(id, limit));
 	app.MapPut("users/", (UserAPI uAPI, UpdateUserRequest req) => uAPI.UpdateUser(req, pHasher));
 
 	// Watch Lists

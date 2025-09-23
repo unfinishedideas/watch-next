@@ -2,7 +2,7 @@ import { useUser } from "../hooks/UserHooks.ts";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { GetUserLists } from "../api/UserApi.ts";
+import { GetLimitedUserLists } from "../api/UserApi.ts";
 import WatchListPreviewContainer from "../components/WatchListPreviewContainer.tsx";
 
 const WelcomeScreen: React.FC = () => {
@@ -10,7 +10,7 @@ const WelcomeScreen: React.FC = () => {
   const navigate = useNavigate();
   const { isPending, error, data } = useQuery({
     queryKey: [`user_lists`, user?.id],
-    queryFn: () => GetUserLists(user!.id),
+    queryFn: () => GetUserLimitedLists(user!.id),
     enabled: !!user,
   });
   useEffect(() => {
@@ -29,32 +29,19 @@ const WelcomeScreen: React.FC = () => {
     }
     return (
       <div className="w-full">
-        <h1
-          className="
-          mb-8 
-          text-4xl 
-          font-extrabold 
-          leading-none 
-          tracking-tight 
-          text-gray-900 
-          md:text-5xl 
-          lg:text-6xl 
-          dark:text-white"
-        >
-          Welcome, {user.username}
-        </h1>
-        {/* <div className="mb-8">
-          <h2 className="text-2xl tracking-wide mb-2">
-            Here's what people have been watching
-          </h2>
-          <p>~~ COMING SOON ~~</p>
-        </div> */}
-        <div className="mb-8 w-auto">
-          <h2 className="text-2xl tracking-wide mb-6">Your Watch Lists</h2>
+        <div className="mb-10 w-auto">
+          <div className="mb-8 flex flex-col items-center justify-center">
+            <p className="text-2xl mb-10">
+              Watch Lists are the perfect way to plan your next movie night!
+            </p>
+            <a className="btn btn-primary text-xl">Create New Watch List</a>
+          </div>
+          <h2 className="text-2xl tracking-wide mb-2 mt-0">Your Watch Lists</h2>
+          <hr className="mb-6" />
           <p>{statusText}</p>
-            <div className="w-full">
-              <WatchListPreviewContainer listsData={data} />
-            </div>
+          <div className="w-full">
+            <WatchListPreviewContainer listsData={data} />
+          </div>
         </div>
       </div>
     );

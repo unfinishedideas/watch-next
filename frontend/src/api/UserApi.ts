@@ -60,3 +60,15 @@ export async function GetUserLists(user_id: string): Promise<WatchListData[]> {
   }
   return WatchListDataArraySchema.parse(await res.json());
 }
+
+export async function GetLimitedUserLists(user_id: string, limit: number): Promise<WatchListData[]> {
+  const res = await fetch(`${base_url}/users/${user_id}/watch-lists?limit=${limit || 1}`);
+  if (!res.ok) {
+    if (res.status === 404) {
+      throw new Error("GetUserLists: User not found");
+    } else {
+      HandleError(res);
+    }
+  }
+  return WatchListDataArraySchema.parse(await res.json());
+}

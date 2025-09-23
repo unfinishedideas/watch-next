@@ -5,12 +5,20 @@ const Header: React.FC = () => {
   const { user, setUser } = useUser();
   const navigate = useNavigate();
 
+  function HeaderClick() {
+    if (user) {
+      navigate("/welcome");
+    } else {
+      navigate("/");
+    }
+  }
+
   return (
     <div className="navbar bg-base-300 shadow-sm">
       <div className="navbar-start" />
       <div className="navbar-center">
         {/* TODO: Make this not an animated button but a logo */}
-        <a className="btn btn-ghost text-3xl" onClick={() => navigate("/")}>
+        <a className="btn btn-ghost text-3xl" onClick={HeaderClick}>
           Watch Next!
         </a>
       </div>
